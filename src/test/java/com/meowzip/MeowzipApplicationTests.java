@@ -1,10 +1,10 @@
-package com.meowhanyang;
+package com.meowzip;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MeowhanyangApplicationTests {
+class MeowzipApplicationTests {
 
 	@Test
 	void contextLoads() {
