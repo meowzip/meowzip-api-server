@@ -1,1 +1,4 @@
-rootProject.name = 'meowzip-api-server'
+rootProject.name = 'meowzip-server'
+include 'meowzip-core'
+include 'meowzip-api-server'
+
