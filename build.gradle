@@ -40,7 +40,7 @@ subprojects {
 }
 
 project(':meowzip-api-server') {
-    group = 'com.meowhanyang'
+    group = 'com.meowzip'
 
     configurations {
         compileOnly {
@@ -53,7 +53,7 @@ project(':meowzip-api-server') {
     }
 
     dependencies {
-        // implementation project(':meowzip-core')
+         implementation project(':meowzip-core')
 
         implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
         implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -63,7 +63,7 @@ project(':meowzip-api-server') {
         implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-        implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+        implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -75,7 +75,7 @@ project(':meowzip-api-server') {
 
     tasks.named('test') {
         useJUnitPlatform()
-        // systemProperty "jasypt.encryptor.password" - 추후 설정
+        systemProperty "jasypt.encryptor.password", project.getProperties().get("jasypt.encryptor.password")
     }
 }
 

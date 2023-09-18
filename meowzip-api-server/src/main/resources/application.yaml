@@ -1,3 +1,22 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(OgIbBS+OfAdG+S9hCOy9CnJd3i3QtGhA5l29ei7KUnfJeCN2ARqYPJEBFQwr/FYVzWYiejPQZ0LoS4l8juBc88Pr4zXoolemcsMDaEUQ9t5umaZylOuuhQ==)
+    username: ENC(qqvaQgGSLefuc0xcPSmpCA==)
+    password: ENC(y/xQTrJj1+F5Nezvd28d2q4GydDL5p+UM4l59mPgx8w=)
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform:
+        org.hibernate.dialect.MySQLDialect
 
 # swagger
 springdoc:
@@ -14,3 +33,10 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+# encryption
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
