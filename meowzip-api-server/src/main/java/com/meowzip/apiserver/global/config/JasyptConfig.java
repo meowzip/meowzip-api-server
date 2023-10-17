@@ -1,4 +1,4 @@
-package com.meowzip.apiserver.config;
+package com.meowzip.apiserver.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
