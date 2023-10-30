@@ -22,15 +22,11 @@ public class SignUpRequestDTO {
     @NotBlank(message = "비밀번호는 필수 항목입니다.")
     String password;
 
-    @NotBlank
-    String profileImage;
-
     public Member toMember(String nickname) {
         return Member.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .profileImage(profileImage)
                 .loginType(LoginType.EMAIL)
                 .status(Member.Status.ACTIVE)
                 .build();

@@ -30,7 +30,6 @@ class MemberServiceTest {
         SignUpRequestDTO requestDTO = SignUpRequestDTO.builder()
                 .email("aaa@naver.com")
                 .password("asdf1234!")
-                .profileImage("test")
                 .build();
 
         // when
