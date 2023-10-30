@@ -39,6 +39,9 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests
+                            .requestMatchers("/h2-console/**", "/favicon.co").permitAll()
+                            .requestMatchers("/**/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                            .requestMatchers("/swagger-ui.html").permitAll()
                             .requestMatchers("/api/public/**").permitAll()
                             .anyRequest().authenticated()
                     ;
