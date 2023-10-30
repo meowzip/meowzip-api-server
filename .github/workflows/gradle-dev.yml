@@ -70,4 +70,4 @@ jobs:
               --application-name meowzip 
               --deployment-group-name meowzip-api-server-dev
               --file-exists-behavior OVERWRITE
-              --s3-location bucket=meowzip-dev,bundleType=zip,key=dev-deploy/meowzip.zip
+              --s3-location bucket=meowzip-dev,bundleType=zip,key=dev-deploy/meowzip.zip --region ap-northeast-2
