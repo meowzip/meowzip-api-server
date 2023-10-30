@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ENC(A1t7AdOABATK9+kChWjQPNWHUI7+ZcSIrfiU55wVRIi1T398DSZGfwJNfQ5TTT4jKvP3tWUxyvHfwutqKR8GqXdoXQp/VRH1CCWdou9XX4aL2M05NrU9pDkhKwD02bF1)
