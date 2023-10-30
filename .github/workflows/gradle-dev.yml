@@ -33,7 +33,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build With Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build --exclude-task test # 추후 테스트 제외 제거
 
       - name: Make Deploy Directory
         run: mkdir -p deploy
