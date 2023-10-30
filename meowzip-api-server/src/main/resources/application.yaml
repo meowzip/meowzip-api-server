@@ -3,9 +3,9 @@ spring:
     active: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(MBlVmWRNkaYIQ6L3SN6nGg2FNYdFSOr6KxFhm7j1rpyZfrEW5vAyUgaEkbgrsQELhpbzt6gMrO2I5LTRfL/OyCN7DDktDo9ZNDhASxzn5k9c6JRsbSZVX0uV7sdb3DNP)
-    username: ENC(qqvaQgGSLefuc0xcPSmpCA==)
-    password: ENC(y/xQTrJj1+F5Nezvd28d2q4GydDL5p+UM4l59mPgx8w=)
+    url: ENC(A1t7AdOABATK9+kChWjQPNWHUI7+ZcSIrfiU55wVRIi1T398DSZGfwJNfQ5TTT4jKvP3tWUxyvHfwutqKR8GqXdoXQp/VRH1CCWdou9XX4aL2M05NrU9pDkhKwD02bF1)
+    username: ENC(3R3peZ1WUtJoyusdnopaHQ==)
+    password: ENC(pUlV/EthFNNw5AL6W/B3DuJZ7Y4YM765HgWKDJlbwpw=)
   jpa:
     show-sql: true
     hibernate:
