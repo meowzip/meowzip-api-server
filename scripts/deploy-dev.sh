@@ -1,5 +1,5 @@
-export REPOSITORY = "/home/ec2-user/deploy"
-export PROJECT_NAME = "meowzip"
+export REPOSITORY="/home/ec2-user/deploy"
+export PROJECT_NAME="meowzip"
 
 echo "> 현재 구동 중인 애플리케이션 pid 확인"
 export CURRENT_PID=$(pgrep -fl meowzip | grep java | awk '{print $1}')
