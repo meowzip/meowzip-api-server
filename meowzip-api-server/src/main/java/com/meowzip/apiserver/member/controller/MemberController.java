@@ -5,6 +5,7 @@ import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
 import com.meowzip.apiserver.member.dto.response.EmailExistsResponseDTO;
 import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
 import com.meowzip.apiserver.member.service.MemberService;
+import com.meowzip.apiserver.member.swagger.MemberSwagger;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class MemberController {
+public class MemberController implements MemberSwagger {
 
     private final MemberService memberService;
 
