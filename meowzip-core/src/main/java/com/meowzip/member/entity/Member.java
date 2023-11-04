@@ -1,9 +1,11 @@
-package com.meowzip.entity.member;
+package com.meowzip.member.entity;
 
 import com.meowzip.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -32,6 +34,9 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
+
+    @Column(name = "withdrew_at")
+    private LocalDateTime withdrewAt;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
