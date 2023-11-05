@@ -1,9 +1,7 @@
 package com.meowzip.apiserver.member.service;
 
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
-import com.meowzip.entity.member.Member;
-import com.meowzip.repository.member.MemberRepository;
-import org.junit.jupiter.api.Assertions;
+import com.meowzip.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,17 +9,23 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -72,5 +78,21 @@ public class MemberService {
         return memberRepository.findByNickname(nickname).isPresent();
     }
 
+    public Member getMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.MEMBER_NOT_FOUND));
+    }
 
+    public Member getMember(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(EnumErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
+        return new User(member.getEmail(), member.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    }
 }
