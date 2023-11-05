@@ -58,3 +58,12 @@ jasypt:
     bean: jasyptStringEncryptor
     algorithm: PBEWithMD5AndDES
     iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+# JWT
+jwt:
+  access-token:
+    expiration: 60
+    secret: ENC(m2+ZtoQy9Gt1yiM1uQh7z1J39KNyi6zx0i5pYEB+QoZ0IXWodaTIx3Iysn9mhMuXmGFw84ZwDktFQ6n33a3zlw==)
+  refresh-token:
+    expiration: 120
+    secret: ENC(7zl2ombeG8gmT4uRIZ49LSBwG1QphYQWdM2iz5Os7/2hrZUEDUY6jxOYXkAIgTCIYKIWGuU80worlSNopUaCtw==)
