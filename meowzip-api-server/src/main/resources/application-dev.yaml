@@ -30,6 +30,12 @@ spring:
           starttls:
             enable: true
 
+  #redis
+  data:
+    redis:
+      host: ENC(wUwgO6KDUItae11dZ/iEbN0UZi0MrGmbZJ+6J3rU77Jor0poeUqa3ap4plO9yEXVlex9t3YFZ9GBIHQcyYnUqF+E9wcr8/Z1)
+      port: 6379
+
 # swagger
 springdoc:
   packages-to-scan: com.meowzip.apiserver
