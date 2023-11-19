@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(3Awt+EuHWrX6PprLbTaZ9iFA2u6eeK1K)
-    password: ENC(ICmyTnIrKdOVc9jripUeYyV8pDyh2iBj8VXWa2ukTwc=)
+    username: ENC(r8lCAtY2iuRV2plqd+2v3SZ4fABqQaAH)
+    password: ENC(2yM8AvckUVZSNFiDS1LyR4ftXkaRpdoih/gFfA+bdIg=)
     properties:
       mail:
         smtp:
@@ -29,11 +29,12 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+            required: true
 
   #redis
   data:
     redis:
-      host: ENC(wUwgO6KDUItae11dZ/iEbN0UZi0MrGmbZJ+6J3rU77Jor0poeUqa3ap4plO9yEXVlex9t3YFZ9GBIHQcyYnUqF+E9wcr8/Z1)
+      host: ENC(zF2o5/26Cdhk08Lhb0naXG8tDn/Rs4v6dsZmqwIbbBA3ZYpVKFVn9+nykQZIYUVq+dveQD3BFXTfC/QTCOUkBWc39iBpuchp)
       port: 6379
 
 # swagger
