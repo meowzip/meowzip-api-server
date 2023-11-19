@@ -34,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/public/v1.0.0/members/email-exists", // 이메일 중복 확인
             "/api/public/v1.0.0/members/sign-up", // 회원가입
             "/api/public/v1.0.0/members/send-password-reset-email", // 비밀번호 재설정 이메일 전송
+            "/api/public/v1.0.0/members/reset-password", // 비밀번호 재설정
             "/api/public/v1.0.0/members/login", // 이메일 로그인
             "/oauth2/authorization/google", // 구글 로그인
             "/oauth2/authorization/kakao", // 카카오 로그인

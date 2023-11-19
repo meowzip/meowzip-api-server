@@ -45,4 +45,8 @@ public class Member extends BaseTimeEntity {
     public enum Status {
         ACTIVE, WITHDRAWAL
     }
+
+    public void resetPassword(PasswordEncoder passwordEncoder, String newPassword) {
+        this.password = passwordEncoder.encode(newPassword);
+    }
 }
