@@ -1,4 +1,4 @@
-package com.meowzip.entity.member;
+package com.meowzip.member.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.meowzip.apiserver.member.dto.request;
 
-import com.meowzip.entity.member.LoginType;
-import com.meowzip.entity.member.Member;
+import com.meowzip.member.entity.LoginType;
+import com.meowzip.member.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

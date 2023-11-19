@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(r8lCAtY2iuRV2plqd+2v3SZ4fABqQaAH)
-    password: ENC(2yM8AvckUVZSNFiDS1LyR4ftXkaRpdoih/gFfA+bdIg=)
+    username: ENC(3Awt+EuHWrX6PprLbTaZ9iFA2u6eeK1K)
+    password: ENC(ICmyTnIrKdOVc9jripUeYyV8pDyh2iBj8VXWa2ukTwc=)
     properties:
       mail:
         smtp:
@@ -29,12 +29,11 @@ spring:
           timeout: 5000
           starttls:
             enable: true
-            required: true
 
-  #redis
+  # redis
   data:
     redis:
-      host: ENC(zF2o5/26Cdhk08Lhb0naXG8tDn/Rs4v6dsZmqwIbbBA3ZYpVKFVn9+nykQZIYUVq+dveQD3BFXTfC/QTCOUkBWc39iBpuchp)
+      host: localhost
       port: 6379
 
 # swagger
@@ -52,6 +51,20 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+# aws config
+cloud:
+  aws:
+    credentials:
+      accessKey: ENC(FyBiJcHoxCgaL1BEil4FLZ3LJbYQiQBW2lwFU3GqTIM=)
+      secretKey: ENC(5Luh7tlliBVQCvZmGVyzrqdblnDAb3gXBDlHgTIZa87lY1C1rwPQaLha32f5GYEsUU6g78X/OGg=)
+    s3:
+      bucket: meowzip-dev
+      dir: images
+    region: ap-northeast-2
+    stack: false
+    cloudfront:
+      url: https://d2jzc2rxltjw7u.cloudfront.net
 
 # encryption
 jasypt:

@@ -1,6 +1,6 @@
-package com.meowzip.repository.member;
+package com.meowzip.member.repository;
 
-import com.meowzip.entity.member.Member;
+import com.meowzip.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
