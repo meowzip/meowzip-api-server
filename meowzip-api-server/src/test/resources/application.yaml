@@ -1,0 +1,83 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(A1t7AdOABATK9+kChWjQPNWHUI7+ZcSIrfiU55wVRIi1T398DSZGfwJNfQ5TTT4jKvP3tWUxyvHfwutqKR8GqXdoXQp/VRH1CCWdou9XX4aL2M05NrU9pDkhKwD02bF1)
+    username: ENC(3R3peZ1WUtJoyusdnopaHQ==)
+    password: ENC(pUlV/EthFNNw5AL6W/B3DuJZ7Y4YM765HgWKDJlbwpw=)
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # mail properties
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(3Awt+EuHWrX6PprLbTaZ9iFA2u6eeK1K)
+    password: ENC(ICmyTnIrKdOVc9jripUeYyV8pDyh2iBj8VXWa2ukTwc=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+  # redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+# swagger
+springdoc:
+  packages-to-scan: com.meowzip.apiserver
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /api-docs
+    groups:
+      enabled: true
+  cache:
+    disabled: true
+
+# aws config
+cloud:
+  aws:
+    credentials:
+      accessKey: ENC(FyBiJcHoxCgaL1BEil4FLZ3LJbYQiQBW2lwFU3GqTIM=)
+      secretKey: ENC(5Luh7tlliBVQCvZmGVyzrqdblnDAb3gXBDlHgTIZa87lY1C1rwPQaLha32f5GYEsUU6g78X/OGg=)
+    s3:
+      bucket: meowzip-dev
+      dir: images
+    region: ap-northeast-2
+    stack: false
+    cloudfront:
+      url: https://d2jzc2rxltjw7u.cloudfront.net
+
+# encryption
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+# JWT
+jwt:
+  access-token:
+    expiration: 60
+    secret: ENC(m2+ZtoQy9Gt1yiM1uQh7z1J39KNyi6zx0i5pYEB+QoZ0IXWodaTIx3Iysn9mhMuXmGFw84ZwDktFQ6n33a3zlw==)
+  refresh-token:
+    expiration: 120
+    secret: ENC(7zl2ombeG8gmT4uRIZ49LSBwG1QphYQWdM2iz5Os7/2hrZUEDUY6jxOYXkAIgTCIYKIWGuU80worlSNopUaCtw==)
