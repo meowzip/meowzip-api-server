@@ -66,6 +66,10 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isTokenRequired(String requestURI) {
+        if (requestURI.contains("swagger") || requestURI.contains("api-docs")) {
+            return false;
+        }
+
         for (String uri : NO_CHECK_APIS) {
             if (requestURI.startsWith(uri)) {
                 return false;
