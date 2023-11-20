@@ -77,7 +77,7 @@ public class SecurityConfig {
         ;
 
         http.addFilterAfter(customUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterAfter(jwtFilter, CustomUsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, CustomUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
