@@ -53,6 +53,20 @@ springdoc:
   cache:
     disabled: true
 
+# aws config
+cloud:
+  aws:
+    credentials:
+      accessKey: ENC(FyBiJcHoxCgaL1BEil4FLZ3LJbYQiQBW2lwFU3GqTIM=)
+      secretKey: ENC(5Luh7tlliBVQCvZmGVyzrqdblnDAb3gXBDlHgTIZa87lY1C1rwPQaLha32f5GYEsUU6g78X/OGg=)
+    s3:
+      bucket: meowzip-dev
+      dir: images
+    region: ap-northeast-2
+    stack: false
+    cloudfront:
+      url: https://d2jzc2rxltjw7u.cloudfront.net
+
 # encryption
 jasypt:
   encryptor:
