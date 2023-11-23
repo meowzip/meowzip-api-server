@@ -66,11 +66,9 @@ public class MemberService implements UserDetailsService {
         while (true) {
             final int randomInt = new Random().nextInt(1000);
             nickname.append(NICKNAME_PREFIXES[new Random().nextInt(5)])
-                    .append(" ")
                     .append(RANDOM_NICKNAME).append(randomInt);
 
             // TODO: 랜덤 닉네임 숫자 count 후 얼마 남지 않았을 경우 알림 보내는 기능 추가
-
             if (!isNicknameDuplicated(nickname.toString())) {
                 break;
             }
