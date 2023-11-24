@@ -15,6 +15,7 @@ public enum EnumErrorCode {
     MEMBER_NOT_FOUND(100005, "회원을 찾을 수 없습니다."),
     LOGIN_FAILED(100006, "아이디 또는 비밀번호를 확인해주세요."),
     TOKEN_NOT_FOUND(100007, "토큰을 찾을 수 없습니다."),
+    IMAGE_UPLOAD_FAILED(200001, "이미지 업로드에 실패하였습니다."),
 
     ;
 
