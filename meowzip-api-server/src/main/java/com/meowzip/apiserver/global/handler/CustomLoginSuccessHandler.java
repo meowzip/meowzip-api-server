@@ -28,7 +28,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
-        Member member = memberService.getMember(principal.getUsername());
+        Member member = memberService.getMember(Long.valueOf(principal.getUsername()));
         JwtResponseDTO jwt = jwtService.createJwt(member);
 
         response.setStatus(HttpServletResponse.SC_OK);
