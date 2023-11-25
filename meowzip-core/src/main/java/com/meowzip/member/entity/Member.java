@@ -49,4 +49,9 @@ public class Member extends BaseTimeEntity {
     public void resetPassword(PasswordEncoder passwordEncoder, String newPassword) {
         this.password = passwordEncoder.encode(newPassword);
     }
+
+    public void modifyInfo(String nickname, String profileImage) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
 }

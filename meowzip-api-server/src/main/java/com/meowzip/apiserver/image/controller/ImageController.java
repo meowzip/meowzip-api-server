@@ -21,7 +21,7 @@ public class ImageController {
 
     @PostMapping
     public void save(@RequestPart("images") List<MultipartFile> images) throws IOException {
-        imageService.save(images, ImageDomain.MEMBER);
+        imageService.upload(images, ImageDomain.MEMBER);
     }
 
 }

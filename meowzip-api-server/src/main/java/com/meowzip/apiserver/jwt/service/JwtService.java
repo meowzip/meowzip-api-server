@@ -48,7 +48,7 @@ public class JwtService {
         Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
 
         Member member = memberService.getMember(Long.parseLong(claims.get("memberId").toString()));
-        User principal = new User(member.getEmail(), member.getPassword(), authorities);
+        User principal = new User(String.valueOf(member.getId()), member.getPassword(), authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
