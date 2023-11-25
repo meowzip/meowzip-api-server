@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,8 +27,10 @@ public class ImageService {
     private final ImageGroupService imageGroupService;
 
     @Transactional
-    public void upload(List<MultipartFile> images, ImageDomain domain) {
+    public List<String> upload(List<MultipartFile> images, ImageDomain domain) {
         try {
+            List<String> imageUrls = new ArrayList<>();
+
             ImageGroup imageGroup = imageGroupService.generate();
 
             for (MultipartFile image : images) {
@@ -39,7 +42,11 @@ public class ImageService {
                         .originalName(image.getOriginalFilename())
                         .size(image.getSize())
                         .build());
+
+                imageUrls.add(url);
             }
+
+            return imageUrls;
         } catch (IOException e) {
             log.error("image upload failed");
             throw new ServerException.InternalServerError(EnumErrorCode.IMAGE_UPLOAD_FAILED);

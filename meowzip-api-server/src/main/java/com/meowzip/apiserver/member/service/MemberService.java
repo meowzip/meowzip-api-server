@@ -2,11 +2,15 @@ package com.meowzip.apiserver.member.service;
 
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
 import com.meowzip.apiserver.member.dto.response.EmailExistsResponseDTO;
+import com.meowzip.apiserver.member.dto.response.MemberResponseDTO;
+import com.meowzip.apiserver.member.dto.response.NicknameValidationResponseDTO;
 import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
+import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.member.entity.Member;
 import com.meowzip.member.repository.MemberRepository;
 import com.meowzip.resetpasswordtoken.entity.ResetPasswordToken;
@@ -20,6 +24,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +40,7 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ResetPasswordTokenService resetPasswordTokenService;
     private final ResetPasswordEmailService resetPasswordEmailService;
+    private final ImageService imageService;
 
     private static final String[] NICKNAME_PREFIXES = {"발랄한", "명랑한", "친절한", "충실한", "온순한"};
     private static final String RANDOM_NICKNAME = "캔따개";
@@ -96,7 +103,7 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(EnumErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        return new User(member.getEmail(), member.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        return new User(String.valueOf(member.getId()), member.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
     @Transactional
@@ -113,5 +120,41 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.MEMBER_NOT_FOUND));
 
         member.resetPassword(passwordEncoder, requestDTO.password());
+    }
+
+    @Transactional
+    public MemberResponseDTO modify(Long memberId, String nickname, MultipartFile profileImage) {
+        Member member = getMember(memberId);
+        String profileImageUrl = member.getProfileImage();
+
+        validateNickname(nickname);
+
+        String newNickname = ObjectUtils.isEmpty(member.getNickname()) ? member.getNickname() : nickname;
+
+        if (profileImage != null) {
+            profileImageUrl = imageService.upload(List.of(profileImage), ImageDomain.MEMBER).get(0);
+        }
+
+        member.modifyInfo(newNickname, profileImageUrl);
+
+        return new MemberResponseDTO(member);
+    }
+
+    public NicknameValidationResponseDTO checkNicknameAvailable(String nickname) {
+        validateNickname(nickname);
+
+        return new NicknameValidationResponseDTO(true);
+    }
+
+    private void validateNickname(String nickname) {
+        if (!nickname.matches("^[가-힣A-Za-z0-9]{2,12}$")) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_NICKNAME);
+        }
+
+        if (isNicknameDuplicated(nickname)) {
+            throw new ClientException.Conflict(EnumErrorCode.NICKNAME_DUPLICATED);
+        }
+
+        // TODO: 금지어 검사 로직 추가
     }
 }

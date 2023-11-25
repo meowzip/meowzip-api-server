@@ -5,13 +5,20 @@ import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
 import com.meowzip.apiserver.member.dto.response.EmailExistsResponseDTO;
+import com.meowzip.apiserver.member.dto.response.MemberResponseDTO;
+import com.meowzip.apiserver.member.dto.response.NicknameValidationResponseDTO;
 import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.swagger.MemberSwagger;
+import com.meowzip.apiserver.member.util.MemberUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @RestController
@@ -46,5 +53,22 @@ public class MemberController implements MemberSwagger {
         memberService.resetPassword(requestDTO);
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/v1.0.0/members/validate-nickname")
+    public CommonResponse<NicknameValidationResponseDTO> checkNicknameAvailable(@RequestParam String nickname) {
+        NicknameValidationResponseDTO responseDTO = memberService.checkNicknameAvailable(nickname);
+
+        return new CommonResponse<>(HttpStatus.OK, responseDTO);
+    }
+
+    @PatchMapping(value = "/auth/v1.0.0/members", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<MemberResponseDTO> modify(Principal principal,
+                                                    @RequestPart(value = "nickname", required = false) String nickname,
+                                                    @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+
+        MemberResponseDTO responseDTO = memberService.modify(MemberUtil.getMemberId(principal), nickname, profileImage);
+
+        return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }
 }
