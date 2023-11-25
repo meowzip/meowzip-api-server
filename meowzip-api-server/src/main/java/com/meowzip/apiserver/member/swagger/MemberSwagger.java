@@ -34,7 +34,8 @@ public interface MemberSwagger {
     CommonResponse<Void> resetPassword(@RequestBody ResetPasswordRequestDTO requestDTO);
 
     @Operation(summary = "닉네임 유효성 검사")
-    CommonResponse<NicknameValidationResponseDTO> checkNicknameAvailable(String nickname);
+    CommonResponse<NicknameValidationResponseDTO> checkNicknameAvailable(
+            @Parameter(name = "nickname", in = ParameterIn.QUERY) String nickname);
 
     @Operation(summary = "회원 정보 수정", description = "온보딩 완료 시에도 호출")
     CommonResponse<MemberResponseDTO> modify(@Parameter(hidden = true) Principal principal,
