@@ -16,6 +16,7 @@ import com.meowzip.member.repository.MemberRepository;
 import com.meowzip.resetpasswordtoken.entity.ResetPasswordToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,7 @@ public class MemberService implements UserDetailsService {
     private final ResetPasswordTokenService resetPasswordTokenService;
     private final ResetPasswordEmailService resetPasswordEmailService;
     private final ImageService imageService;
+    private final ForbiddenNicknameService forbiddenNicknameService;
 
     private static final String[] NICKNAME_PREFIXES = {"발랄한", "명랑한", "친절한", "충실한", "온순한"};
     private static final String RANDOM_NICKNAME = "캔따개";
@@ -147,6 +149,10 @@ public class MemberService implements UserDetailsService {
     }
 
     private void validateNickname(String nickname) {
+        if (forbiddenNicknameService.containsForbiddenWord(nickname)) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_NICKNAME);
+        }
+
         if (!nickname.matches("^[가-힣A-Za-z0-9]{2,12}$")) {
             throw new ClientException.BadRequest(EnumErrorCode.INVALID_NICKNAME);
         }
@@ -154,7 +160,5 @@ public class MemberService implements UserDetailsService {
         if (isNicknameDuplicated(nickname)) {
             throw new ClientException.Conflict(EnumErrorCode.NICKNAME_DUPLICATED);
         }
-
-        // TODO: 금지어 검사 로직 추가
     }
 }
