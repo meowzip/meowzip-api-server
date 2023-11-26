@@ -23,7 +23,6 @@ import static com.meowzip.apiserver.member.service.AuthConst.ACCESS_TOKEN_HEADER
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -32,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private static final String[] NO_CHECK_APIS = {
             "/oauth2/authorization/google", // 구글 로그인
+            "/login/oauth2/code/google",
             "/oauth2/authorization/kakao", // 카카오 로그인
     };
 

@@ -37,6 +37,16 @@ spring:
       host: ENC(zF2o5/26Cdhk08Lhb0naXG8tDn/Rs4v6dsZmqwIbbBA3ZYpVKFVn9+nykQZIYUVq+dveQD3BFXTfC/QTCOUkBWc39iBpuchp)
       port: 6379
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(ifJa29xJ9iMVgbjykH7XlHbfAEbRzSjz0Hnt3L4+sD7T1ed3RhvpBcOlD263ahYPwuEr4glUB2TdGF2qz6Z+pbCykZ+DHv1H6/Xqvnz1lXjpoH0N02GMdg==)
+            client-secret: ENC(0hDth9wIbqFlZHin2A2cjSTgMAElTlNy1r15/oQp/GLbeOUIwMqy+lau24AhWNDG)
+            scope:
+              - email
+
 # swagger
 springdoc:
   packages-to-scan: com.meowzip.apiserver

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meowzip.apiserver.global.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.meowzip.apiserver.global.filter.JwtFilter;
 import com.meowzip.apiserver.global.handler.*;
+import com.meowzip.apiserver.jwt.service.JwtService;
+import com.meowzip.apiserver.member.service.CustomOAuth2UserService;
 import com.meowzip.apiserver.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +15,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,16 +34,11 @@ public class SecurityConfig {
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
-    private final JwtFilter jwtFilter;
+    private final JwtService jwtService;
     private final ObjectMapper objectMapper;
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring()
-                .requestMatchers("/h2-console/**", "/favicon.co")
-                .requestMatchers("/**/api-docs/**", "/swagger-ui/**", "/swagger-resources/**")
-                .requestMatchers("/swagger-ui.html");
-    }
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+    private final CustomOAuth2UserService oAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,13 +56,22 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests
-                            .requestMatchers("/h2-console/**", "/favicon.co").permitAll()
+                            .requestMatchers("/error").permitAll()
+                            .requestMatchers("/h2-console/**").permitAll()
+                            .requestMatchers("/favicon.co", "/favicon.ico").permitAll()
                             .requestMatchers("/**/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                             .requestMatchers("/swagger-ui.html").permitAll()
                             .requestMatchers("/api/public/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .formLogin(AbstractHttpConfigurer::disable)
+                .oauth2Login(configurer -> {
+                    configurer.successHandler(oAuth2SuccessHandler);
+                    configurer.failureHandler(oAuth2FailureHandler);
+                    configurer.userInfoEndpoint(userInfoEndpointConfig -> {
+                        userInfoEndpointConfig.userService(oAuth2UserService);
+                    });
+                })
                 .logout(logout -> {
                     logout
                             .addLogoutHandler(logoutHandler)
@@ -77,7 +82,7 @@ public class SecurityConfig {
         ;
 
         http.addFilterAfter(customUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterBefore(jwtFilter, CustomUsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtService), CustomUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

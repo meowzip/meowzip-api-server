@@ -3,6 +3,7 @@ package com.meowzip.apiserver.member.service;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageService;
+import com.meowzip.apiserver.member.dto.UserProfile;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
@@ -11,12 +12,12 @@ import com.meowzip.apiserver.member.dto.response.MemberResponseDTO;
 import com.meowzip.apiserver.member.dto.response.NicknameValidationResponseDTO;
 import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
 import com.meowzip.image.entity.ImageDomain;
+import com.meowzip.member.entity.LoginType;
 import com.meowzip.member.entity.Member;
 import com.meowzip.member.repository.MemberRepository;
 import com.meowzip.resetpasswordtoken.entity.ResetPasswordToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,6 +64,11 @@ public class MemberService implements UserDetailsService {
         return new SignUpResponseDTO(member.getNickname());
     }
 
+    @Transactional
+    public void signUp(UserProfile userProfile, LoginType loginType) {
+        memberRepository.save(userProfile.toMember(loginType, generateRandomNickname()));
+    }
+
     public EmailExistsResponseDTO getEmailExists(String email) {
         boolean isEmailExists = memberRepository.findByEmail(email).isPresent();
 
@@ -90,9 +96,13 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByNickname(nickname).isPresent();
     }
 
-    public Member getMember(String email) {
+    public Member getMemberOrThrow(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    public Optional<Member> getMember(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public Member getMember(Long id) {
@@ -110,7 +120,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void sendResetPasswordEmail(SendPasswordResetEmailRequestDTO requestDTO) {
-        Member member = getMember(requestDTO.email());
+        Member member = getMemberOrThrow(requestDTO.email());
 
         resetPasswordEmailService.sendPasswordResetEmail(member);
     }
