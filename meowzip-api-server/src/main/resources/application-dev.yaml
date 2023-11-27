@@ -94,3 +94,8 @@ jwt:
   refresh-token:
     expiration: 120
     secret: ENC(7zl2ombeG8gmT4uRIZ49LSBwG1QphYQWdM2iz5Os7/2hrZUEDUY6jxOYXkAIgTCIYKIWGuU80worlSNopUaCtw==)
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: trace
+  config: classpath:logback/logback-${spring.profiles.active}.xml
