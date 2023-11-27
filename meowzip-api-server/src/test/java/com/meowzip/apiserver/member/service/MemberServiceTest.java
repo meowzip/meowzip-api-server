@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ActiveProfiles("test")
 class MemberServiceTest {
 
     @Autowired
@@ -25,16 +27,19 @@ class MemberServiceTest {
     @Transactional
     void 자체회원가입() {
         // given
+        String email = "aaa@naver.com";
+        String password = "asdf1234!";
+
         SignUpRequestDTO requestDTO = SignUpRequestDTO.builder()
-                .email("aaa@naver.com")
-                .password("asdf1234!")
+                .email(email)
+                .password(password)
                 .build();
 
         // when
         memberService.signUp(requestDTO);
 
         // then
-        assertEquals(memberRepository.findAll().size(), 1);
+        assertEquals(memberService.getMemberOrThrow(email).getEmail(), email);
     }
 
 }
