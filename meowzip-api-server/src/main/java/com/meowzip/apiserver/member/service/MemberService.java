@@ -7,10 +7,7 @@ import com.meowzip.apiserver.member.dto.UserProfile;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
-import com.meowzip.apiserver.member.dto.response.EmailExistsResponseDTO;
-import com.meowzip.apiserver.member.dto.response.MemberResponseDTO;
-import com.meowzip.apiserver.member.dto.response.NicknameValidationResponseDTO;
-import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
+import com.meowzip.apiserver.member.dto.response.*;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.member.entity.LoginType;
 import com.meowzip.member.entity.Member;
@@ -70,9 +67,11 @@ public class MemberService implements UserDetailsService {
     }
 
     public EmailExistsResponseDTO getEmailExists(String email) {
-        boolean isEmailExists = memberRepository.findByEmail(email).isPresent();
+        Optional<Member> byEmail = memberRepository.findByEmail(email);
+        boolean isEmailExists = byEmail.isPresent();
+        LoginType loginType = isEmailExists ?byEmail.get().getLoginType() : null;
 
-        return new EmailExistsResponseDTO(isEmailExists);
+        return new EmailExistsResponseDTO(isEmailExists, loginType);
     }
 
     private String generateRandomNickname() {
