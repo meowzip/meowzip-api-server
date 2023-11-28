@@ -15,17 +15,20 @@ public class RefreshTokenService {
     @Transactional
     public void save(Long memberId, String refreshToken, String accessToken) {
         RefreshToken entity = RefreshToken.builder()
-                .id(String.valueOf(memberId))
                 .refreshToken(refreshToken)
-                .accessToken(accessToken)
+                .memberId(String.valueOf(memberId))
                 .build();
 
         refreshTokenRepository.save(entity);
     }
 
     @Transactional
-    public void remove(String accessToken) {
-        refreshTokenRepository.findByAccessToken(accessToken)
+    public void remove(Long memberId) {
+        refreshTokenRepository.findByMemberId(String.valueOf(memberId))
                 .ifPresent(refreshTokenRepository::delete);
+    }
+
+    public boolean isExists(String refreshToken) {
+        return refreshTokenRepository.findById(refreshToken).isPresent();
     }
 }
