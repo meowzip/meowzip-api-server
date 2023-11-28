@@ -30,11 +30,7 @@ class MemberServiceTest {
         String email = "aaa@naver.com";
         String password = "asdf1234!";
 
-        SignUpRequestDTO requestDTO = SignUpRequestDTO.builder()
-                .email(email)
-                .password(password)
-                .build();
-
+        SignUpRequestDTO requestDTO = new SignUpRequestDTO(email, password);
         // when
         memberService.signUp(requestDTO);
 
