@@ -47,7 +47,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public SignUpResponseDTO signUp(SignUpRequestDTO requestDTO) {
-        Optional<Member> byEmail = memberRepository.findByEmail(requestDTO.getEmail());
+        Optional<Member> byEmail = memberRepository.findByEmail(requestDTO.email());
 
         if (byEmail.isPresent()) {
             throw new ClientException.Conflict(EnumErrorCode.MEMBER_ALREADY_EXISTS);
