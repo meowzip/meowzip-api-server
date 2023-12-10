@@ -2,6 +2,7 @@ package com.meowzip.apiserver.aws.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.meowzip.image.entity.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,9 @@ public class S3UploadService {
         amazonS3.putObject(bucket, location + File.separator + s3FileName, file.getInputStream(), objectMetadata);
 
         return cloudfrontUrl + File.separator + location + File.separator + s3FileName;
+    }
+
+    public String getImagePublicURL(Image image) {
+        return cloudfrontUrl + File.separator + dir + File.separator + image.getDomain() + File.separator + image.getName();
     }
 }
