@@ -18,8 +18,7 @@ public enum EnumErrorCode {
     NICKNAME_DUPLICATED(100008, "이미 사용 중인 닉네임입니다."),
     INVALID_NICKNAME(100009, "닉네임 정책에 맞지 않습니다."),
     IMAGE_UPLOAD_FAILED(200001, "이미지 업로드에 실패하였습니다."),
-
-    ;
+    IMAGE_NOT_FOUND(200002, "이미지를 찾을 수 없습니다.");
 
     private final int result;
     private final String message;

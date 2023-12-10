@@ -1,5 +1,7 @@
 package com.meowzip.apiserver.image.service;
 
+import com.meowzip.apiserver.global.exception.ClientException;
+import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.image.repository.ImageGroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +17,10 @@ public class ImageGroupService {
     @Transactional
     public ImageGroup generate() {
         return imageGroupRepository.save(ImageGroup.builder().build());
+    }
+
+    public ImageGroup getById(Long id) {
+        return imageGroupRepository.findById(id)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.IMAGE_NOT_FOUND));
     }
 }
