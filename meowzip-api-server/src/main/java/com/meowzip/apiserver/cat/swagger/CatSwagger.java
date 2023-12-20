@@ -7,8 +7,8 @@ import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -23,5 +23,5 @@ public interface CatSwagger {
 
     @Operation(summary = "고양이 목록 조회")
     CommonListResponse<CatResponseDTO> showCats(@Parameter(hidden = true) Principal principal,
-                                                PageRequest pageRequest);
+                                                @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 }
