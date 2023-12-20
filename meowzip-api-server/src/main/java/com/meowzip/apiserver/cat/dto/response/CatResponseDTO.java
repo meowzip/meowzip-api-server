@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.dto.response;
 
 import com.meowzip.cat.entity.Cat;
+import com.meowzip.cat.entity.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema
@@ -16,10 +17,13 @@ public record CatResponseDTO(
         String name,
 
         @Schema(description = "공동냥육 여부")
-        boolean isCoParented
+        boolean isCoParented,
+
+        @Schema(description = "고양이 성별")
+        Sex sex
 ) {
 
     public CatResponseDTO(Cat cat) {
-        this(cat.getId(), cat.getImageUrl(), cat.getName(), cat.isCoParented());
+        this(cat.getId(), cat.getImageUrl(), cat.getName(), cat.isCoParented(), cat.getSex());
     }
 }
