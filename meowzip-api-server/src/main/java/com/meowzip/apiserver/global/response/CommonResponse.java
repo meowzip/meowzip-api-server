@@ -1,11 +1,9 @@
 package com.meowzip.apiserver.global.response;
 
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@SuperBuilder
 public class CommonResponse<T> {
 
     private HttpStatus status;

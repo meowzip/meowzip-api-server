@@ -1,18 +1,16 @@
 package com.meowzip.apiserver.global.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@SuperBuilder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommonListResponse<T> extends CommonResponse<T> {
+public class CommonListResponse<T> {
+
+    private HttpStatus status;
 
     @Builder.Default
     private int total = 0;
@@ -25,7 +23,7 @@ public class CommonListResponse<T> extends CommonResponse<T> {
     private List<T> items = new ArrayList<>();
 
     public CommonListResponse(HttpStatus status) {
-        super(status);
+        this.status = status;
         this.items = new ArrayList<>();
     }
 
