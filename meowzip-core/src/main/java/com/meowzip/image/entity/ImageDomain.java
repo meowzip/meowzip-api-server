@@ -8,5 +8,7 @@ import lombok.Getter;
 public enum ImageDomain {
 
     MEMBER,
+    CAT,
+    DIARY
     ;
 }
