@@ -5,6 +5,7 @@ import com.meowzip.apiserver.global.filter.CustomUsernamePasswordAuthenticationF
 import com.meowzip.apiserver.global.filter.JwtFilter;
 import com.meowzip.apiserver.global.handler.*;
 import com.meowzip.apiserver.jwt.service.JwtService;
+import com.meowzip.apiserver.member.service.AuthConst;
 import com.meowzip.apiserver.member.service.CustomOAuth2UserService;
 import com.meowzip.apiserver.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -44,7 +47,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> {
+                    cors.configurationSource(request -> {
+                        var corsConfiguration = new CorsConfiguration();
+                        corsConfiguration.addAllowedOriginPattern("*");
+                        corsConfiguration.addAllowedHeader("*");
+                        corsConfiguration.addAllowedMethod("*");
+                        corsConfiguration.setAllowCredentials(true);
+
+                        corsConfiguration.addExposedHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME);
+                        corsConfiguration.addExposedHeader(AuthConst.REFRESH_TOKEN_HEADER_NAME);
+
+                        return corsConfiguration;
+                    });
+                })
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
@@ -96,6 +112,7 @@ public class SecurityConfig {
         return new ProviderManager(provider);
     }
 
+    // TODO: @Bean annotation?
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() throws Exception {
         var filter = new CustomUsernamePasswordAuthenticationFilter(objectMapper);
         filter.setAuthenticationManager(authenticationManager());
