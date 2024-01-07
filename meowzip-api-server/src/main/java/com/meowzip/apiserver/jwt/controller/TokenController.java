@@ -17,6 +17,6 @@ public class TokenController implements TokenSwagger {
 
     @PostMapping("/refresh")
     public ResponseEntity<Void> reissue(@RequestHeader(name = AuthConst.REFRESH_TOKEN_HEADER_NAME) String refreshToken) {
-        return new ResponseEntity<>(jwtService.reissue(refreshToken), HttpStatus.CREATED);
+        return new ResponseEntity<>(jwtService.reissue(refreshToken), HttpStatus.OK);
     }
 }

@@ -37,6 +37,6 @@ public class DiaryController implements DiarySwagger {
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         diaryService.write(member, images, requestDTO);
 
-        return new CommonResponse<>(HttpStatus.CREATED);
+        return new CommonResponse<>(HttpStatus.OK);
     }
 }

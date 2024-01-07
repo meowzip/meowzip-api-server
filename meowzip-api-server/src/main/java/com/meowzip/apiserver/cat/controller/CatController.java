@@ -36,7 +36,7 @@ public class CatController implements CatSwagger {
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         catService.register(member, image, requestDTO);
 
-        return new CommonResponse<>(HttpStatus.CREATED);
+        return new CommonResponse<>(HttpStatus.OK);
     }
 
     @GetMapping
