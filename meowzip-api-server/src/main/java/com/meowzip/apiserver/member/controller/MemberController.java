@@ -38,7 +38,7 @@ public class MemberController implements MemberSwagger {
     public CommonResponse<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO requestDTO) {
         SignUpResponseDTO response = memberService.signUp(requestDTO);
 
-        return new CommonResponse<>(HttpStatus.CREATED, response);
+        return new CommonResponse<>(HttpStatus.OK, response);
     }
 
     @PostMapping("/public/v1.0.0/members/send-password-reset-email")
