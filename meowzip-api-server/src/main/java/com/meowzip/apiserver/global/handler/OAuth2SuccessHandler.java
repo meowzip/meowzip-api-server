@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meowzip.apiserver.global.cookie.util.CookieUtil;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.jwt.dto.response.JwtResponseDTO;
 import com.meowzip.apiserver.jwt.service.JwtService;
@@ -75,7 +76,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME, jwt.accessToken());
-        response.setHeader(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken());
+        response.addCookie(CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
     }
 
     private UserProfile getUserProfile(String registrationId, OAuth2User oAuth2User) {

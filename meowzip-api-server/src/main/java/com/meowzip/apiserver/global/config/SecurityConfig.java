@@ -56,7 +56,7 @@ public class SecurityConfig {
                         corsConfiguration.setAllowCredentials(true);
 
                         corsConfiguration.addExposedHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME);
-                        corsConfiguration.addExposedHeader(AuthConst.REFRESH_TOKEN_HEADER_NAME);
+                        corsConfiguration.addExposedHeader("Set-Cookie");
 
                         return corsConfiguration;
                     });
