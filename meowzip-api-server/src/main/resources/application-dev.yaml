@@ -48,6 +48,7 @@ spring:
             client-secret: ENC(0hDth9wIbqFlZHin2A2cjSTgMAElTlNy1r15/oQp/GLbeOUIwMqy+lau24AhWNDG)
             scope:
               - email
+            redirect-uri: https://dev-server.meowzip.com/login/oauth2/code/google
 
 # swagger
 springdoc:
