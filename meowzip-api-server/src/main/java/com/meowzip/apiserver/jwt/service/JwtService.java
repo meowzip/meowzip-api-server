@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.jwt.service;
 
+import com.meowzip.apiserver.global.cookie.util.CookieUtil;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.jwt.dto.response.JwtResponseDTO;
@@ -10,6 +11,8 @@ import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.service.RefreshTokenService;
 import com.meowzip.member.entity.Member;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,13 +62,27 @@ public class JwtService {
     }
 
     @Transactional
-    public HttpHeaders reissue(String refreshToken) {
+    public HttpHeaders reissue(Cookie[] cookies, HttpServletResponse response) {
+        if (ObjectUtils.isEmpty(cookies)) {
+            throw new ClientException.BadRequest(EnumErrorCode.TOKEN_REQUIRED);
+        }
+
+        String refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if (!cookie.getName().equals(AuthConst.REFRESH_TOKEN_HEADER_NAME)) {
+                continue;
+            }
+
+            refreshToken = cookie.getValue();
+        }
+
         if (!refreshTokenService.isExists(refreshToken)) {
-            throw new ClientException.BadRequest(EnumErrorCode.TOKEN_INVALID);
+            throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
         }
 
         Long memberId = jwtUtil.validateRefreshToken(refreshToken).get("memberId", Long.class);
         JwtResponseDTO jwt = createJwt(memberService.getMember(memberId));
+        response.addCookie(CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
 
         return createHeader(jwt);
     }
@@ -73,7 +91,6 @@ public class JwtService {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.set(AuthConst.ACCESS_TOKEN_HEADER_NAME, jwt.accessToken());
-        httpHeaders.set(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken());
 
         return httpHeaders;
     }

@@ -1,13 +1,16 @@
 package com.meowzip.apiserver.jwt.swagger;
 
-import com.meowzip.apiserver.member.service.AuthConst;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "토큰")
 public interface TokenSwagger {
 
-    ResponseEntity<Void> reissue(@Parameter(in = ParameterIn.HEADER, name = AuthConst.REFRESH_TOKEN_HEADER_NAME) String refreshToken);
+    @Operation(summary = "토큰 재발급", description = "Cookie에 refreshToken 담아서 요청")
+    ResponseEntity<Void> reissue(@Parameter(hidden = true) HttpServletRequest request,
+                                 @Parameter(hidden = true) HttpServletResponse response);
 }

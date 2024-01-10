@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.global.handler;
 
+import com.meowzip.apiserver.global.cookie.util.CookieUtil;
 import com.meowzip.apiserver.jwt.dto.response.JwtResponseDTO;
 import com.meowzip.apiserver.jwt.service.JwtService;
 import com.meowzip.apiserver.member.service.AuthConst;
@@ -33,6 +34,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME, jwt.accessToken());
-        response.setHeader(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken());
+        response.addCookie(CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
     }
 }
