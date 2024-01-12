@@ -1,16 +1,17 @@
 package com.meowzip.apiserver.global.cookie.util;
 
-import jakarta.servlet.http.Cookie;
+import org.springframework.http.ResponseCookie;
 
 public class CookieUtil {
 
-    public static Cookie createCookie(String name, String value) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        cookie.setMaxAge(60 * 60 * 2);
-
-        return cookie;
+    public static String createCookie(String name, String value) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .maxAge(60 * 60 * 2)
+                .build()
+                .toString();
     }
 }

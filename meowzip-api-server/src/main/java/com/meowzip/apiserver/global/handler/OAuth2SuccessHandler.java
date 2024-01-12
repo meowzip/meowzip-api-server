@@ -76,7 +76,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME, jwt.accessToken());
-        response.addCookie(CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
+        response.setHeader("Set-Cookie", CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
     }
 
     private UserProfile getUserProfile(String registrationId, OAuth2User oAuth2User) {

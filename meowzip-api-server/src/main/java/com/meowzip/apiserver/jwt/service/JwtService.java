@@ -82,7 +82,7 @@ public class JwtService {
 
         Long memberId = jwtUtil.validateRefreshToken(refreshToken).get("memberId", Long.class);
         JwtResponseDTO jwt = createJwt(memberService.getMember(memberId));
-        response.addCookie(CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
+        response.setHeader("Set-Cookie", CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
 
         return createHeader(jwt);
     }
