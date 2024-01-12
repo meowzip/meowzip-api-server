@@ -99,3 +99,7 @@ logging:
   level:
     org.hibernate.type.descriptor.sql: trace
   config: classpath:logback/logback-${spring.profiles.active}.xml
+
+reset-password:
+  validate-url: http://localhost:8080/api/public/v1.0.0/members/reset-password/validate
+  reset-url: http://localhost:3000/reset-pwd

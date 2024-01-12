@@ -11,6 +11,7 @@ import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.swagger.MemberSwagger;
 import com.meowzip.apiserver.member.util.MemberUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,15 @@ public class MemberController implements MemberSwagger {
     @PostMapping("/public/v1.0.0/members/send-password-reset-email")
     public CommonResponse<Void> sendResetPasswordEmail(@RequestBody @Valid SendPasswordResetEmailRequestDTO requestDTO) {
         memberService.sendResetPasswordEmail(requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/public/v1.0.0/members/reset-password/validate")
+    public CommonResponse<Void> validatePasswordResetResetToken(@RequestParam String token,
+                                                                HttpServletResponse response) {
+
+        memberService.validatePasswordResetToken(token, response);
 
         return new CommonResponse<>(HttpStatus.OK);
     }

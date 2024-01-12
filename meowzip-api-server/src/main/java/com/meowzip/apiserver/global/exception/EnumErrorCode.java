@@ -8,6 +8,8 @@ import lombok.Getter;
 public enum EnumErrorCode {
 
     SUCCESS(1, "success"),
+    INTERNAL_SERVER_ERROR(500, "서버에 오류가 발생하였습니다."),
+
     MEMBER_ALREADY_EXISTS(100001, "이미 존재하는 회원입니다."),
     TOKEN_REQUIRED(100002, "토큰이 없습니다."),
     TOKEN_EXPIRED(100003, "토큰이 만료되었습니다."),

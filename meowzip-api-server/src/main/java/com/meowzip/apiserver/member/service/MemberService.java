@@ -2,6 +2,7 @@ package com.meowzip.apiserver.member.service;
 
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.global.exception.ServerException;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.member.dto.UserProfile;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
@@ -13,8 +14,10 @@ import com.meowzip.member.entity.LoginType;
 import com.meowzip.member.entity.Member;
 import com.meowzip.member.repository.MemberRepository;
 import com.meowzip.resetpasswordtoken.entity.ResetPasswordToken;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -44,6 +49,9 @@ public class MemberService implements UserDetailsService {
 
     private static final String[] NICKNAME_PREFIXES = {"발랄한", "명랑한", "친절한", "충실한", "온순한"};
     private static final String RANDOM_NICKNAME = "캔따개";
+
+    @Value("${reset-password.reset-url}")
+    private String passwordResetUrl;
 
     @Transactional
     public SignUpResponseDTO signUp(SignUpRequestDTO requestDTO) {
@@ -169,6 +177,20 @@ public class MemberService implements UserDetailsService {
 
         if (isNicknameDuplicated(nickname)) {
             throw new ClientException.Conflict(EnumErrorCode.NICKNAME_DUPLICATED);
+        }
+    }
+
+    public void validatePasswordResetToken(String resetToken, HttpServletResponse response) {
+        resetPasswordTokenService.getTokenById(resetToken);
+
+        try {
+            String resetUrl = UriComponentsBuilder.fromUriString(passwordResetUrl)
+                    .queryParam("token", resetToken)
+                    .build().toUriString();
+
+            response.sendRedirect(resetUrl);
+        } catch (IOException e) {
+            throw new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }
