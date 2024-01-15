@@ -54,19 +54,22 @@ public class MemberService implements UserDetailsService {
     private String passwordResetUrl;
 
     @Transactional
-    public SignUpResponseDTO signUp(SignUpRequestDTO requestDTO) {
+    public SignUpResponseDTO signUp(SignUpRequestDTO requestDTO, MultipartFile profileImage) {
         Optional<Member> byEmail = memberRepository.findByEmail(requestDTO.email());
 
         if (byEmail.isPresent()) {
             throw new ClientException.Conflict(EnumErrorCode.MEMBER_ALREADY_EXISTS);
         }
 
-        Member member = requestDTO.toMember(generateRandomNickname());
+        Long imageGroupId = imageService.upload(List.of(profileImage), ImageDomain.MEMBER);
+        String profileImageUrl = imageService.getImageUrl(imageGroupId).get(0);
+
+        Member member = requestDTO.toMember(generateRandomNickname(), profileImageUrl);
         member.encodePassword(passwordEncoder);
 
         memberRepository.save(member);
 
-        return new SignUpResponseDTO(member.getNickname());
+        return new SignUpResponseDTO(member.getNickname(), member.getProfileImage());
     }
 
     @Transactional

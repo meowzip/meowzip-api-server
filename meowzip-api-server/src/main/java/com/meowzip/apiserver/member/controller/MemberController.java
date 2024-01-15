@@ -35,9 +35,11 @@ public class MemberController implements MemberSwagger {
         return new CommonResponse<>(HttpStatus.OK, response);
     }
 
-    @PostMapping("/public/v1.0.0/members/sign-up")
-    public CommonResponse<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO requestDTO) {
-        SignUpResponseDTO response = memberService.signUp(requestDTO);
+    @PostMapping(value = "/public/v1.0.0/members/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<SignUpResponseDTO> signUp(@RequestPart(name = "member") @Valid SignUpRequestDTO requestDTO,
+                                                    @RequestPart(name = "profileImage") MultipartFile profileImage) {
+
+        SignUpResponseDTO response = memberService.signUp(requestDTO, profileImage);
 
         return new CommonResponse<>(HttpStatus.OK, response);
     }

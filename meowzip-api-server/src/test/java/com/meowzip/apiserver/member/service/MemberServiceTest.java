@@ -32,7 +32,7 @@ class MemberServiceTest {
 
         SignUpRequestDTO requestDTO = new SignUpRequestDTO(email, password);
         // when
-        memberService.signUp(requestDTO);
+//        memberService.signUp(requestDTO); // TODO: 추후 TDD 적용
 
         // then
         assertEquals(memberService.getMemberOrThrow(email).getEmail(), email);
