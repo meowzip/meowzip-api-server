@@ -104,3 +104,9 @@ logging:
 reset-password:
   validate-url: https://dev-server.meowzip.com/api/public/v1.0.0/members/reset-password/validate
   reset-url: http://localhost:3000/reset-pwd
+
+# oauth2
+oauth2:
+  redirect-uri:
+    google: https://localhost:3001/signin/google
+    kakao: https://localhost:3001/signin/kakao
