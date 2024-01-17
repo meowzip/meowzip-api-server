@@ -34,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/login/oauth2/code/google",
             "/oauth2/authorization/kakao", // 카카오 로그인,
             "/favicon.ico",
+            "/health-check",
     };
 
     @Override
