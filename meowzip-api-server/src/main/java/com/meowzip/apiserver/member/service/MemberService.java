@@ -149,9 +149,12 @@ public class MemberService implements UserDetailsService {
         Member member = getMember(memberId);
         String profileImageUrl = member.getProfileImage();
 
-        validateNickname(nickname);
+        String newNickname = member.getNickname();
 
-        String newNickname = ObjectUtils.isEmpty(member.getNickname()) ? member.getNickname() : nickname;
+        if (!ObjectUtils.isEmpty(nickname)) {
+            validateNickname(nickname);
+            newNickname = nickname;
+        }
 
         if (profileImage != null) {
             Long imageGroupId = imageService.upload(List.of(profileImage), ImageDomain.MEMBER);
