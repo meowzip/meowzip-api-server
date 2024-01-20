@@ -18,14 +18,13 @@ public record SignUpRequestDTO(
         String password
 ) {
 
-    public Member toMember(String nickname, String profileImageUrl) {
+    public Member toMember(String nickname) {
         return Member.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
                 .loginType(LoginType.EMAIL)
                 .status(Member.Status.ACTIVE)
-                .profileImage(profileImageUrl)
                 .build();
     }
 }
