@@ -25,7 +25,7 @@ public interface MemberSwagger {
             @Parameter(name = "email", in = ParameterIn.QUERY) String email);
 
     @Operation(summary = "자체 이메일 회원가입")
-    CommonResponse<SignUpResponseDTO> signUp(SignUpRequestDTO requestDTO, MultipartFile profileImage);
+    CommonResponse<SignUpResponseDTO> signUp(SignUpRequestDTO requestDTO);
 
     @Operation(summary = "비밀번호 재설정 이메일 발송")
     CommonResponse<Void> sendResetPasswordEmail(@RequestBody SendPasswordResetEmailRequestDTO requestDTO);
