@@ -23,4 +23,8 @@ public enum LoginType {
             default -> EMAIL;
         };
     }
+
+    public boolean isOAuth() {
+        return this != EMAIL;
+    }
 }
