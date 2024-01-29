@@ -30,7 +30,7 @@ class MemberServiceTest {
         String email = "aaa@naver.com";
         String password = "asdf1234!";
 
-        SignUpRequestDTO requestDTO = new SignUpRequestDTO(email, password);
+//        SignUpRequestDTO requestDTO = new SignUpRequestDTO(email, password);
         // when
 //        memberService.signUp(requestDTO); // TODO: 추후 TDD 적용
 

@@ -55,6 +55,8 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public SignUpResponseDTO signUp(SignUpRequestDTO requestDTO) {
+        validateSignUpRequest(requestDTO);
+
         Optional<Member> byEmail = memberRepository.findByEmail(requestDTO.email());
 
         if (byEmail.isPresent()) {
@@ -69,6 +71,28 @@ public class MemberService implements UserDetailsService {
         return new SignUpResponseDTO(member.getNickname());
     }
 
+    private void validateSignUpRequest(SignUpRequestDTO requestDTO) {
+        if (requestDTO.isOAuth()) {
+            if (ObjectUtils.isEmpty(requestDTO.oauthId())) {
+                throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+            }
+
+            if (!ObjectUtils.isEmpty(requestDTO.password())) {
+                throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+            }
+        }
+
+        if (!requestDTO.isOAuth()) {
+            if (ObjectUtils.isEmpty(requestDTO.password())) {
+                throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+            }
+
+            if (!ObjectUtils.isEmpty(requestDTO.oauthId())) {
+                throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+            }
+        }
+    }
+
     @Transactional
     public void signUp(UserProfile userProfile, LoginType loginType) {
         memberRepository.save(userProfile.toMember(loginType, generateRandomNickname()));
@@ -77,7 +101,7 @@ public class MemberService implements UserDetailsService {
     public EmailExistsResponseDTO getEmailExists(String email) {
         Optional<Member> byEmail = memberRepository.findByEmail(email);
         boolean isEmailExists = byEmail.isPresent();
-        LoginType loginType = isEmailExists ?byEmail.get().getLoginType() : null;
+        LoginType loginType = isEmailExists ? byEmail.get().getLoginType() : null;
 
         return new EmailExistsResponseDTO(isEmailExists, loginType);
     }
@@ -128,6 +152,10 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public void sendResetPasswordEmail(SendPasswordResetEmailRequestDTO requestDTO) {
         Member member = getMemberOrThrow(requestDTO.email());
+
+        if (member.getLoginType() != LoginType.EMAIL) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+        }
 
         resetPasswordEmailService.sendPasswordResetEmail(member);
     }
