@@ -2,6 +2,8 @@ package com.meowzip.apiserver.diary.service;
 
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
+import com.meowzip.apiserver.global.exception.ClientException;
+import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
@@ -49,5 +51,21 @@ public class DiaryService {
 
             taggedCatService.register(taggedCats);
         }
+    }
+
+    @Transactional
+    public void delete(Member member, Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.DIARY_NOT_FOUND));
+
+        if (!isWriter(member, diary)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        diaryRepository.delete(diary);
+    }
+
+    private boolean isWriter(Member member, Diary diary) {
+        return member.getId().equals(diary.getMember().getId());
     }
 }
