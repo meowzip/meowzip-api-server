@@ -18,4 +18,8 @@ public class TaggedCatService {
     public void register(List<TaggedCat> taggedCats) {
         taggedCatRepository.saveAll(taggedCats);
     }
+
+    public List<TaggedCat> getTaggedCats(Long diaryId) {
+        return taggedCatRepository.findAllByDiaryId(diaryId);
+    }
 }
