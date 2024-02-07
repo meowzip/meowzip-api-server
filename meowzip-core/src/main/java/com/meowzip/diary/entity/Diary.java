@@ -39,4 +39,13 @@ public class Diary extends BaseTimeEntity {
     private String content;
     private boolean isGivenWater;
     private boolean isFeed;
+
+    public void modify(boolean givenWater, boolean feed, String content, List<TaggedCat> taggedCats, LocalDateTime localDateTime, ImageGroup imageGroup) {
+        this.isGivenWater = givenWater;
+        this.isFeed = feed;
+        this.content = content;
+        this.taggedCats = taggedCats;
+        this.caredAt = localDateTime;
+        this.imageGroup = imageGroup;
+    }
 }

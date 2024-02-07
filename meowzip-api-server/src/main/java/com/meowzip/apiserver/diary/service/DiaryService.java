@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.diary.service;
 
 import com.meowzip.apiserver.cat.service.CatService;
+import com.meowzip.apiserver.diary.dto.ModifyDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
@@ -17,6 +18,7 @@ import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -63,6 +65,34 @@ public class DiaryService {
         }
 
         diaryRepository.delete(diary);
+    }
+
+    @Transactional
+    public void modify(Member member, Long diaryId, List<MultipartFile> images, ModifyDiaryRequestDTO requestDTO) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.DIARY_NOT_FOUND));
+
+        if (!isWriter(member, diary)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        ImageGroup imageGroup = diary.getImageGroup();
+
+        if (images != null && !images.isEmpty()) {
+            Long imageGroupId = imageService.upload(images, ImageDomain.DIARY);
+            imageGroup = imageGroupService.getById(imageGroupId);
+        }
+
+        List<TaggedCat> taggedCats = taggedCatService.getTaggedCats(diaryId);
+
+        if (!ObjectUtils.isEmpty(requestDTO.catIds())) {
+            List<Cat> cats = catService.getByMemberAndIds(member, requestDTO.catIds());
+            taggedCats = cats.stream()
+                    .map(cat -> TaggedCat.create(cat, diary))
+                    .toList();
+        }
+
+        diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredAt(), imageGroup);
     }
 
     private boolean isWriter(Member member, Diary diary) {

@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.diary.controller;
 
+import com.meowzip.apiserver.diary.dto.ModifyDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.diary.service.DiaryService;
 import com.meowzip.apiserver.diary.swagger.DiarySwagger;
@@ -33,6 +34,18 @@ public class DiaryController implements DiarySwagger {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         diaryService.write(member, images, requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{diary-id}")
+    public CommonResponse<Void> modify(Principal principal,
+                                       @PathVariable("diary-id") Long diaryId,
+                                       @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                       @RequestPart(name = "diary") @Valid ModifyDiaryRequestDTO requestDTO) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        diaryService.modify(member, diaryId, images, requestDTO);
 
         return new CommonResponse<>(HttpStatus.OK);
     }
