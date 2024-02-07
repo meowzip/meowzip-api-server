@@ -1,7 +1,7 @@
 package com.meowzip.apiserver.diary.swagger;
 
-import com.meowzip.apiserver.diary.dto.ModifyDiaryRequestDTO;
-import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

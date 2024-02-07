@@ -1,7 +1,7 @@
 package com.meowzip.apiserver.diary.controller;
 
-import com.meowzip.apiserver.diary.dto.ModifyDiaryRequestDTO;
-import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.diary.service.DiaryService;
 import com.meowzip.apiserver.diary.swagger.DiarySwagger;
 import com.meowzip.apiserver.global.response.CommonResponse;

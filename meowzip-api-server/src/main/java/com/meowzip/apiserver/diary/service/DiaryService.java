@@ -1,8 +1,8 @@
 package com.meowzip.apiserver.diary.service;
 
 import com.meowzip.apiserver.cat.service.CatService;
-import com.meowzip.apiserver.diary.dto.ModifyDiaryRequestDTO;
-import com.meowzip.apiserver.diary.dto.WriteDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
