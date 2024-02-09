@@ -28,4 +28,17 @@ public interface CatSwagger {
     @Operation(summary = "고양이 목록 조회")
     CommonListResponse<CatResponseDTO> showCats(@Parameter(hidden = true) Principal principal,
                                                 @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
+
+    @Operation(summary = "고양이 수정")
+    CommonResponse<Void> modify(@Parameter(hidden = true) Principal principal,
+                               @Parameter(in = ParameterIn.PATH, description = "고양이 id") Long catId,
+                               @Parameter(name = "image") MultipartFile image,
+                               @Parameter(name = "cat", required = true,
+                                       schema = @Schema(implementation = RegisterCatRequestDTO.class),
+                                       description = "Try it out 누르시면 json format 나옵니다." +
+                                               "\n - 성별 values: F(여), M(남), UNDEFINED(모름)") RegisterCatRequestDTO requestDTO);
+
+    @Operation(summary = "고양이 삭제")
+    CommonResponse<Void> delete(@Parameter(hidden = true) Principal principal,
+                               @Parameter(in = ParameterIn.PATH, description = "고양이 id") Long catId);
 }

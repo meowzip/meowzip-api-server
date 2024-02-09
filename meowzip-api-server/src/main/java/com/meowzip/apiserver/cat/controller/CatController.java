@@ -48,4 +48,26 @@ public class CatController implements CatSwagger {
 
         return new CommonListResponse<CatResponseDTO>(HttpStatus.OK).add(cats);
     }
+
+    @PatchMapping(value = "/{cat-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<Void> modify(Principal principal,
+                                       @PathVariable("cat-id") Long catId,
+                                       @RequestPart(name = "image", required = false) MultipartFile image,
+                                       @RequestPart(name = "cat") RegisterCatRequestDTO requestDTO) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        catService.modify(member, catId, image, requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{cat-id}")
+    public CommonResponse<Void> delete(Principal principal,
+                                       @PathVariable("cat-id") Long catId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        catService.delete(member, catId);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }

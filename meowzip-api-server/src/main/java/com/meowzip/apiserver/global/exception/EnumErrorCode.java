@@ -26,6 +26,8 @@ public enum EnumErrorCode {
     IMAGE_NOT_FOUND(200002, "이미지를 찾을 수 없습니다."),
 
     DIARY_NOT_FOUND(300001, "일지를 찾을 수 없습니다."),
+
+    CAT_NOT_FOUND(400001, "고양이를 찾을 수 없습니다."),
     ;
 
     private final int result;
