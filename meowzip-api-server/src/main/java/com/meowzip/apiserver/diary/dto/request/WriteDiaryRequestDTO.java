@@ -1,4 +1,4 @@
-package com.meowzip.apiserver.diary.dto;
+package com.meowzip.apiserver.diary.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.meowzip.diary.entity.Diary;
@@ -9,7 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Schema
@@ -27,14 +28,19 @@ public record WriteDiaryRequestDTO(
         List<Long> catIds,
 
         @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-        LocalDateTime caredAt
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate caredDate,
+
+        @NotNull
+        @JsonFormat(pattern = "HH:mm")
+        LocalTime caredTime
 ) {
 
     public Diary toDiary(Member member, ImageGroup imageGroup) {
         return Diary.builder()
                 .member(member)
-                .caredAt(caredAt)
+                .caredDate(caredDate)
+                .caredTime(caredTime)
                 .imageGroup(imageGroup)
                 .content(content)
                 .isGivenWater(isGivenWater)
