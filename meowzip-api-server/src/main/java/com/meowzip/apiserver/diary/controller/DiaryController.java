@@ -75,7 +75,7 @@ public class DiaryController implements DiarySwagger {
         return new CommonResponse<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/{diary-id}")
+    @PatchMapping(value = "/{diary-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<Void> modify(Principal principal,
                                        @PathVariable("diary-id") Long diaryId,
                                        @RequestPart(name = "images", required = false) List<MultipartFile> images,
