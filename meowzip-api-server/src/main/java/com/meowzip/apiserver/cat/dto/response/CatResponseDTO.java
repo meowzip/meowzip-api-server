@@ -19,11 +19,23 @@ public record CatResponseDTO(
         @Schema(description = "공동냥육 여부")
         boolean isCoParented,
 
+        @Schema(description = "공동냥육 참여하는 사람 수", example = "2")
+        Integer coParentedCount,
+
+        @Schema(description = "만난 지 nn일")
+        int dDay,
+
         @Schema(description = "고양이 성별")
         Sex sex
 ) {
 
     public CatResponseDTO(Cat cat) {
-        this(cat.getId(), cat.getImageUrl(), cat.getName(), cat.isCoParented(), cat.getSex());
+        this(cat.getId(),
+                cat.getImageUrl(),
+                cat.getName(),
+                cat.isCoParented(),
+                cat.isCoParented() ? cat.getCoParents().size() : null,
+                cat.getDDay(),
+                cat.getSex());
     }
 }

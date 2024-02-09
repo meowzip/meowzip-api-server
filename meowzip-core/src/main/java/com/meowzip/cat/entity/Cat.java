@@ -41,8 +41,11 @@ public class Cat extends BaseTimeEntity {
     @OneToMany(mappedBy = "cat")
     private List<CoParent> coParents;
 
-
     public boolean isCoParented() {
         return !coParents.isEmpty();
+    }
+
+    public int getDDay() {
+        return (int) (LocalDate.now().toEpochDay() - metAt.toEpochDay());
     }
 }

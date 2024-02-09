@@ -34,8 +34,8 @@ public record DiaryResponseDTO(
         @Schema(description = "작성자 닉네임", example = "냥냥이")
         String memberNickname,
 
-        @Schema(description = "태그된 고양이 목록", implementation = CatResponseDTO.class)
-        List<CatResponseDTO> taggedCats
+        @Schema(description = "태그된 고양이 목록", implementation = TaggedCatResponseDTO.class)
+        List<TaggedCatResponseDTO> taggedCats
 ) {
 
     public DiaryResponseDTO(Diary diary, List<String> images) {
@@ -49,7 +49,7 @@ public record DiaryResponseDTO(
                 diary.getMember().getNickname(),
                 diary.getTaggedCats().isEmpty() ? null :
                         diary.getTaggedCats().stream()
-                                .map(taggedCat -> new CatResponseDTO(taggedCat.getCat()))
+                                .map(taggedCat -> new TaggedCatResponseDTO(taggedCat.getCat()))
                                 .toList());
     }
 }
