@@ -41,4 +41,7 @@ public interface MemberSwagger {
     CommonResponse<MemberResponseDTO> modify(@Parameter(hidden = true) Principal principal,
                                              String nickname,
                                              MultipartFile profileImage);
+
+    @Operation(summary = "회원 삭제, 추후 탈퇴로 변경 예정")
+    CommonResponse<Void> withdraw(@Parameter(hidden = true) Principal principal);
 }

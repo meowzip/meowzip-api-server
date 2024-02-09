@@ -54,4 +54,9 @@ public class Member extends BaseTimeEntity {
         this.nickname = nickname;
         this.profileImage = profileImage;
     }
+
+    public void withdraw() {
+        this.status = Status.WITHDRAWAL;
+        this.withdrewAt = LocalDateTime.now();
+    }
 }
