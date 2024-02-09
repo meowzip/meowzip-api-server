@@ -13,17 +13,19 @@ public record DiaryResponseDTO(
         boolean isGivenWater,
         boolean isFeed,
         String content,
+        List<String> images,
         String caredTime,
         Long memberId,
         String memberNickname,
         List<CatResponseDTO> taggedCats
 ) {
 
-    public DiaryResponseDTO(Diary diary) {
+    public DiaryResponseDTO(Diary diary, List<String> images) {
         this(diary.getId(),
                 diary.isGivenWater(),
                 diary.isFeed(),
                 diary.getContent(),
+                images,
                 DateTimeUtil.toAmPm(diary.getCaredTime()),
                 diary.getMember().getId(),
                 diary.getMember().getNickname(),

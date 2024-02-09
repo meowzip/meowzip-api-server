@@ -46,7 +46,7 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDateAndCaredTimeBetween(member, date, LocalTime.MIN, LocalTime.MAX, pageRequest);
 
         return diaries.stream()
-                .map(DiaryResponseDTO::new)
+                .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
                 .toList();
     }
 
@@ -58,7 +58,16 @@ public class DiaryService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
-        return new DiaryResponseDTO(diary);
+        return new DiaryResponseDTO(diary, getImageUrls(diary));
+    }
+
+    private List<String> getImageUrls(Diary diary) {
+        List<String> images = null;
+        if (diary.getImageGroup() != null) {
+            images = imageService.getImageUrl(diary.getImageGroup().getId());
+        }
+
+        return images;
     }
 
     public List<MonthlyDiaryResponseDTO> getDiariesByMonth(Member member, int year, int month) {
