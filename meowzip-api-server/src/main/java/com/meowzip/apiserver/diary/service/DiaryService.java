@@ -3,6 +3,7 @@ package com.meowzip.apiserver.diary.service;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
+import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
@@ -17,10 +18,14 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,6 +37,14 @@ public class DiaryService {
     private final ImageGroupService imageGroupService;
     private final CatService catService;
     private final TaggedCatService taggedCatService;
+
+    public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date) {
+        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredAtBetween(member, LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX), pageRequest);
+
+        return diaries.stream()
+                .map(DiaryResponseDTO::new)
+                .toList();
+    }
 
     @Transactional
     public void write(Member member, List<MultipartFile> images, WriteDiaryRequestDTO requestDTO) {
