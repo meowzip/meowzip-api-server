@@ -46,6 +46,15 @@ public class Cat extends BaseTimeEntity {
     }
 
     public int getDDay() {
-        return (int) (LocalDate.now().toEpochDay() - metAt.toEpochDay());
+        return (int) (LocalDate.now().toEpochDay() - metAt.toEpochDay() + 1);
+    }
+
+    public void modify(String name, String imageUrl, Sex sex, boolean isNeutered, String memo, LocalDate metAt) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.sex = sex;
+        this.isNeutered = isNeutered;
+        this.memo = memo;
+        this.metAt = metAt;
     }
 }
