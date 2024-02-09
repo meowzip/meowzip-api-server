@@ -224,4 +224,11 @@ public class MemberService implements UserDetailsService {
             throw new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Transactional
+    public void withdraw(Long memberId) {
+//        Member member = getMember(memberId);
+//        member.withdraw();
+        memberRepository.deleteById(memberId);
+    }
 }
