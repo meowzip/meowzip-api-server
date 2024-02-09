@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    List<Diary> findAllByMemberAndCaredDateAndCaredTimeBetween(Member member, LocalDate caredDate, LocalTime start, LocalTime end, Pageable pageable);
+    List<Diary> findAllByMemberAndCaredDate(Member member, LocalDate caredDate, Pageable pageable);
 
     @Query(value = "select " +
             "d.cared_date as date, count(d.id) as diaryCount from diary d " +

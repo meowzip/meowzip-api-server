@@ -20,6 +20,7 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DiaryService {
@@ -43,7 +45,7 @@ public class DiaryService {
     private final TaggedCatService taggedCatService;
 
     public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date) {
-        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDateAndCaredTimeBetween(member, date, LocalTime.MIN, LocalTime.MAX, pageRequest);
+        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDate(member, date, pageRequest);
 
         return diaries.stream()
                 .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
