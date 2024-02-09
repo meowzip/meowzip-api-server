@@ -24,7 +24,7 @@ public record DiaryResponseDTO(
                 diary.isGivenWater(),
                 diary.isFeed(),
                 diary.getContent(),
-                DateTimeUtil.toAmPm(diary.getCaredAt()),
+                DateTimeUtil.toAmPm(diary.getCaredTime()),
                 diary.getMember().getId(),
                 diary.getMember().getNickname(),
                 diary.getTaggedCats().isEmpty() ? null :

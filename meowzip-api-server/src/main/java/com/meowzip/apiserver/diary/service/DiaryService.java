@@ -4,6 +4,7 @@ import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
+import com.meowzip.apiserver.diary.dto.response.MonthlyDiaryResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
@@ -11,6 +12,7 @@ import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.diary.entity.Diary;
+import com.meowzip.diary.entity.MonthlyDiaryInterface;
 import com.meowzip.diary.repository.DiaryRepository;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.image.entity.ImageGroup;
@@ -24,9 +26,11 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -39,11 +43,42 @@ public class DiaryService {
     private final TaggedCatService taggedCatService;
 
     public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date) {
-        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredAtBetween(member, LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX), pageRequest);
+        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDateAndCaredTimeBetween(member, date, LocalTime.MIN, LocalTime.MAX, pageRequest);
 
         return diaries.stream()
                 .map(DiaryResponseDTO::new)
                 .toList();
+    }
+
+    public DiaryResponseDTO getDiary(Member member, Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.DIARY_NOT_FOUND));
+
+        if (!isWriter(member, diary)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        return new DiaryResponseDTO(diary);
+    }
+
+    public List<MonthlyDiaryResponseDTO> getDiariesByMonth(Member member, int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.plusMonths(1);
+
+        Map<LocalDate, MonthlyDiaryResponseDTO> responseMap = new HashMap<>();
+        LocalDate current = start;
+        while (current.isBefore(end)) {
+            responseMap.put(current, new MonthlyDiaryResponseDTO(current, false));
+            current = current.plusDays(1);
+        }
+
+        List<MonthlyDiaryInterface> monthlyDiaries = diaryRepository.findAllByCaredDateBetween(member.getId(), start, end);
+
+        monthlyDiaries.forEach(diary -> {
+            responseMap.put(diary.getDate(), new MonthlyDiaryResponseDTO(diary.getDate(), diary.getDiaryCount() != 0));
+        });
+
+        return new ArrayList<>(responseMap.values().stream().sorted().toList());
     }
 
     @Transactional
@@ -105,7 +140,7 @@ public class DiaryService {
                     .toList();
         }
 
-        diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredAt(), imageGroup);
+        diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredDate(), requestDTO.caredTime(), imageGroup);
     }
 
     private boolean isWriter(Member member, Diary diary) {

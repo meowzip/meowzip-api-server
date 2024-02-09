@@ -7,7 +7,8 @@ import com.meowzip.tag.entity.TaggedCat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,9 @@ public class Diary extends BaseTimeEntity {
     @OneToMany(mappedBy = "diary")
     private List<TaggedCat> taggedCats = new ArrayList<>();
 
-    private LocalDateTime caredAt;
+    private LocalDate caredDate;
+
+    private LocalTime caredTime;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_group_id")
@@ -40,12 +43,13 @@ public class Diary extends BaseTimeEntity {
     private boolean isGivenWater;
     private boolean isFeed;
 
-    public void modify(boolean givenWater, boolean feed, String content, List<TaggedCat> taggedCats, LocalDateTime localDateTime, ImageGroup imageGroup) {
+    public void modify(boolean givenWater, boolean feed, String content, List<TaggedCat> taggedCats, LocalDate caredDate, LocalTime caredTime, ImageGroup imageGroup) {
         this.isGivenWater = givenWater;
         this.isFeed = feed;
         this.content = content;
         this.taggedCats = taggedCats;
-        this.caredAt = localDateTime;
+        this.caredDate = caredDate;
+        this.caredTime = caredTime;
         this.imageGroup = imageGroup;
     }
 }

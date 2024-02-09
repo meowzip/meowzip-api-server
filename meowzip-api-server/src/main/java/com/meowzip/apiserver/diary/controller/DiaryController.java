@@ -3,6 +3,7 @@ package com.meowzip.apiserver.diary.controller;
 import com.meowzip.apiserver.diary.dto.request.ModifyDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.request.WriteDiaryRequestDTO;
 import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
+import com.meowzip.apiserver.diary.dto.response.MonthlyDiaryResponseDTO;
 import com.meowzip.apiserver.diary.service.DiaryService;
 import com.meowzip.apiserver.diary.swagger.DiarySwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -41,6 +42,27 @@ public class DiaryController implements DiarySwagger {
 
         return new CommonListResponse<DiaryResponseDTO>(HttpStatus.OK).add(diaries);
     }
+
+    @GetMapping("/{diary-id}")
+    public CommonResponse<DiaryResponseDTO> showDiary(Principal principal, @PathVariable("diary-id") Long diaryId) {
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        DiaryResponseDTO diary = diaryService.getDiary(member, diaryId);
+
+        return new CommonResponse<>(HttpStatus.OK, diary);
+    }
+
+    @GetMapping("/monthly")
+    public CommonListResponse<MonthlyDiaryResponseDTO> showDiariesByMonth(Principal principal,
+                                                                  @RequestParam(name = "year") int year,
+                                                                  @RequestParam(name = "month") int month) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        List<MonthlyDiaryResponseDTO> diaries = diaryService.getDiariesByMonth(member, year, month);
+
+        return new CommonListResponse<MonthlyDiaryResponseDTO>(HttpStatus.OK).add(diaries);
+    }
+
+
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<Void> write(Principal principal,
