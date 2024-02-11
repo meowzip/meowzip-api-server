@@ -78,6 +78,7 @@ public class SecurityConfig {
                             .requestMatchers("/h2-console/**").permitAll()
                             .requestMatchers("/favicon.co", "/favicon.ico").permitAll()
                             .requestMatchers("/**/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                            .requestMatchers("/health-check").permitAll()
                             .requestMatchers("/swagger-ui.html").permitAll()
                             .requestMatchers("/api/public/**").permitAll()
                             .anyRequest().authenticated();
