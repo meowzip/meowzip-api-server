@@ -57,6 +57,7 @@ project(':meowzip-api-server') {
         implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
 
         implementation 'com.mysql:mysql-connector-j'
         implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
