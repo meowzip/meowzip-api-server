@@ -26,7 +26,10 @@ public record CatResponseDTO(
         int dDay,
 
         @Schema(description = "고양이 성별")
-        Sex sex
+        Sex sex,
+
+        @Schema(description = "중성화 여부")
+        boolean isNeutered
 ) {
 
     public CatResponseDTO(Cat cat) {
@@ -36,6 +39,8 @@ public record CatResponseDTO(
                 cat.isCoParented(),
                 cat.isCoParented() ? cat.getCoParents().size() : null,
                 cat.getDDay(),
-                cat.getSex());
+                cat.getSex(),
+                cat.isNeutered()
+        );
     }
 }
