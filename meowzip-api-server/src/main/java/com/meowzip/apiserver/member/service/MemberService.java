@@ -234,8 +234,8 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteById(memberId);
     }
 
-    public List<CoParentResponseDTO> getMembersForCoParent(String keyword, Pageable pageable) {
-        return memberRepository.findAllByNicknameContaining(keyword, pageable).stream()
+    public List<CoParentResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
+        return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable).stream()
                 .map(CoParentResponseDTO::new)
                 .toList();
     }

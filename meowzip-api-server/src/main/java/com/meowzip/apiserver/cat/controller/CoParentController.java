@@ -31,9 +31,9 @@ public class CoParentController implements CoParentSwagger {
                                                                           @RequestParam(required = false) String keyword,
                                                                           PageRequest pageRequest) {
 
-        memberService.getMember(MemberUtil.getMemberId(principal));
+        Member me = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        List<CoParentResponseDTO> members = memberService.getMembersForCoParent(keyword, pageRequest.of());
+        List<CoParentResponseDTO> members = memberService.getMembersForCoParent(keyword, me, pageRequest.of());
 
         return new CommonListResponse<CoParentResponseDTO>(HttpStatus.OK).add(members);
     }
