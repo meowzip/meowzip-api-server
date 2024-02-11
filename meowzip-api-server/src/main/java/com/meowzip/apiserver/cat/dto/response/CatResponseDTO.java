@@ -4,6 +4,8 @@ import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.entity.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+
 @Schema
 public record CatResponseDTO(
 
@@ -37,7 +39,7 @@ public record CatResponseDTO(
                 cat.getImageUrl(),
                 cat.getName(),
                 cat.isCoParented(),
-                cat.isCoParented() ? cat.getCoParents().size() : null,
+                cat.isCoParented() ? cat.getCoParents().size() : 0,
                 cat.getDDay(),
                 cat.getSex(),
                 cat.isNeutered()

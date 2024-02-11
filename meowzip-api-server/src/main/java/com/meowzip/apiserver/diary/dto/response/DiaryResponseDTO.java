@@ -47,9 +47,8 @@ public record DiaryResponseDTO(
                 DateTimeUtil.toAmPm(diary.getCaredTime()),
                 diary.getMember().getId(),
                 diary.getMember().getNickname(),
-                diary.getTaggedCats().isEmpty() ? null :
-                        diary.getTaggedCats().stream()
-                                .map(taggedCat -> new TaggedCatResponseDTO(taggedCat.getCat()))
-                                .toList());
+                diary.getTaggedCats().stream()
+                        .map(taggedCat -> new TaggedCatResponseDTO(taggedCat.getCat()))
+                        .toList());
     }
 }

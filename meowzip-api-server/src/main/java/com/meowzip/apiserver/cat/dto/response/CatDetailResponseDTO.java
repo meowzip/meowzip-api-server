@@ -46,10 +46,10 @@ public record CatDetailResponseDTO(
                 cat.getDDay(),
                 cat.getSex(),
                 cat.isNeutered(),
-                cat.isCoParented() ? cat.getCoParents().stream()
+                cat.getCoParents().stream()
                         .filter(CoParent::isApproval)
                         .map(coParent -> new CoParentResponseDTO(coParent.getMember()))
-                        .toList() : null,
+                        .toList(),
                 diaries
         );
     }
