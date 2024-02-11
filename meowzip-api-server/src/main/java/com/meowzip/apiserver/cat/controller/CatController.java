@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.controller;
 
 import com.meowzip.apiserver.cat.dto.request.RegisterCatRequestDTO;
+import com.meowzip.apiserver.cat.dto.response.CatDetailResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CatResponseDTO;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.cat.swagger.CatSwagger;
@@ -46,6 +47,16 @@ public class CatController implements CatSwagger {
         List<CatResponseDTO> cats = catService.getCats(member, pageRequest.of());
 
         return new CommonListResponse<CatResponseDTO>(HttpStatus.OK).add(cats);
+    }
+
+    @GetMapping("/{cat-id}")
+    public CommonResponse<CatDetailResponseDTO> showCat(Principal principal,
+                                                        @PathVariable("cat-id") Long catId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        CatDetailResponseDTO cat = catService.getCat(member, catId);
+
+        return new CommonResponse<>(HttpStatus.OK, cat);
     }
 
     @PatchMapping(value = "/{cat-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

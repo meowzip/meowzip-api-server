@@ -45,6 +45,10 @@ public class Cat extends BaseTimeEntity {
         return !coParents.isEmpty();
     }
 
+    public boolean isCoParented(Member member) {
+        return coParents.stream().anyMatch(coParent -> coParent.getMember().equals(member));
+    }
+
     public int getDDay() {
         return (int) (LocalDate.now().toEpochDay() - metAt.toEpochDay() + 1);
     }
