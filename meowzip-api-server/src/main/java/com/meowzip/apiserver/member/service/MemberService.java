@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.member.service;
 
+import com.meowzip.apiserver.cat.dto.response.CoParentResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -230,5 +232,11 @@ public class MemberService implements UserDetailsService {
 //        Member member = getMember(memberId);
 //        member.withdraw();
         memberRepository.deleteById(memberId);
+    }
+
+    public List<CoParentResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
+        return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable).stream()
+                .map(CoParentResponseDTO::new)
+                .toList();
     }
 }

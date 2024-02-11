@@ -1,5 +1,7 @@
 package com.meowzip.apiserver.tag.service;
 
+import com.meowzip.cat.entity.Cat;
+import com.meowzip.diary.entity.Diary;
 import com.meowzip.tag.entity.TaggedCat;
 import com.meowzip.tag.repository.TaggedCatRepository;
 import jakarta.transaction.Transactional;
@@ -19,7 +21,11 @@ public class TaggedCatService {
         taggedCatRepository.saveAll(taggedCats);
     }
 
-    public List<TaggedCat> getTaggedCats(Long diaryId) {
-        return taggedCatRepository.findAllByDiaryId(diaryId);
+    public List<TaggedCat> getTaggedCatsByCat(Cat cat) {
+        return taggedCatRepository.findAllByCat(cat);
+    }
+
+    public List<TaggedCat> getTaggedCatsByDiary(Diary diary) {
+        return taggedCatRepository.findAllByDiary(diary);
     }
 }

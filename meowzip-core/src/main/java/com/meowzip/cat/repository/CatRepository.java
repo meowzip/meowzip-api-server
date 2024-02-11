@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CatRepository extends JpaRepository<Cat, Long> {
@@ -17,4 +18,6 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
 
     @Query("select c from Cat c where c.member = :member and c.id in :ids")
     List<Cat> findByMemberAndCatIdIn(@Param("member") Member member, @Param("ids") List<Long> ids);
+
+    Optional<Cat> findByMemberAndId(Member member, Long id);
 }

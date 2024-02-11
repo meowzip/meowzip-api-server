@@ -1,11 +1,15 @@
 package com.meowzip.apiserver.cat.dto.response;
 
+import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.entity.Sex;
+import com.meowzip.coparent.entity.CoParent;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+
 @Schema
-public record CatResponseDTO(
+public record CatDetailResponseDTO(
 
         @Schema(description = "고양이 고유키")
         Long id,
@@ -19,9 +23,6 @@ public record CatResponseDTO(
         @Schema(description = "공동냥육 여부")
         boolean isCoParented,
 
-        @Schema(description = "공동냥육 참여하는 사람 수", example = "2")
-        Integer coParentedCount,
-
         @Schema(description = "만난 지 nn일")
         int dDay,
 
@@ -29,18 +30,27 @@ public record CatResponseDTO(
         Sex sex,
 
         @Schema(description = "중성화 여부")
-        boolean isNeutered
-) {
+        boolean isNeutered,
 
-    public CatResponseDTO(Cat cat) {
+        @Schema(description = "공동냥육 참여자 목록", implementation = CoParentResponseDTO.class)
+        List<CoParentResponseDTO> coParents,
+
+        @Schema(description = "다이어리 목록", implementation = DiaryResponseDTO.class)
+        List<DiaryResponseDTO> diaries
+) {
+    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries) {
         this(cat.getId(),
                 cat.getImageUrl(),
                 cat.getName(),
                 cat.isCoParented(),
-                cat.isCoParented() ? cat.getCoParents().size() : null,
                 cat.getDDay(),
                 cat.getSex(),
-                cat.isNeutered()
+                cat.isNeutered(),
+                cat.isCoParented() ? cat.getCoParents().stream()
+                        .filter(CoParent::isApproval)
+                        .map(coParent -> new CoParentResponseDTO(coParent.getMember()))
+                        .toList() : null,
+                diaries
         );
     }
 }

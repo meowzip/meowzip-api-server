@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.controller;
 
 import com.meowzip.apiserver.cat.dto.request.RegisterCatRequestDTO;
+import com.meowzip.apiserver.cat.dto.response.CatDetailResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CatResponseDTO;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.cat.swagger.CatSwagger;
@@ -11,7 +12,6 @@ import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +47,37 @@ public class CatController implements CatSwagger {
         List<CatResponseDTO> cats = catService.getCats(member, pageRequest.of());
 
         return new CommonListResponse<CatResponseDTO>(HttpStatus.OK).add(cats);
+    }
+
+    @GetMapping("/{cat-id}")
+    public CommonResponse<CatDetailResponseDTO> showCat(Principal principal,
+                                                        @PathVariable("cat-id") Long catId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        CatDetailResponseDTO cat = catService.getCatDetails(member, catId);
+
+        return new CommonResponse<>(HttpStatus.OK, cat);
+    }
+
+    @PatchMapping(value = "/{cat-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<Void> modify(Principal principal,
+                                       @PathVariable("cat-id") Long catId,
+                                       @RequestPart(name = "image", required = false) MultipartFile image,
+                                       @RequestPart(name = "cat") RegisterCatRequestDTO requestDTO) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        catService.modify(member, catId, image, requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{cat-id}")
+    public CommonResponse<Void> delete(Principal principal,
+                                       @PathVariable("cat-id") Long catId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        catService.delete(member, catId);
+
+        return new CommonResponse<>(HttpStatus.OK);
     }
 }
