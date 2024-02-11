@@ -8,7 +8,6 @@ import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.repository.CatRepository;
 import com.meowzip.image.entity.ImageDomain;
-import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.member.entity.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

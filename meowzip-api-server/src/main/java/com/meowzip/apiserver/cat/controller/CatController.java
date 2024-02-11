@@ -11,7 +11,6 @@ import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
