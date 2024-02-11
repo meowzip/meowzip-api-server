@@ -33,4 +33,8 @@ public class CoParent extends BaseTimeEntity {
         STANDBY,
         APPROVAL;
     }
+
+    public boolean isApproval() {
+        return status == Status.APPROVAL;
+    }
 }

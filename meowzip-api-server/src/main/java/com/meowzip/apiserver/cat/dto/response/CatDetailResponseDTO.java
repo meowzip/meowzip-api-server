@@ -3,6 +3,7 @@ package com.meowzip.apiserver.cat.dto.response;
 import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.entity.Sex;
+import com.meowzip.coparent.entity.CoParent;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public record CatDetailResponseDTO(
                 cat.getSex(),
                 cat.isNeutered(),
                 cat.isCoParented() ? cat.getCoParents().stream()
+                        .filter(CoParent::isApproval)
                         .map(coParent -> new CoParentResponseDTO(coParent.getMember()))
                         .toList() : null,
                 diaries
