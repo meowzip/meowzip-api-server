@@ -20,6 +20,10 @@ public class DiscordService {
     private final DiscordClient discordClient;
 
     public void send(HttpServletRequest req, HttpStatus status, String content) {
+        if (req.getRequestURI().equals("/health-check")) {
+            return;
+        }
+
         String errorMessage = """
                 - 일시: {{DATE}}
                 - API: {{URI}}
