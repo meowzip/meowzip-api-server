@@ -54,7 +54,7 @@ public class CatController implements CatSwagger {
                                                         @PathVariable("cat-id") Long catId) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        CatDetailResponseDTO cat = catService.getCat(member, catId);
+        CatDetailResponseDTO cat = catService.getCatDetails(member, catId);
 
         return new CommonResponse<>(HttpStatus.OK, cat);
     }

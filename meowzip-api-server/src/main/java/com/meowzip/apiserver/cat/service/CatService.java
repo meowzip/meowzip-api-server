@@ -52,7 +52,7 @@ public class CatService {
                 .toList();
     }
 
-    public CatDetailResponseDTO getCat(Member member, Long catId) {
+    public CatDetailResponseDTO getCatDetails(Member member, Long catId) {
         Cat cat = catRepository.findById(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
 
