@@ -5,7 +5,6 @@ import com.meowzip.apiserver.global.exception.BaseException;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.jwt.service.JwtService;
-import com.meowzip.apiserver.member.service.AuthConst;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,11 +40,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().contains("/health-check")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         log.info("request uri: {}", request.getRequestURI());
 
         if (!isTokenRequired(request.getRequestURI())) {
