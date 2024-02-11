@@ -28,7 +28,7 @@ public class CoParentController implements CoParentSwagger {
 
     @GetMapping("/members")
     public CommonListResponse<CoParentResponseDTO> showMembersForCoParent(Principal principal,
-                                                                          @RequestParam(required = false) String keyword,
+                                                                          @RequestParam String keyword,
                                                                           PageRequest pageRequest) {
 
         Member me = memberService.getMember(MemberUtil.getMemberId(principal));

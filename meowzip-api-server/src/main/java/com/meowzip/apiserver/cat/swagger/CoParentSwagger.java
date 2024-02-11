@@ -18,7 +18,7 @@ public interface CoParentSwagger {
 
     @Operation(summary = "공동냥육 신청할 회원 조회")
     CommonListResponse<CoParentResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
-                                                                   @Parameter(name = "keyword", description = "검색어") String keyword,
+                                                                   @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
                                                                    @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 
     @Operation(summary = "공동냥육 신청")
