@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meowzip.apiserver.global.discord.service.DiscordService;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.response.ErrorResponse;
@@ -20,10 +21,12 @@ import java.io.IOException;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
+    private final DiscordService discordService;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ClientException e = new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
+        discordService.send(request, e.getHttpStatus(), e.getMessage());
 
         response.setStatus(e.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
