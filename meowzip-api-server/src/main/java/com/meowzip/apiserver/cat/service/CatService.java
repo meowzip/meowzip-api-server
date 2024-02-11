@@ -68,6 +68,11 @@ public class CatService {
         return new CatDetailResponseDTO(cat, diaries);
     }
 
+    public Cat getCat(Member member, Long catId) {
+        return catRepository.findByMemberAndId(member, catId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
+    }
+
     public List<Cat> getByMemberAndIds(Member member, List<Long> catIds) {
         List<Cat> cats = catRepository.findByMemberAndCatIdIn(member, catIds);
 

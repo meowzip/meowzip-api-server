@@ -4,14 +4,12 @@ import com.meowzip.cat.entity.Cat;
 import com.meowzip.entity.BaseTimeEntity;
 import com.meowzip.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CoParent extends BaseTimeEntity {
@@ -31,7 +29,7 @@ public class CoParent extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    enum Status {
+    public enum Status {
         STANDBY,
         APPROVAL;
     }
