@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.global.filter;
 
+import com.meowzip.apiserver.global.discord.service.DiscordService;
 import com.meowzip.apiserver.global.exception.BaseException;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
@@ -26,6 +27,7 @@ import static com.meowzip.apiserver.member.service.AuthConst.ACCESS_TOKEN_HEADER
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final DiscordService discordService;
 
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -57,6 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
             log.info("set authentication complete");
         } catch (BaseException e) {
             log.error("authentication failed: {}", e.getMessage());
+            discordService.send(request, e.getHttpStatus(), e.getMessage());
         }
 
         filterChain.doFilter(request, response);
