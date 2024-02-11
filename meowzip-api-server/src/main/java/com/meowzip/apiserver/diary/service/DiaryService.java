@@ -84,9 +84,7 @@ public class DiaryService {
 
         List<MonthlyDiaryInterface> monthlyDiaries = diaryRepository.findAllByCaredDateBetween(member.getId(), start, end);
 
-        monthlyDiaries.forEach(diary -> {
-            responseMap.put(diary.getDate(), new MonthlyDiaryResponseDTO(diary.getDate(), diary.getDiaryCount() != 0));
-        });
+        monthlyDiaries.forEach(diary -> responseMap.put(diary.getDate(), new MonthlyDiaryResponseDTO(diary.getDate(), diary.getDiaryCount() != 0)));
 
         return new ArrayList<>(responseMap.values().stream().sorted().toList());
     }
@@ -141,7 +139,7 @@ public class DiaryService {
             imageGroup = imageGroupService.getById(imageGroupId);
         }
 
-        List<TaggedCat> taggedCats = taggedCatService.getTaggedCats(diaryId);
+        List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
 
         if (!ObjectUtils.isEmpty(requestDTO.catIds())) {
             List<Cat> cats = catService.getByMemberAndIds(member, requestDTO.catIds());
