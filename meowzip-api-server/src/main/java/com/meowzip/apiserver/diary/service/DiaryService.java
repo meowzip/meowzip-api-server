@@ -63,7 +63,7 @@ public class DiaryService {
     }
 
     private List<String> getImageUrls(Diary diary) {
-        List<String> images = null;
+        List<String> images = new ArrayList<>();
         if (diary.getImageGroup() != null) {
             images = imageService.getImageUrl(diary.getImageGroup().getId());
         }
