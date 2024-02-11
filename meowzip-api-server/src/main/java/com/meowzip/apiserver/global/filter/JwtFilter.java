@@ -41,6 +41,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().contains("/health-check")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         log.info("request uri: {}", request.getRequestURI());
 
         if (!isTokenRequired(request.getRequestURI())) {
