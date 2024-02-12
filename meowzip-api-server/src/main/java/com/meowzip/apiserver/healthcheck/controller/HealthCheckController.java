@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.healthcheck.controller;
 
 import com.meowzip.apiserver.healthcheck.logger.HealthCheckLogger;
+import com.meowzip.apiserver.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +19,13 @@ public class HealthCheckController {
 
     private final DataSource dataSource;
     private final HealthCheckLogger healthCheckLogger;
+    private final MemberService memberService;
 
     @GetMapping("/health-check")
     public void healthCheck() {
         try {
-            dataSource.getConnection();
-        } catch (SQLException e) {
+            memberService.countMembers();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
