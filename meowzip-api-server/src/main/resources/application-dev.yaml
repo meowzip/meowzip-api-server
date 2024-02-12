@@ -99,6 +99,8 @@ jwt:
 logging:
   level:
     org.hibernate.type.descriptor.sql: trace
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
   config: classpath:logback/logback-${spring.profiles.active}.xml
 
 reset-password:
