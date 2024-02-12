@@ -239,4 +239,8 @@ public class MemberService implements UserDetailsService {
                 .map(CoParentResponseDTO::new)
                 .toList();
     }
+
+    public void countMembers() {
+        memberRepository.count();
+    }
 }

@@ -4,6 +4,8 @@ spring:
     url: ENC(A1t7AdOABATK9+kChWjQPNWHUI7+ZcSIrfiU55wVRIi1T398DSZGfwJNfQ5TTT4jKvP3tWUxyvHfwutqKR8GqXdoXQp/VRH1CCWdou9XX4aL2M05NrU9pDkhKwD02bF1)
     username: ENC(3R3peZ1WUtJoyusdnopaHQ==)
     password: ENC(pUlV/EthFNNw5AL6W/B3DuJZ7Y4YM765HgWKDJlbwpw=)
+    hikari:
+      leak-detection-threshold: 2000
   jpa:
     show-sql: true
     hibernate:
@@ -98,7 +100,7 @@ jwt:
 
 logging:
   level:
-    org.hibernate.type.descriptor.sql: trace
+    org.hibernate.type.descriptor.sql: TRACE
     com.zaxxer.hikari.HikariConfig: DEBUG
     com.zaxxer.hikari: TRACE
   config: classpath:logback/logback-${spring.profiles.active}.xml
