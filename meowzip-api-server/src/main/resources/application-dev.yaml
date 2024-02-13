@@ -116,4 +116,4 @@ oauth2:
     kakao: https://localhost:3001/signin/kakao
 
 discord:
-  webhook-url: https://discord.com/api/webhooks/1206174352207257610/I7HU-T2ZEMp43dDWMVyqjoY5Ke43AIM8b_JlxNt8juGzGZggbBWdGEces2smh2_4Lxg3
+  webhook-url: ENC(CMUXrVYV/OmRU6Ng8nWxB8xdD1tjo3kdakQ7hGyV8y29doAtXxAT4qFEWMaZI8xT1/5pDdNA0kuZu55XGYe/jUDmH2+ghvswp3tgvfCrY1zYamK826/9G6A5rja/DEUkPeNTFUBwXGrOmnZNEnw6er5ouKUJYHB4q9kr/79VE41qJCKUtwtryw==)
