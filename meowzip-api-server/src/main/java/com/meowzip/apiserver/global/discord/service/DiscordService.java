@@ -1,7 +1,7 @@
 package com.meowzip.apiserver.global.discord.service;
 
+import com.meowzip.apiserver.global.discord.component.DiscordComponent;
 import com.meowzip.apiserver.global.discord.dto.DiscordMessageDTO;
-import com.meowzip.apiserver.global.discord.feign.DiscordClient;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class DiscordService {
     
-    private final DiscordClient discordClient;
+    private final DiscordComponent discordComponent;
 
     public void send(HttpServletRequest req, HttpStatus status, String content) {
         if (req.getRequestURI().equals("/health-check")) {
@@ -36,7 +36,7 @@ public class DiscordService {
                 .replace("{{LOG}}", content);
 
         DiscordMessageDTO message = new DiscordMessageDTO(errorMessage);
-        ResponseEntity<String> response = discordClient.sendMessage(message);
+        ResponseEntity<String> response = discordComponent.sendMessage(message);
 
         if (response.getStatusCode().value() != HttpStatus.NO_CONTENT.value()) {
             log.error("Failed to send message to discord. status: {}", response.getStatusCode());
