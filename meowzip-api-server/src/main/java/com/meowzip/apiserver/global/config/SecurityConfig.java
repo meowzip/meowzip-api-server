@@ -1,7 +1,6 @@
 package com.meowzip.apiserver.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.meowzip.apiserver.global.discord.service.DiscordService;
 import com.meowzip.apiserver.global.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.meowzip.apiserver.global.filter.JwtFilter;
 import com.meowzip.apiserver.global.handler.*;
@@ -39,7 +38,6 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
     private final JwtService jwtService;
-    private final DiscordService discordService;
     private final ObjectMapper objectMapper;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
@@ -101,7 +99,7 @@ public class SecurityConfig {
         ;
 
         http.addFilterAfter(customUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterBefore(new JwtFilter(jwtService, discordService), CustomUsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtService), CustomUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
