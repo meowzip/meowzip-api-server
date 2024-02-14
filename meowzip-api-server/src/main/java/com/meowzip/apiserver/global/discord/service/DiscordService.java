@@ -31,7 +31,7 @@ public class DiscordService {
                 - Log: {{LOG}}
                 """
                 .replace("{{DATE}}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .replace("{{URI}}", req.getRequestURI())
+                .replace("{{URI}}", req.getRequestURL())
                 .replace("{{STATUS}}", status.toString())
                 .replace("{{LOG}}", content);
 
