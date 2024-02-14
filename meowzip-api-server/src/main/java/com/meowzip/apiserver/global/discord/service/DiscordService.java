@@ -26,11 +26,13 @@ public class DiscordService {
 
         String errorMessage = """
                 - 일시: {{DATE}}
+                - IP: {{IP}}
                 - API: {{URI}}
                 - Status: {{STATUS}}
                 - Log: {{LOG}}
                 """
                 .replace("{{DATE}}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .replace("{{IP}}", req.getHeader("X-FORWARDED-FOR") == null ? req.getRemoteAddr() : req.getHeader("X-FORWARDED-FOR"))
                 .replace("{{URI}}", req.getRequestURL())
                 .replace("{{STATUS}}", status.toString())
                 .replace("{{LOG}}", content);
