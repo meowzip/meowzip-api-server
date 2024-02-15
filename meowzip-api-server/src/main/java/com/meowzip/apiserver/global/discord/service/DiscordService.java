@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,19 +26,22 @@ public class DiscordService {
         }
 
         String errorMessage = """
-                - 일시: {{DATE}}
                 - IP: {{IP}}
                 - API: {{URI}}
-                - Status: {{STATUS}}
-                - Log: {{LOG}}
                 """
-                .replace("{{DATE}}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .replace("{{IP}}", req.getHeader("X-FORWARDED-FOR") == null ? req.getRemoteAddr() : req.getHeader("X-FORWARDED-FOR"))
-                .replace("{{URI}}", req.getRequestURL())
-                .replace("{{STATUS}}", status.toString())
-                .replace("{{LOG}}", content);
+                .replace("{{URI}}", req.getRequestURL());
 
-        DiscordMessageDTO message = new DiscordMessageDTO(errorMessage);
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        DiscordMessageDTO message = DiscordMessageDTO.builder()
+                .content(errorMessage)
+                .embeds(List.of(DiscordMessageDTO.Embed.builder()
+                        .title(date)
+                        .description(String.format("%s: %s", status, content))
+                        .build()))
+                .build();
+
         ResponseEntity<String> response = discordComponent.sendMessage(message);
 
         if (response.getStatusCode().value() != HttpStatus.NO_CONTENT.value()) {
