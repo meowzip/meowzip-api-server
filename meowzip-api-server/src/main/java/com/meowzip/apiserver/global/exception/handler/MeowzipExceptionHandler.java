@@ -23,15 +23,19 @@ public class MeowzipExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> handle(BaseException ex, HttpServletRequest req) {
-        preHandle(req.getRequestURI(), ex, req);
+        preHandle(ex, req, ex.getMessage());
+
         return new ResponseEntity<>(ErrorResponse.of(ex), ex.getHttpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException ex, HttpServletRequest req) {
         String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        ClientException.BadRequest error = new ClientException.BadRequest(400, message);
 
-        return handle(new ClientException.BadRequest(400, message), req);
+        preHandle(error, req, message);
+
+        return handle(error, req);
     }
 
     @ExceptionHandler(Exception.class)
@@ -39,15 +43,16 @@ public class MeowzipExceptionHandler {
         log.error(req.getRequestURI());
         log.error(ex.getMessage());
 
-        return handle(new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR), req);
+        ServerException.InternalServerError error = new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR);
+
+        preHandle(error, req, ex.getMessage());
+
+        return handle(error, req);
     }
 
-    private void preHandle(String requestURI, BaseException ex, HttpServletRequest req) {
-        log.error(requestURI);
-        log.error(ex.getMessage());
-
+    private void preHandle(BaseException ex, HttpServletRequest req, String message) {
         try {
-            discordService.send(req, ex.getHttpStatus(), ex.getMessage());
+            discordService.send(req, ex.getHttpStatus(), message);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
