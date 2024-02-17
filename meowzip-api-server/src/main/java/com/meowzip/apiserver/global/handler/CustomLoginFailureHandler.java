@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meowzip.apiserver.global.discord.service.DiscordService;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.response.ErrorResponse;
@@ -21,10 +22,12 @@ import java.io.IOException;
 public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
+    private final DiscordService discordService;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         var errorResponse = ErrorResponse.of(new ClientException.Unauthorized(EnumErrorCode.LOGIN_FAILED));
+        discordService.send(request, HttpStatus.UNAUTHORIZED, errorResponse.getMessage());
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding("UTF-8");
