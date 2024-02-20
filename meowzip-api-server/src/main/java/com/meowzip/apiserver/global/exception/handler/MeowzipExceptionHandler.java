@@ -40,9 +40,6 @@ public class MeowzipExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handle(Exception ex, HttpServletRequest req) {
-        log.error(req.getRequestURI());
-        log.error(ex.getMessage());
-
         ServerException.InternalServerError error = new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR);
 
         preHandle(error, req, ex.getMessage());
@@ -52,6 +49,9 @@ public class MeowzipExceptionHandler {
 
     private void preHandle(BaseException ex, HttpServletRequest req, String message) {
         try {
+            log.error(req.getRequestURI());
+            log.error(message);
+
             discordService.send(req, ex.getHttpStatus(), message);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
