@@ -32,7 +32,8 @@ public class Cat extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Sex sex;
 
-    private boolean isNeutered;
+    @Enumerated(value = EnumType.STRING)
+    private Neutered isNeutered;
 
     private String memo;
 
@@ -53,7 +54,7 @@ public class Cat extends BaseTimeEntity {
         return (int) (LocalDate.now().toEpochDay() - metAt.toEpochDay() + 1);
     }
 
-    public void modify(String name, String imageUrl, Sex sex, boolean isNeutered, String memo, LocalDate metAt) {
+    public void modify(String name, String imageUrl, Sex sex, Neutered isNeutered, String memo, LocalDate metAt) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.sex = sex;

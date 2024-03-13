@@ -2,6 +2,7 @@ package com.meowzip.apiserver.cat.dto.response;
 
 import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.cat.entity.Cat;
+import com.meowzip.cat.entity.Neutered;
 import com.meowzip.cat.entity.Sex;
 import com.meowzip.coparent.entity.CoParent;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +31,7 @@ public record CatDetailResponseDTO(
         Sex sex,
 
         @Schema(description = "중성화 여부")
-        boolean isNeutered,
+        Neutered isNeutered,
 
         @Schema(description = "공동냥육 참여자 목록", implementation = CoParentResponseDTO.class)
         List<CoParentResponseDTO> coParents,
@@ -45,7 +46,7 @@ public record CatDetailResponseDTO(
                 cat.isCoParented(),
                 cat.getDDay(),
                 cat.getSex(),
-                cat.isNeutered(),
+                cat.getIsNeutered(),
                 cat.getCoParents().stream()
                         .filter(CoParent::isApproval)
                         .map(coParent -> new CoParentResponseDTO(coParent.getMember()))
