@@ -19,10 +19,10 @@ public class NotificationSendService {
     private final NotificationHistoryRepository notificationHistoryRepository;
 
     @Transactional
-    public void send(Member receiver, NotificationCode code, String link, String replacer) {
+    public void send(Member receiver, NotificationCode code, String link, String... replacers) {
         NotificationTemplate template = notificationTemplateRepository.findByCode(code)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_TEMPLATE_NOT_FOUND));
 
-        notificationHistoryRepository.save(template.toNotification(receiver, link, replacer));
+        notificationHistoryRepository.save(template.toNotification(receiver, link, null, replacers));
     }
 }

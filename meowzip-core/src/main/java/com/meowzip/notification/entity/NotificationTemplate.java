@@ -34,16 +34,25 @@ public class NotificationTemplate extends BaseTimeEntity {
 
     private String baseUrl;
 
-    public NotificationHistory toNotification(Member receiver, String detail, String replacer) {
+    public NotificationHistory toNotification(Member receiver, String detail, String content, String... replacers) {
         return NotificationHistory.builder()
                 .template(this)
                 .receiver(receiver)
                 .link(generateLink(detail))
-                .content(content.replace("{{first}}", replacer))
+                .title(generateTitle(replacers))
+                .content(content)
                 .build();
     }
 
     public String generateLink(String detailLink) {
         return baseUrl.replace("{{link}}", detailLink);
+    }
+
+    private String generateTitle(String... replacers) {
+        String result = title;
+        for (int i = 0; i < replacers.length; i++) {
+            result = result.replace("{{" + i + "}}", replacers[i]);
+        }
+        return result;
     }
 }
