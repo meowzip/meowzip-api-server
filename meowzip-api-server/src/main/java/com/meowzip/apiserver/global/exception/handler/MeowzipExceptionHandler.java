@@ -40,6 +40,7 @@ public class MeowzipExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handle(Exception ex, HttpServletRequest req) {
+        log.error(ex.getMessage(), ex);
         ServerException.InternalServerError error = new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR);
 
         preHandle(error, req, ex.getMessage());

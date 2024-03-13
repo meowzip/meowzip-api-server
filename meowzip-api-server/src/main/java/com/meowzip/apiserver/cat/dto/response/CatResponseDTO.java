@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.dto.response;
 
 import com.meowzip.cat.entity.Cat;
+import com.meowzip.cat.entity.Neutered;
 import com.meowzip.cat.entity.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -31,7 +32,7 @@ public record CatResponseDTO(
         Sex sex,
 
         @Schema(description = "중성화 여부")
-        boolean isNeutered
+        Neutered isNeutered
 ) {
 
     public CatResponseDTO(Cat cat) {
@@ -42,7 +43,7 @@ public record CatResponseDTO(
                 cat.isCoParented() ? cat.getCoParents().size() : 0,
                 cat.getDDay(),
                 cat.getSex(),
-                cat.isNeutered()
+                cat.getIsNeutered()
         );
     }
 }
