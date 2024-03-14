@@ -1,7 +1,8 @@
 package com.meowzip.apiserver.cat.service;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
-import com.meowzip.apiserver.cat.dto.response.CoParentResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.member.service.MemberService;
@@ -26,11 +27,11 @@ public class CoParentService {
     private final CatService catService;
     private final NotificationSendService notificationSendService;
 
-    public List<CoParentResponseDTO> getCoParentsByMember(Member member) {
+    public List<CoParentMemberResponseDTO> getCoParentsByMember(Member member) {
         List<CoParent> coParentsByMember = coParentRepository.findAllByOwner(member);
 
         return coParentsByMember.stream()
-                .map(coParent -> new CoParentResponseDTO(coParent.getParticipant()))
+                .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
                 .toList();
     }
 
@@ -48,15 +49,6 @@ public class CoParentService {
     @Transactional
     public void accept(Member participant, Long coParentId) {
         CoParent coParent = getCoParent(participant, coParentId);
-
-        if (!coParent.isParticipant(participant)) {
-            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
-        }
-
-        if (!coParent.isStandBy()) {
-            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
-        }
-
         coParent.accept();
 
         notificationSendService.send(coParent.getOwner(), NotificationCode.MN005, "/cats/co-parents", participant.getNickname(), coParent.getCat().getName());
@@ -65,7 +57,20 @@ public class CoParentService {
     @Transactional
     public void reject(Member participant, Long coParentId) {
         CoParent coParent = getCoParent(participant, coParentId);
+        coParent.reject();
 
+        notificationSendService.send(coParent.getOwner(), NotificationCode.MN006, "/cats/co-parents", participant.getNickname());
+    }
+
+    public CoParentInfoResponseDTO getCoParentInfo(Member participant, Long coParentId) {
+        CoParent coParent = getCoParent(participant, coParentId);
+
+        return new CoParentInfoResponseDTO(coParent);
+    }
+
+    private CoParent getCoParent(Member participant, Long coParentId) {
+        CoParent coParent = coParentRepository.findByParticipantAndId(participant, coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
         if (!coParent.isParticipant(participant)) {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
@@ -74,13 +79,6 @@ public class CoParentService {
             throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
         }
 
-        coParent.reject();
-
-        notificationSendService.send(coParent.getOwner(), NotificationCode.MN006, "/cats/co-parents", participant.getNickname());
-    }
-
-    private CoParent getCoParent(Member participant, Long coParentId) {
-        return coParentRepository.findByParticipantAndId(participant, coParentId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+        return coParent;
     }
 }

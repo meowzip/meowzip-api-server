@@ -4,7 +4,7 @@ import com.meowzip.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema
-public record CoParentResponseDTO(
+public record CoParentMemberResponseDTO(
 
         @Schema(description = "사용자 고유키")
         Long memberId,
@@ -16,7 +16,7 @@ public record CoParentResponseDTO(
         String nickname
 ) {
 
-    public CoParentResponseDTO(Member member) {
+    public CoParentMemberResponseDTO(Member member) {
         this(member.getId(), member.getProfileImage(), member.getNickname());
     }
 }

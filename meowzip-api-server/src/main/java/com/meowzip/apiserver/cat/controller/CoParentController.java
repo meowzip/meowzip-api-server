@@ -1,7 +1,8 @@
 package com.meowzip.apiserver.cat.controller;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
-import com.meowzip.apiserver.cat.dto.response.CoParentResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.cat.service.CoParentService;
 import com.meowzip.apiserver.cat.swagger.CoParentSwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -27,15 +28,15 @@ public class CoParentController implements CoParentSwagger {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public CommonListResponse<CoParentResponseDTO> showMembersForCoParent(Principal principal,
-                                                                          @RequestParam String keyword,
-                                                                          PageRequest pageRequest) {
+    public CommonListResponse<CoParentMemberResponseDTO> showMembersForCoParent(Principal principal,
+                                                                                @RequestParam String keyword,
+                                                                                PageRequest pageRequest) {
 
         Member me = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        List<CoParentResponseDTO> members = memberService.getMembersForCoParent(keyword, me, pageRequest.of());
+        List<CoParentMemberResponseDTO> members = memberService.getMembersForCoParent(keyword, me, pageRequest.of());
 
-        return new CommonListResponse<CoParentResponseDTO>(HttpStatus.OK).add(members);
+        return new CommonListResponse<CoParentMemberResponseDTO>(HttpStatus.OK).add(members);
     }
 
     @PostMapping("/request")
@@ -46,6 +47,16 @@ public class CoParentController implements CoParentSwagger {
         coParentService.request(member, requestDTO);
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{co-parent-id}")
+    public CommonResponse<CoParentInfoResponseDTO> getCoParentInfo(Principal principal,
+                                                                   @PathVariable("co-parent-id") Long coParentId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        CoParentInfoResponseDTO coParent = coParentService.getCoParentInfo(member, coParentId);
+
+        return new CommonResponse<>(HttpStatus.OK, coParent);
     }
 
     @PostMapping("/{co-parent-id}/accept")

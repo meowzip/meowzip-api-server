@@ -1,6 +1,6 @@
 package com.meowzip.apiserver.member.service;
 
-import com.meowzip.apiserver.cat.dto.response.CoParentResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
@@ -234,9 +234,9 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteById(memberId);
     }
 
-    public List<CoParentResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
+    public List<CoParentMemberResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
         return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable).stream()
-                .map(CoParentResponseDTO::new)
+                .map(CoParentMemberResponseDTO::new)
                 .toList();
     }
 
