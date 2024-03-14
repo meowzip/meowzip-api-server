@@ -35,27 +35,52 @@ public class CoParentService {
     }
 
     @Transactional
-    public void request(Member member, RequestCoParentRequestDTO requestDTO) {
+    public void request(Member participant, RequestCoParentRequestDTO requestDTO) {
         Member receiver = memberService.getMember(requestDTO.memberId());
-        Cat cat = catService.getCat(member, requestDTO.catId());
+        Cat cat = catService.getCat(participant, requestDTO.catId());
 
         coParentRepository.save(requestDTO.toCoParent(receiver, cat));
 
         // todo: 프론트 분들께 이동 링크 요청
-        notificationSendService.send(receiver, NotificationCode.MN004, "/cats/co-parents", member.getNickname());
+        notificationSendService.send(receiver, NotificationCode.MN004, "/cats/co-parents", participant.getNickname());
     }
 
     @Transactional
     public void accept(Member participant, Long coParentId) {
-        CoParent coParent = coParentRepository.findByParticipantAndId(participant, coParentId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+        CoParent coParent = getCoParent(participant, coParentId);
 
         if (!coParent.isParticipant(participant)) {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
+        if (!coParent.isStandBy()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
+        }
+
         coParent.accept();
 
         notificationSendService.send(coParent.getOwner(), NotificationCode.MN005, "/cats/co-parents", participant.getNickname(), coParent.getCat().getName());
+    }
+
+    @Transactional
+    public void reject(Member participant, Long coParentId) {
+        CoParent coParent = getCoParent(participant, coParentId);
+
+        if (!coParent.isParticipant(participant)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        if (!coParent.isStandBy()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
+        }
+
+        coParent.reject();
+
+        notificationSendService.send(coParent.getOwner(), NotificationCode.MN006, "/cats/co-parents", participant.getNickname());
+    }
+
+    private CoParent getCoParent(Member participant, Long coParentId) {
+        return coParentRepository.findByParticipantAndId(participant, coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
     }
 }

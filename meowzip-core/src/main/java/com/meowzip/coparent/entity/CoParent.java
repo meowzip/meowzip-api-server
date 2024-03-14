@@ -41,9 +41,18 @@ public class CoParent extends BaseTimeEntity {
         this.status = Status.APPROVAL;
     }
 
+    public boolean isStandBy() {
+        return status == Status.STANDBY;
+    }
+
+    public void reject() {
+        this.status = Status.REJECT;
+    }
+
     public enum Status {
         STANDBY,
-        APPROVAL;
+        APPROVAL,
+        REJECT;
     }
 
     public boolean isApproval() {
