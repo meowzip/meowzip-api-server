@@ -47,4 +47,14 @@ public class CoParentController implements CoParentSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{co-parent-id}/accept")
+    public CommonResponse<Void> acceptCoParent(Principal principal,
+                                              @PathVariable("co-parent-id") Long coParentId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        coParentService.accept(member, coParentId);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }

@@ -19,8 +19,12 @@ public class CoParent extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "participant_id")
+    private Member participant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
@@ -28,6 +32,14 @@ public class CoParent extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
+
+    public boolean isParticipant(Member participant) {
+        return this.participant.equals(participant);
+    }
+
+    public void accept() {
+        this.status = Status.APPROVAL;
+    }
 
     public enum Status {
         STANDBY,
