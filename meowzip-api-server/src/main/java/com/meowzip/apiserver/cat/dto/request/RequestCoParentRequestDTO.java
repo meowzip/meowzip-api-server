@@ -20,7 +20,8 @@ public record RequestCoParentRequestDTO(
 
         public CoParent toCoParent(Member member, Cat cat) {
                 return CoParent.builder()
-                        .member(member)
+                        .participant(member)
+                        .owner(cat.getMember())
                         .cat(cat)
                         .status(CoParent.Status.STANDBY)
                         .build();

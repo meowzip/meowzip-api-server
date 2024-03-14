@@ -49,7 +49,7 @@ public record CatDetailResponseDTO(
                 cat.getIsNeutered(),
                 cat.getCoParents().stream()
                         .filter(CoParent::isApproval)
-                        .map(coParent -> new CoParentResponseDTO(coParent.getMember()))
+                        .map(coParent -> new CoParentResponseDTO(coParent.getParticipant()))
                         .toList(),
                 diaries
         );
