@@ -24,4 +24,12 @@ public interface CoParentSwagger {
     @Operation(summary = "공동냥육 신청")
     CommonResponse<Void> requestCoParent(@Parameter(hidden = true) Principal principal,
                                          @RequestBody(required = true) RequestCoParentRequestDTO requestDTO);
+
+    @Operation(summary = "공동냥육 신청 수락")
+    CommonResponse<Void> acceptCoParent(@Parameter(hidden = true) Principal principal,
+                                       @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
+
+    @Operation(summary = "공동냥육 신청 거절")
+    CommonResponse<Void> rejectCoParent(@Parameter(hidden = true) Principal principal,
+                                       @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
 }
