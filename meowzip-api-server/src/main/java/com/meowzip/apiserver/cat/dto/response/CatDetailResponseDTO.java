@@ -33,8 +33,8 @@ public record CatDetailResponseDTO(
         @Schema(description = "중성화 여부")
         Neutered isNeutered,
 
-        @Schema(description = "공동냥육 참여자 목록", implementation = CoParentResponseDTO.class)
-        List<CoParentResponseDTO> coParents,
+        @Schema(description = "공동냥육 참여자 목록", implementation = CoParentMemberResponseDTO.class)
+        List<CoParentMemberResponseDTO> coParents,
 
         @Schema(description = "다이어리 목록", implementation = DiaryResponseDTO.class)
         List<DiaryResponseDTO> diaries
@@ -49,7 +49,7 @@ public record CatDetailResponseDTO(
                 cat.getIsNeutered(),
                 cat.getCoParents().stream()
                         .filter(CoParent::isApproval)
-                        .map(coParent -> new CoParentResponseDTO(coParent.getParticipant()))
+                        .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
                         .toList(),
                 diaries
         );
