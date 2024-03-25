@@ -14,6 +14,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JwtService {
@@ -63,6 +66,7 @@ public class JwtService {
 
     @Transactional
     public HttpHeaders reissue(Cookie[] cookies, HttpServletResponse response) {
+        log.info("reissue token. cookies: {}", Arrays.toString(cookies));
         if (ObjectUtils.isEmpty(cookies)) {
             throw new ClientException.BadRequest(EnumErrorCode.TOKEN_REQUIRED);
         }
