@@ -132,12 +132,7 @@ public class DiaryService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
-        ImageGroup imageGroup = diary.getImageGroup();
-
-        if (images != null && !images.isEmpty()) {
-            Long imageGroupId = imageService.upload(images, ImageDomain.DIARY);
-            imageGroup = imageGroupService.getById(imageGroupId);
-        }
+        ImageGroup imageGroup = processImages(images, requestDTO, diary);
 
         List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
 
@@ -149,6 +144,31 @@ public class DiaryService {
         }
 
         diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredDate(), requestDTO.caredTime(), imageGroup);
+    }
+
+    private ImageGroup processImages(List<MultipartFile> images, ModifyDiaryRequestDTO requestDTO, Diary diary) {
+        ImageGroup originImageGroup = diary.getImageGroup();
+
+        // 기존에 이미지가 없던 글
+        if (ObjectUtils.isEmpty(originImageGroup)) {
+            return processNewImages(images);
+        }
+
+        // 이미지가 있던 글
+        return processOriginImages(images, originImageGroup, requestDTO.imageUrls());
+    }
+
+    private ImageGroup processNewImages(List<MultipartFile> images) {
+        if (ObjectUtils.isEmpty(images)) {
+            return null;
+        }
+
+        Long imageGroupId = imageService.upload(images, ImageDomain.DIARY);
+        return imageGroupService.getById(imageGroupId);
+    }
+
+    private ImageGroup processOriginImages(List<MultipartFile> images, ImageGroup originImageGroup, List<String> imageUrls) {
+        return null;
     }
 
     private boolean isWriter(Member member, Diary diary) {
