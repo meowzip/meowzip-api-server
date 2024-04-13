@@ -39,10 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("request uri: {}", request.getRequestURI());
-        log.info("request header: {}", request.getHeader(ACCESS_TOKEN_HEADER_NAME));
-        log.info("request.getCookies(): {}", Arrays.toString(request.getCookies()));
-
         if (!isTokenRequired(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
