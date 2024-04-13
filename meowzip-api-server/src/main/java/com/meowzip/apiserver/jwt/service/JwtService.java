@@ -66,7 +66,6 @@ public class JwtService {
 
     @Transactional
     public HttpHeaders reissue(Cookie[] cookies, HttpServletResponse response) {
-        log.info("reissue token. cookies: {}", Arrays.toString(cookies));
         if (ObjectUtils.isEmpty(cookies)) {
             throw new ClientException.BadRequest(EnumErrorCode.TOKEN_REQUIRED);
         }

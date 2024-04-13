@@ -45,9 +45,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("oAuth2 login succeeded");
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        log.info("oAuth2User = {}", oAuth2User);
 
         var token = (OAuth2AuthenticationToken) authentication;
         String registrationId = token.getAuthorizedClientRegistrationId();
