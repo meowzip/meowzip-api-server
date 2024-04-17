@@ -9,6 +9,7 @@ public enum ImageDomain {
 
     MEMBER,
     CAT,
-    DIARY
+    DIARY,
+    COMMUNITY,
     ;
 }
