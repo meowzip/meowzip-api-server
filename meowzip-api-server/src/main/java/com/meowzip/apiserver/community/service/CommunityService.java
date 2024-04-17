@@ -59,6 +59,17 @@ public class CommunityService {
         post.modify(requestDTO.content(), imageGroup);
     }
 
+    @Transactional
+    public void delete(Long boardId, Member member) {
+        CommunityPost post = postRepository.findById(boardId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
+
+        if (!isWriter(member, post)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        postRepository.delete(post);
+    }
 
     private boolean isWriter(Member member, CommunityPost post) {
         return member.getId().equals(post.getMember().getId());

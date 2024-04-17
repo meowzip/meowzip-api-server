@@ -48,4 +48,14 @@ public class CommunityController implements CommunitySwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/{board-id}")
+    public CommonResponse<Void> delete(Principal principal,
+                                       @PathVariable("board-id") Long boardId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityService.delete(boardId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }
