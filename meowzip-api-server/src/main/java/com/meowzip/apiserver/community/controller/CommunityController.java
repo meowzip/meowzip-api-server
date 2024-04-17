@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.community.controller;
 
+import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.community.service.CommunityService;
 import com.meowzip.apiserver.community.swagger.CommunitySwagger;
@@ -11,10 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -35,6 +33,18 @@ public class CommunityController implements CommunitySwagger {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         communityService.write(member, requestDTO, images);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "/{board-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<Void> modify(Principal principal,
+                                       @PathVariable("board-id") Long boardId,
+                                       @RequestPart(name = "post") @Valid ModifyPostRequestDTO requestDTO,
+                                       @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityService.modify(boardId, member, requestDTO, images);
 
         return new CommonResponse<>(HttpStatus.OK);
     }

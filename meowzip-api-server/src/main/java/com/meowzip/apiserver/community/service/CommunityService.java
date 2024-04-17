@@ -1,6 +1,9 @@
 package com.meowzip.apiserver.community.service;
 
+import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
+import com.meowzip.apiserver.global.exception.ClientException;
+import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.community.entity.CommunityPost;
@@ -34,5 +37,30 @@ public class CommunityService {
 
         CommunityPost post = requestDTO.toPost(member, imageGroup);
         postRepository.save(post);
+    }
+
+    @Transactional
+    public void modify(Long boardId, Member member, ModifyPostRequestDTO requestDTO, List<MultipartFile> images) {
+        CommunityPost post = postRepository.findById(boardId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
+
+        if (!isWriter(member, post)) {
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+        }
+
+        ImageGroup imageGroup = post.getImageGroup();
+
+        // TODO: 이미지 관련 로직
+        if (images != null && !images.isEmpty()) {
+            Long imageGroupId = imageService.upload(images, ImageDomain.COMMUNITY);
+            imageGroup = imageGroupService.getById(imageGroupId);
+        }
+
+        post.modify(requestDTO.content(), imageGroup);
+    }
+
+
+    private boolean isWriter(Member member, CommunityPost post) {
+        return member.getId().equals(post.getMember().getId());
     }
 }

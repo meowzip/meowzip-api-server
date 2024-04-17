@@ -35,4 +35,9 @@ public class CommunityPost extends BaseTimeEntity {
     private List<CommunityComment> comments = new ArrayList<>();
 
     private int likeCount = 0;
+
+    public void modify(String content, ImageGroup imageGroup) {
+        this.content = content;
+        this.imageGroup = imageGroup;
+    }
 }
