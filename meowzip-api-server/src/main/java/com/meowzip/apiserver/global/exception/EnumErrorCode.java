@@ -35,6 +35,9 @@ public enum EnumErrorCode {
     CO_PARENT_ALREADY_PROCESSED(600002, "이미 처리된 공동냥육 신청입니다."),
 
     POST_NOT_FOUND(700001, "게시글을 찾을 수 없습니다."),
+
+    COMMENT_NOT_FOUND(800001, "댓글을 찾을 수 없습니다."),
+
     ;
 
     private final int result;
