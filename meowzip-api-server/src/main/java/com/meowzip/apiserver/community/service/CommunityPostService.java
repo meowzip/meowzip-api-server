@@ -1,6 +1,8 @@
 package com.meowzip.apiserver.community.service;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
+import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
+import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
@@ -12,10 +14,12 @@ import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -78,5 +82,28 @@ public class CommunityPostService {
     public CommunityPost getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
+    }
+
+    public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
+        List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
+
+        return posts.stream()
+                .map(post -> new PostResponseDTO(post, getImageUrls(post), member))
+                .toList();
+    }
+
+    public PostDetailResponseDTO showPost(Member member, Long postId) {
+        CommunityPost post = getPostById(postId);
+
+        return new PostDetailResponseDTO(post, getImageUrls(post), member);
+    }
+
+    private List<String> getImageUrls(CommunityPost post) {
+        List<String> images = new ArrayList<>();
+        if (post.getImageGroup() != null) {
+            images = imageService.getImageUrl(post.getImageGroup().getId());
+        }
+
+        return images;
     }
 }

@@ -1,9 +1,13 @@
 package com.meowzip.apiserver.community.controller;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
+import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
+import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.community.service.CommunityPostService;
 import com.meowzip.apiserver.community.swagger.CommunityPostSwagger;
+import com.meowzip.apiserver.global.request.PageRequest;
+import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -35,6 +39,26 @@ public class CommunityPostController implements CommunityPostSwagger {
         communityPostService.write(member, requestDTO, images);
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping
+    public CommonListResponse<PostResponseDTO> showPosts(Principal principal,
+                                                         PageRequest pageRequest) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        List<PostResponseDTO> posts = communityPostService.showPosts(member, pageRequest.of());
+
+        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(posts);
+    }
+
+    @GetMapping("/{post-id}")
+    public CommonResponse<PostDetailResponseDTO> showPost(Principal principal,
+                                                          @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        PostDetailResponseDTO post = communityPostService.showPost(member, postId);
+
+        return new CommonResponse<>(HttpStatus.OK, post);
     }
 
     @PatchMapping(value = "/{post-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
