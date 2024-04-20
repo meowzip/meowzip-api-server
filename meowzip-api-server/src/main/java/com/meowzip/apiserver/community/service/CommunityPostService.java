@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.community.service;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
+import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
@@ -87,8 +88,14 @@ public class CommunityPostService {
         List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
 
         return posts.stream()
-                .map(post -> new PostResponseDTO(post, getImageUrls(post), post.getMember().equals(member)))
+                .map(post -> new PostResponseDTO(post, getImageUrls(post), member))
                 .toList();
+    }
+
+    public PostDetailResponseDTO showPost(Member member, Long postId) {
+        CommunityPost post = getPostById(postId);
+
+        return new PostDetailResponseDTO(post, getImageUrls(post), member);
     }
 
     private List<String> getImageUrls(CommunityPost post) {

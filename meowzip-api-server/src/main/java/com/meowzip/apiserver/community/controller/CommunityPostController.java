@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.community.controller;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
+import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.community.service.CommunityPostService;
@@ -48,6 +49,16 @@ public class CommunityPostController implements CommunityPostSwagger {
         List<PostResponseDTO> posts = communityPostService.showPosts(member, pageRequest.of());
 
         return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(posts);
+    }
+
+    @GetMapping("/{post-id}")
+    public CommonResponse<PostDetailResponseDTO> showPost(Principal principal,
+                                                          @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        PostDetailResponseDTO post = communityPostService.showPost(member, postId);
+
+        return new CommonResponse<>(HttpStatus.OK, post);
     }
 
     @PatchMapping(value = "/{post-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

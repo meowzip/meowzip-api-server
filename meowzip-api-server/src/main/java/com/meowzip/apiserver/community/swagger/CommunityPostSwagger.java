@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.community.swagger;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
+import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -31,6 +32,9 @@ public interface CommunityPostSwagger {
                                                   @Parameter(schema = @Schema(implementation = PageRequest.class),
                                                       required = true) PageRequest pageRequest);
 
+    @Operation(summary = "게시글 상세 조회")
+    CommonResponse<PostDetailResponseDTO> showPost(@Parameter(hidden = true) Principal principal,
+                                                   @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
     @Operation(summary = "게시글 수정")
     CommonResponse<Void> modify(@Parameter(hidden = true) Principal principal,

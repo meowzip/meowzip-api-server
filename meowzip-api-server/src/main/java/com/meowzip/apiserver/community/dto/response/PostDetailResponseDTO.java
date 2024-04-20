@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema
-public record PostResponseDTO(
+public record PostDetailResponseDTO(
 
         @Schema(description = "게시글 id", example = "1")
         Long id,
@@ -34,6 +34,9 @@ public record PostResponseDTO(
         @Schema(description = "댓글 수", example = "3")
         int commentCount,
 
+        @Schema(description = "댓글 목록", implementation = CommentResponseDTO.class)
+        List<CommentResponseDTO> comments,
+
         @Schema(description = "좋아요 여부", example = "true")
         boolean isLiked,
 
@@ -44,8 +47,9 @@ public record PostResponseDTO(
         String createdAt
 ) {
 
-    public PostResponseDTO(CommunityPost post, List<String> images, Member member) {
-        this(post.getId(),
+    public PostDetailResponseDTO(CommunityPost post, List<String> images, Member member) {
+        this(
+                post.getId(),
                 post.getMember().getId(),
                 post.getMember().getNickname(),
                 post.getMember().equals(member),
@@ -53,6 +57,10 @@ public record PostResponseDTO(
                 images,
                 post.getLikeCount(),
                 post.getComments().size(),
+                // todo 대댓글 관련 처리 필요
+                post.getComments().stream()
+                        .map(comment -> new CommentResponseDTO(comment, comment.getMember().equals(member)))
+                        .toList(),
                 false, // todo 추후 수정
                 false, // todo 추후 수정
                 DateTimeUtil.toRelative(post.getCreatedAt())
