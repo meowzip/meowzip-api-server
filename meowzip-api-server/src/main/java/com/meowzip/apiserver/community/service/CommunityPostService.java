@@ -1,7 +1,6 @@
 package com.meowzip.apiserver.community.service;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
-import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
@@ -50,6 +49,46 @@ public class CommunityPostService {
         postRepository.save(post);
     }
 
+    public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
+        List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
+
+        return posts.stream()
+                .map(post -> generatePostResponseDTO(post, member))
+                .toList();
+    }
+
+    public PostResponseDTO showPost(Member member, Long postId) {
+        CommunityPost post = getPostById(postId);
+
+        return generatePostResponseDTO(post, member);
+    }
+
+    private PostResponseDTO generatePostResponseDTO(CommunityPost post, Member member) {
+        boolean isLiked = getIsLiked(post, member);
+        boolean isBookmarked = getIsBookmarked(post, member);
+
+        return new PostResponseDTO(post, getImageUrls(post), member, isLiked, isBookmarked);
+    }
+
+    private List<String> getImageUrls(CommunityPost post) {
+        List<String> images = new ArrayList<>();
+        if (post.getImageGroup() != null) {
+            images = imageService.getImageUrl(post.getImageGroup().getId());
+        }
+
+        return images;
+    }
+
+    private boolean getIsLiked(CommunityPost post, Member member) {
+        Optional<CommunityPostLike> like = likeRepository.findByPostAndMember(post, member);
+        return like.isPresent();
+    }
+
+    private boolean getIsBookmarked(CommunityPost post, Member member) {
+        Optional<CommunityPostBookmark> bookmark = bookmarkRepository.findByPostAndMember(post, member);
+        return bookmark.isPresent();
+    }
+
     @Transactional
     public void modify(Long boardId, Member member, ModifyPostRequestDTO requestDTO, List<MultipartFile> images) {
         CommunityPost post = postRepository.findById(boardId)
@@ -89,29 +128,6 @@ public class CommunityPostService {
     public CommunityPost getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
-    }
-
-    public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
-        List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
-
-        return posts.stream()
-                .map(post -> new PostResponseDTO(post, getImageUrls(post), member))
-                .toList();
-    }
-
-    public PostDetailResponseDTO showPost(Member member, Long postId) {
-        CommunityPost post = getPostById(postId);
-
-        return new PostDetailResponseDTO(post, getImageUrls(post), member);
-    }
-
-    private List<String> getImageUrls(CommunityPost post) {
-        List<String> images = new ArrayList<>();
-        if (post.getImageGroup() != null) {
-            images = imageService.getImageUrl(post.getImageGroup().getId());
-        }
-
-        return images;
     }
 
     @Transactional

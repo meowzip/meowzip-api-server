@@ -44,7 +44,7 @@ public record PostResponseDTO(
         String createdAt
 ) {
 
-    public PostResponseDTO(CommunityPost post, List<String> images, Member member) {
+    public PostResponseDTO(CommunityPost post, List<String> images, Member member, boolean isLiked, boolean isBookmarked) {
         this(post.getId(),
                 post.getMember().getId(),
                 post.getMember().getNickname(),
@@ -53,8 +53,8 @@ public record PostResponseDTO(
                 images,
                 post.getLikeCount(),
                 post.getComments().size(),
-                false, // todo 추후 수정
-                false, // todo 추후 수정
+                isLiked,
+                isBookmarked,
                 DateTimeUtil.toRelative(post.getCreatedAt())
         );
     }
