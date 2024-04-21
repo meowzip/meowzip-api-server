@@ -57,9 +57,8 @@ public record PostDetailResponseDTO(
                 images,
                 post.getLikeCount(),
                 post.getComments().size(),
-                // todo 대댓글 관련 처리 필요
                 post.getComments().stream()
-                        .map(comment -> new CommentResponseDTO(comment, comment.getMember().equals(member)))
+                        .map(comment -> new CommentResponseDTO(comment, member))
                         .toList(),
                 false, // todo 추후 수정
                 false, // todo 추후 수정

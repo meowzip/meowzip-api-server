@@ -2,7 +2,10 @@ package com.meowzip.apiserver.community.dto.response;
 
 import com.meowzip.apiserver.global.util.DateTimeUtil;
 import com.meowzip.community.entity.CommunityComment;
+import com.meowzip.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.List;
 
 @Schema
 public record CommentResponseDTO(
@@ -22,19 +25,23 @@ public record CommentResponseDTO(
         @Schema(description = "댓글 내용", example = "고양이가 귀엽네요")
         String content,
 
-        // TODO 대댓글 관련 처리 필요
+        @Schema(description = "대댓글 목록", implementation = CommentResponseDTO.class)
+        List<CommentResponseDTO> replies,
 
         @Schema(description = "작성 시간", example = "1시간 전")
         String createdAt
 ) {
 
-    public CommentResponseDTO(CommunityComment comment, boolean isMine) {
+    public CommentResponseDTO(CommunityComment comment, Member member) {
         this(
                 comment.getId(),
                 comment.getMember().getId(),
                 comment.getMember().getNickname(),
-                isMine,
+                comment.getMember().equals(member),
                 comment.getContent(),
+                comment.getReplies().stream()
+                                .map(reply -> new CommentResponseDTO(reply, reply.getMember()))
+                                .toList(),
                 DateTimeUtil.toRelative(comment.getCreatedAt())
         );
     }
