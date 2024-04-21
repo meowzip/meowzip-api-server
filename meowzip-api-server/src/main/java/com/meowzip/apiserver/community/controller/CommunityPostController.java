@@ -1,7 +1,6 @@
 package com.meowzip.apiserver.community.controller;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
-import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.community.service.CommunityPostService;
@@ -52,11 +51,11 @@ public class CommunityPostController implements CommunityPostSwagger {
     }
 
     @GetMapping("/{post-id}")
-    public CommonResponse<PostDetailResponseDTO> showPost(Principal principal,
+    public CommonResponse<PostResponseDTO> showPost(Principal principal,
                                                           @PathVariable("post-id") Long postId) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        PostDetailResponseDTO post = communityPostService.showPost(member, postId);
+        PostResponseDTO post = communityPostService.showPost(member, postId);
 
         return new CommonResponse<>(HttpStatus.OK, post);
     }
@@ -99,6 +98,26 @@ public class CommunityPostController implements CommunityPostSwagger {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         communityPostService.unlike(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{post-id}/bookmark")
+    public CommonResponse<Void> bookmark(Principal principal,
+                                         @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.bookmark(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{post-id}/bookmark")
+    public CommonResponse<Void> unbookmark(Principal principal,
+                                           @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.unbookmark(postId, member);
 
         return new CommonResponse<>(HttpStatus.OK);
     }

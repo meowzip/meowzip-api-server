@@ -1,7 +1,6 @@
 package com.meowzip.apiserver.community.swagger;
 
 import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
-import com.meowzip.apiserver.community.dto.response.PostDetailResponseDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -33,7 +32,7 @@ public interface CommunityPostSwagger {
                                                       required = true) PageRequest pageRequest);
 
     @Operation(summary = "게시글 상세 조회")
-    CommonResponse<PostDetailResponseDTO> showPost(@Parameter(hidden = true) Principal principal,
+    CommonResponse<PostResponseDTO> showPost(@Parameter(hidden = true) Principal principal,
                                                    @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
     @Operation(summary = "게시글 수정")
@@ -47,4 +46,20 @@ public interface CommunityPostSwagger {
     @Operation(summary = "게시글 삭제")
     CommonResponse<Void> delete(@Parameter(hidden = true) Principal principal,
                                 @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 좋아요")
+    CommonResponse<Void> like(@Parameter(hidden = true) Principal principal,
+                              @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 좋아요 취소")
+    CommonResponse<Void> unlike(@Parameter(hidden = true) Principal principal,
+                                @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 북마크")
+    CommonResponse<Void> bookmark(@Parameter(hidden = true) Principal principal,
+                                  @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 북마크 취소")
+    CommonResponse<Void> unbookmark(@Parameter(hidden = true) Principal principal,
+                                    @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 }
