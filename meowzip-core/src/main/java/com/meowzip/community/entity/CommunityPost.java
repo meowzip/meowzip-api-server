@@ -40,4 +40,12 @@ public class CommunityPost extends BaseTimeEntity {
         this.content = content;
         this.imageGroup = imageGroup;
     }
+
+    public void like() {
+        this.likeCount++;
+    }
+
+    public void unlike() {
+        this.likeCount--;
+    }
 }

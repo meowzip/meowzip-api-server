@@ -9,6 +9,8 @@ import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.community.entity.CommunityPost;
+import com.meowzip.community.entity.CommunityPostLike;
+import com.meowzip.community.repository.CommunityPostLikeRepository;
 import com.meowzip.community.repository.CommunityPostRepository;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.image.entity.ImageGroup;
@@ -27,6 +29,7 @@ import java.util.List;
 public class CommunityPostService {
 
     private final CommunityPostRepository postRepository;
+    private final CommunityPostLikeRepository likeRepository;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
 
@@ -105,5 +108,34 @@ public class CommunityPostService {
         }
 
         return images;
+    }
+
+    @Transactional
+    public void like(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        likeRepository.findByPostAndMember(post, member)
+                .ifPresent(like -> {
+                    throw new ClientException.Conflict(EnumErrorCode.ALREADY_LIKED);
+                });
+
+        CommunityPostLike like = CommunityPostLike.builder()
+                .post(post)
+                .member(member)
+                .build();
+
+        likeRepository.save(like);
+        post.like();
+    }
+
+    @Transactional
+    public void unlike(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        CommunityPostLike like = likeRepository.findByPostAndMember(post, member)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_LIKED));
+
+        likeRepository.delete(like);
+        post.unlike();
     }
 }
