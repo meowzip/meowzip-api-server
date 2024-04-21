@@ -34,9 +34,6 @@ public record PostDetailResponseDTO(
         @Schema(description = "댓글 수", example = "3")
         int commentCount,
 
-        @Schema(description = "댓글 목록", implementation = CommentResponseDTO.class)
-        List<CommentResponseDTO> comments,
-
         @Schema(description = "좋아요 여부", example = "true")
         boolean isLiked,
 
@@ -57,10 +54,6 @@ public record PostDetailResponseDTO(
                 images,
                 post.getLikeCount(),
                 post.getComments().size(),
-                // todo 대댓글 관련 처리 필요
-                post.getComments().stream()
-                        .map(comment -> new CommentResponseDTO(comment, comment.getMember().equals(member)))
-                        .toList(),
                 false, // todo 추후 수정
                 false, // todo 추후 수정
                 DateTimeUtil.toRelative(post.getCreatedAt())

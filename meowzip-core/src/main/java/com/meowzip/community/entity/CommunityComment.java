@@ -43,4 +43,8 @@ public class CommunityComment extends BaseTimeEntity {
     public void modify(String content) {
         this.content = content;
     }
+
+    public boolean isReply() {
+        return this.parent != null;
+    }
 }
