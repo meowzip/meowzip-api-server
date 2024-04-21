@@ -9,7 +9,9 @@ import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.community.entity.CommunityPost;
+import com.meowzip.community.entity.CommunityPostBookmark;
 import com.meowzip.community.entity.CommunityPostLike;
+import com.meowzip.community.repository.CommunityPostBookmarkRepository;
 import com.meowzip.community.repository.CommunityPostLikeRepository;
 import com.meowzip.community.repository.CommunityPostRepository;
 import com.meowzip.image.entity.ImageDomain;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +33,7 @@ public class CommunityPostService {
 
     private final CommunityPostRepository postRepository;
     private final CommunityPostLikeRepository likeRepository;
+    private final CommunityPostBookmarkRepository bookmarkRepository;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
 
@@ -137,5 +141,32 @@ public class CommunityPostService {
 
         likeRepository.delete(like);
         post.unlike();
+    }
+
+    @Transactional
+    public void bookmark(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        bookmarkRepository.findByPostAndMember(post, member)
+                .ifPresent(bookmark -> {
+                    throw new ClientException.Conflict(EnumErrorCode.ALREADY_BOOKMARKED);
+                });
+
+        CommunityPostBookmark bookmark = CommunityPostBookmark.builder()
+                .post(post)
+                .member(member)
+                .build();
+
+        bookmarkRepository.save(bookmark);
+    }
+
+    @Transactional
+    public void unbookmark(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        CommunityPostBookmark bookmark = bookmarkRepository.findByPostAndMember(post, member)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_BOOKMARKED));
+
+        bookmarkRepository.delete(bookmark);
     }
 }

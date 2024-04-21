@@ -47,4 +47,20 @@ public interface CommunityPostSwagger {
     @Operation(summary = "게시글 삭제")
     CommonResponse<Void> delete(@Parameter(hidden = true) Principal principal,
                                 @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 좋아요")
+    CommonResponse<Void> like(@Parameter(hidden = true) Principal principal,
+                              @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 좋아요 취소")
+    CommonResponse<Void> unlike(@Parameter(hidden = true) Principal principal,
+                                @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 북마크")
+    CommonResponse<Void> bookmark(@Parameter(hidden = true) Principal principal,
+                                  @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
+
+    @Operation(summary = "게시글 북마크 취소")
+    CommonResponse<Void> unbookmark(@Parameter(hidden = true) Principal principal,
+                                    @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 }

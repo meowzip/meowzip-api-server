@@ -39,7 +39,10 @@ public enum EnumErrorCode {
     COMMENT_NOT_FOUND(800001, "댓글을 찾을 수 없습니다."),
 
     ALREADY_LIKED(900001, "이미 좋아요를 누르셨습니다."),
-    NOT_LIKED(900002, "좋아요를 누르지 않았습니다.")
+    NOT_LIKED(900002, "좋아요를 누르지 않았습니다."),
+
+    ALREADY_BOOKMARKED(110001, "이미 북마크되어있는 게시물입니다."),
+    NOT_BOOKMARKED(110002, "북마크하지 않은 게시물입니다.")
 
     ;
 
