@@ -2,6 +2,8 @@ package com.meowzip.apiserver.community.swagger;
 
 import com.meowzip.apiserver.community.dto.request.ModifyCommentRequestDTO;
 import com.meowzip.apiserver.community.dto.request.WriteCommentRequestDTO;
+import com.meowzip.apiserver.community.dto.response.CommentResponseDTO;
+import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +22,10 @@ public interface CommunityCommentSwagger {
                                @Parameter(name = "comment",
                                               schema = @Schema(implementation = WriteCommentRequestDTO.class),
                                               required = true) WriteCommentRequestDTO requestDTO);
+
+    @Operation(summary = "댓글 리스트 조회")
+    CommonListResponse<CommentResponseDTO> showComments(@Parameter(hidden = true) Principal principal,
+                                                        @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
     @Operation(summary = "댓글 수정")
     CommonResponse<Void> modify(@Parameter(hidden = true) Principal principal,

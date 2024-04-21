@@ -40,8 +40,8 @@ public record CommentResponseDTO(
                 comment.getMember().equals(member),
                 comment.getContent(),
                 comment.getReplies().stream()
-                                .map(reply -> new CommentResponseDTO(reply, reply.getMember()))
-                                .toList(),
+                        .map(reply -> new CommentResponseDTO(reply, reply.getMember()))
+                        .toList(),
                 DateTimeUtil.toRelative(comment.getCreatedAt())
         );
     }
