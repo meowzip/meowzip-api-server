@@ -82,4 +82,24 @@ public class CommunityPostController implements CommunityPostSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PostMapping(value = "/{post-id}/like")
+    public CommonResponse<Void> like(Principal principal,
+                                     @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.like(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{post-id}/like")
+    public CommonResponse<Void> unlike(Principal principal,
+                                       @PathVariable("post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.unlike(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }

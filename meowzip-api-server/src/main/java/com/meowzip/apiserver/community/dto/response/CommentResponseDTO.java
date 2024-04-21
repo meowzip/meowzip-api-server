@@ -25,6 +25,9 @@ public record CommentResponseDTO(
         @Schema(description = "댓글 내용", example = "고양이가 귀엽네요")
         String content,
 
+        @Schema(description = "부모 댓글 id", example = "1")
+        Long parentId,
+
         @Schema(description = "대댓글 목록", implementation = CommentResponseDTO.class)
         List<CommentResponseDTO> replies,
 
@@ -39,6 +42,7 @@ public record CommentResponseDTO(
                 comment.getMember().getNickname(),
                 comment.getMember().equals(member),
                 comment.getContent(),
+                comment.getParent() == null ? null : comment.getParent().getId(),
                 comment.getReplies().stream()
                         .map(reply -> new CommentResponseDTO(reply, reply.getMember()))
                         .toList(),

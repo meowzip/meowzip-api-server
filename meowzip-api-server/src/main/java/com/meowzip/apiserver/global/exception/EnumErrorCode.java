@@ -38,6 +38,9 @@ public enum EnumErrorCode {
 
     COMMENT_NOT_FOUND(800001, "댓글을 찾을 수 없습니다."),
 
+    ALREADY_LIKED(900001, "이미 좋아요를 누르셨습니다."),
+    NOT_LIKED(900002, "좋아요를 누르지 않았습니다.")
+
     ;
 
     private final int result;
