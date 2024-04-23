@@ -20,6 +20,7 @@ public class DiscordService {
     
     private final DiscordComponent discordComponent;
 
+    // 2024-04-23 사용 해제. AWS 비용 확인 후 다시 사용 여부 결정
     public void send(HttpServletRequest req, HttpStatus status, String content) {
         if (req.getRequestURI().equals("/health-check")) {
             return;

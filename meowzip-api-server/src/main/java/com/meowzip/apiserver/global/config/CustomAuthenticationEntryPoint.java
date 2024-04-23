@@ -26,7 +26,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ClientException e = new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
-        discordService.send(request, e.getHttpStatus(), e.getMessage());
+//        discordService.send(request, e.getHttpStatus(), e.getMessage());
 
         response.setStatus(e.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
