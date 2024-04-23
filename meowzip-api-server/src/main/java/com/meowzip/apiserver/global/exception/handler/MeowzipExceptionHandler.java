@@ -53,7 +53,7 @@ public class MeowzipExceptionHandler {
             log.error(req.getRequestURI());
             log.error(message);
 
-            discordService.send(req, ex.getHttpStatus(), message);
+//            discordService.send(req, ex.getHttpStatus(), message);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

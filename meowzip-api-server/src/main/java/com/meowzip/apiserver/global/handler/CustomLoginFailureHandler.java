@@ -27,7 +27,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         var errorResponse = ErrorResponse.of(new ClientException.Unauthorized(EnumErrorCode.LOGIN_FAILED));
-        discordService.send(request, HttpStatus.UNAUTHORIZED, errorResponse.getMessage());
+//        discordService.send(request, HttpStatus.UNAUTHORIZED, errorResponse.getMessage());
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding("UTF-8");
