@@ -121,4 +121,14 @@ public class CommunityPostController implements CommunityPostSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{post-id}/block-writer")
+    public CommonResponse<Void> blockWriter(Principal principal,
+                                            @PathVariable(name = "post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.blockWriter(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }
