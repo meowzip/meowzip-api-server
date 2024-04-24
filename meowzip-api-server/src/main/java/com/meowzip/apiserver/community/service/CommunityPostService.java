@@ -54,6 +54,8 @@ public class CommunityPostService {
 
     public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
         List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
+        blockRepository.findAllByMember(member)
+                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember())));
 
         return posts.stream()
                 .map(post -> generatePostResponseDTO(post, member))
