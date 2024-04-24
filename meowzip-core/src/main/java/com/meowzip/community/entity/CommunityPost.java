@@ -48,4 +48,8 @@ public class CommunityPost extends BaseTimeEntity {
     public void unlike() {
         this.likeCount--;
     }
+
+    public boolean isBlocked(Member blocked) {
+        return this.member.equals(blocked);
+    }
 }

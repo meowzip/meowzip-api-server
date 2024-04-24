@@ -7,9 +7,11 @@ import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
+import com.meowzip.community.entity.CommunityBlockMember;
 import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.entity.CommunityPostBookmark;
 import com.meowzip.community.entity.CommunityPostLike;
+import com.meowzip.community.repository.CommunityBlockMemberRepository;
 import com.meowzip.community.repository.CommunityPostBookmarkRepository;
 import com.meowzip.community.repository.CommunityPostLikeRepository;
 import com.meowzip.community.repository.CommunityPostRepository;
@@ -33,6 +35,7 @@ public class CommunityPostService {
     private final CommunityPostRepository postRepository;
     private final CommunityPostLikeRepository likeRepository;
     private final CommunityPostBookmarkRepository bookmarkRepository;
+    private final CommunityBlockMemberRepository blockRepository;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
 
@@ -51,6 +54,8 @@ public class CommunityPostService {
 
     public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
         List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
+        blockRepository.findAllByMember(member)
+                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember())));
 
         return posts.stream()
                 .map(post -> generatePostResponseDTO(post, member))
@@ -184,5 +189,26 @@ public class CommunityPostService {
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_BOOKMARKED));
 
         bookmarkRepository.delete(bookmark);
+    }
+
+    @Transactional
+    public void blockWriter(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        if (isWriter(member, post)) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+        }
+
+        blockRepository.findByMemberAndBlockedMember(member, post.getMember())
+                .ifPresent(block -> {
+                    throw new ClientException.Conflict(EnumErrorCode.ALREADY_BLOCKED);
+                });
+
+        CommunityBlockMember block = CommunityBlockMember.builder()
+                .member(member)
+                .blockedMember(post.getMember())
+                .build();
+
+        blockRepository.save(block);
     }
 }
