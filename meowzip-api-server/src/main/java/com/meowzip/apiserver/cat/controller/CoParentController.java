@@ -31,11 +31,12 @@ public class CoParentController implements CoParentSwagger {
     @GetMapping("/members")
     public CommonListResponse<CoParentMemberSearchResponseDTO> showMembersForCoParent(Principal principal,
                                                                                 @RequestParam("keyword") String keyword,
+                                                                                @RequestParam("cat-id") Long catId,
                                                                                 PageRequest pageRequest) {
 
         Member me = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        List<CoParentMemberSearchResponseDTO> members = coParentService.getMembersForCoParent(keyword, me, pageRequest.of());
+        List<CoParentMemberSearchResponseDTO> members = coParentService.getMembersForCoParent(keyword, catId, me, pageRequest.of());
 
         return new CommonListResponse<CoParentMemberSearchResponseDTO>(HttpStatus.OK).add(members);
     }

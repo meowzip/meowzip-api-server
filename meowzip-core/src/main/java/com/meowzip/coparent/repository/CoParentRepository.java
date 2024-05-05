@@ -1,5 +1,6 @@
 package com.meowzip.coparent.repository;
 
+import com.meowzip.cat.entity.Cat;
 import com.meowzip.coparent.entity.CoParent;
 import com.meowzip.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,7 @@ public interface CoParentRepository extends JpaRepository<CoParent, Long> {
 
     Optional<CoParent> findByParticipantAndId(Member participant, Long id);
 
-    List<CoParent> findByParticipantInAndOwnerAndStatus(List<Member> participants, Member owner, CoParent.Status status);
+    List<CoParent> findByCatAndOwnerAndParticipantIn(Cat cat,
+                                                     Member owner,
+                                                     List<Member> participants);
 }

@@ -38,13 +38,17 @@ public class CoParentService {
         return null;
     }
 
-    public List<CoParentMemberSearchResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
+    // TODO: API 속도 확인 후 개선
+    public List<CoParentMemberSearchResponseDTO> getMembersForCoParent(String keyword, Long catId, Member me, Pageable pageable) {
         List<Member> membersForCoParent = memberService.getMembersForCoParent(keyword, me, pageable);
-        List<CoParent> coParents = coParentRepository.findByParticipantInAndOwnerAndStatus(membersForCoParent, me, CoParent.Status.STANDBY);
+        Cat cat = catService.getCat(me, catId);
+        List<CoParent> coParents = coParentRepository.findByCatAndOwnerAndParticipantIn(cat, me, membersForCoParent);
 
         return membersForCoParent.stream()
-                .flatMap(member -> coParents.stream()
-                        .map(coParent -> new CoParentMemberSearchResponseDTO(member, coParent.isParticipant(member) && coParent.isStandBy())))
+                .filter(member -> coParents.stream().anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy()) ||
+                        coParents.stream().noneMatch(coParent -> coParent.isParticipant(member)))
+                .map(member -> new CoParentMemberSearchResponseDTO(member, coParents.stream()
+                        .anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy())))
                 .toList();
     }
 
