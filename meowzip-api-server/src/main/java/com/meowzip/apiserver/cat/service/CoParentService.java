@@ -3,6 +3,7 @@ package com.meowzip.apiserver.cat.service;
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.member.service.MemberService;
@@ -13,6 +14,7 @@ import com.meowzip.coparent.repository.CoParentRepository;
 import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +30,25 @@ public class CoParentService {
     private final NotificationSendService notificationSendService;
 
     public List<CoParentMemberResponseDTO> getCoParentsByMember(Member member) {
-        List<CoParent> coParentsByMember = coParentRepository.findAllByOwner(member);
+//        List<CoParent> coParentsByMember = coParentRepository.findAllByOwner(member);
+//
+//        return coParentsByMember.stream()
+//                .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
+//                .toList();
+        return null;
+    }
 
-        return coParentsByMember.stream()
-                .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
+    // TODO: API 속도 확인 후 개선
+    public List<CoParentMemberSearchResponseDTO> getMembersForCoParent(String keyword, Long catId, Member me, Pageable pageable) {
+        List<Member> membersForCoParent = memberService.getMembersForCoParent(keyword, me, pageable);
+        Cat cat = catService.getCat(me, catId);
+        List<CoParent> coParents = coParentRepository.findByCatAndOwnerAndParticipantIn(cat, me, membersForCoParent);
+
+        return membersForCoParent.stream()
+                .filter(member -> coParents.stream().anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy()) ||
+                        coParents.stream().noneMatch(coParent -> coParent.isParticipant(member)))
+                .map(member -> new CoParentMemberSearchResponseDTO(member, coParents.stream()
+                        .anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy())))
                 .toList();
     }
 
