@@ -2,7 +2,7 @@ package com.meowzip.apiserver.cat.swagger;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
-import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
 import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
@@ -18,9 +18,9 @@ import java.security.Principal;
 public interface CoParentSwagger {
 
     @Operation(summary = "공동냥육 신청할 회원 조회")
-    CommonListResponse<CoParentMemberResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
-                                                                         @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
-                                                                         @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
+    CommonListResponse<CoParentMemberSearchResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
+                                                                               @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
+                                                                               @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 
     @Operation(summary = "공동냥육 신청")
     CommonResponse<Void> requestCoParent(@Parameter(hidden = true) Principal principal,

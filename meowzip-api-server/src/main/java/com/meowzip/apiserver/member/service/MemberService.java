@@ -234,10 +234,8 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteById(memberId);
     }
 
-    public List<CoParentMemberResponseDTO> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
-        return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable).stream()
-                .map(CoParentMemberResponseDTO::new)
-                .toList();
+    public List<Member> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
+        return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable);
     }
 
     public void countMembers() {

@@ -3,6 +3,7 @@ package com.meowzip.apiserver.cat.controller;
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
+import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.cat.service.CoParentService;
 import com.meowzip.apiserver.cat.swagger.CoParentSwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -28,15 +29,15 @@ public class CoParentController implements CoParentSwagger {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public CommonListResponse<CoParentMemberResponseDTO> showMembersForCoParent(Principal principal,
-                                                                                @RequestParam String keyword,
+    public CommonListResponse<CoParentMemberSearchResponseDTO> showMembersForCoParent(Principal principal,
+                                                                                @RequestParam("keyword") String keyword,
                                                                                 PageRequest pageRequest) {
 
         Member me = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        List<CoParentMemberResponseDTO> members = memberService.getMembersForCoParent(keyword, me, pageRequest.of());
+        List<CoParentMemberSearchResponseDTO> members = coParentService.getMembersForCoParent(keyword, me, pageRequest.of());
 
-        return new CommonListResponse<CoParentMemberResponseDTO>(HttpStatus.OK).add(members);
+        return new CommonListResponse<CoParentMemberSearchResponseDTO>(HttpStatus.OK).add(members);
     }
 
     @PostMapping("/request")

@@ -13,4 +13,6 @@ public interface CoParentRepository extends JpaRepository<CoParent, Long> {
     List<CoParent> findAllByOwner(Member owner);
 
     Optional<CoParent> findByParticipantAndId(Member participant, Long id);
+
+    List<CoParent> findByParticipantInAndOwnerAndStatus(List<Member> participants, Member owner, CoParent.Status status);
 }
