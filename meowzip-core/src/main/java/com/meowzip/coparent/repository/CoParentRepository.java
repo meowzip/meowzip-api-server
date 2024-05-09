@@ -18,4 +18,6 @@ public interface CoParentRepository extends JpaRepository<CoParent, Long> {
     List<CoParent> findByCatAndOwnerAndParticipantIn(Cat cat,
                                                      Member owner,
                                                      List<Member> participants);
+
+    Optional<CoParent> findByCatAndOwnerAndParticipant(Cat cat, Member me, Member requestedMember);
 }

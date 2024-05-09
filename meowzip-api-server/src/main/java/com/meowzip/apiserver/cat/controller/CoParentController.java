@@ -2,7 +2,6 @@ package com.meowzip.apiserver.cat.controller;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
-import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.cat.service.CoParentService;
 import com.meowzip.apiserver.cat.swagger.CoParentSwagger;
@@ -77,6 +76,17 @@ public class CoParentController implements CoParentSwagger {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         coParentService.reject(member, coParentId);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/cancel")
+    public CommonResponse<Void> cancelRequest(Principal principal,
+                                              @RequestParam("cat-id") Long catId,
+                                              @RequestParam("requested-member-id") Long requestedMemberId) {
+
+        Member me = memberService.getMember(MemberUtil.getMemberId(principal));
+        coParentService.cancel(me, catId, requestedMemberId);
 
         return new CommonResponse<>(HttpStatus.OK);
     }
