@@ -41,4 +41,9 @@ public interface CoParentSwagger {
     @Operation(summary = "공동냥육 신청 거절")
     CommonResponse<Void> rejectCoParent(@Parameter(hidden = true) Principal principal,
                                        @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
+
+    @Operation(summary = "공동냥육 신청 취소")
+    CommonResponse<Void> cancelRequest(@Parameter(hidden = true) Principal principal,
+                                       @Parameter(name = "cat-id", description = "신청할 때 보냈던 고양이 ID", required = true) Long catId,
+                                        @Parameter(name = "requested-member-id", description = "내가 공동냥육 신청한 회원 id", required = true) Long requestedMemberId);
 }

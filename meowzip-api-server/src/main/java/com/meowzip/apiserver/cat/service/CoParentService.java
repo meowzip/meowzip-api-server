@@ -98,4 +98,19 @@ public class CoParentService {
 
         return coParent;
     }
+
+    @Transactional
+    public void cancel(Member me, Long catId, Long requestedMemberId) {
+        Member requestedMember = memberService.getMember(requestedMemberId);
+        Cat cat = catService.getCat(me, catId);
+
+        CoParent coParent = coParentRepository.findByCatAndOwnerAndParticipant(cat, me, requestedMember)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+
+        if (!coParent.isStandBy()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
+        }
+
+        coParentRepository.delete(coParent);
+    }
 }
