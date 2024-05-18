@@ -19,15 +19,15 @@ public class CommunityBlockMemberService {
     private final CommunityBlockMemberRepository communityBlockMemberRepository;
 
     @Transactional
-    public void block(Member member, CommunityPost post) {
-        communityBlockMemberRepository.findByMemberAndBlockedMember(member, post.getMember())
+    public void block(Member member, Member blockedMember) {
+        communityBlockMemberRepository.findByMemberAndBlockedMember(member, blockedMember)
                 .ifPresent(block -> {
                     throw new ClientException.Conflict(EnumErrorCode.ALREADY_BLOCKED);
                 });
 
         CommunityBlockMember block = CommunityBlockMember.builder()
                 .member(member)
-                .blockedMember(post.getMember())
+                .blockedMember(blockedMember)
                 .build();
 
         communityBlockMemberRepository.save(block);

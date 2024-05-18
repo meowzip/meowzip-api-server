@@ -197,6 +197,6 @@ public class CommunityPostService {
             throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
         }
 
-        blockMemberService.block(member, post);
+        blockMemberService.block(member, post.getMember());
     }
 }
