@@ -57,6 +57,13 @@ public class CoParentService {
         Member receiver = memberService.getMember(requestDTO.memberId());
         Cat cat = catService.getCat(participant, requestDTO.catId());
 
+        coParentRepository.findByCatAndOwnerAndParticipant(cat, participant, receiver)
+                .ifPresent(coParent -> {
+                    if (coParent.isStandBy()) {
+                        throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_REQUESTED);
+                    }
+                });
+
         coParentRepository.save(requestDTO.toCoParent(receiver, cat));
 
         // todo: 프론트 분들께 이동 링크 요청

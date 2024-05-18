@@ -33,6 +33,7 @@ public enum EnumErrorCode {
 
     CO_PARENT_NOT_FOUND(600001, "공동냥육 데이터를 찾을 수 없습니다."),
     CO_PARENT_ALREADY_PROCESSED(600002, "이미 처리된 공동냥육 신청입니다."),
+    CO_PARENT_ALREADY_REQUESTED(600003, "이미 요청했습니다."),
 
     POST_NOT_FOUND(700001, "게시글을 찾을 수 없습니다."),
     ALREADY_BLOCKED(700002, "이미 차단된 회원입니다."),
@@ -43,7 +44,7 @@ public enum EnumErrorCode {
     NOT_LIKED(900002, "좋아요를 누르지 않았습니다."),
 
     ALREADY_BOOKMARKED(110001, "이미 북마크되어있는 게시물입니다."),
-    NOT_BOOKMARKED(110002, "북마크하지 않은 게시물입니다.")
+    NOT_BOOKMARKED(110002, "북마크하지 않은 게시물입니다."),
 
     ;
 
