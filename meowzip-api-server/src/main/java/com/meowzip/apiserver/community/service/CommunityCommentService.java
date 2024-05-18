@@ -22,6 +22,7 @@ public class CommunityCommentService {
 
     private final CommunityPostService postService;
     private final CommunityCommentRepository commentRepository;
+    private final CommunityBlockMemberService blockMemberService;
 
     @Transactional
     public void write(Long postId, Member member, WriteCommentRequestDTO requestDTO) {
@@ -57,6 +58,11 @@ public class CommunityCommentService {
         return commentResponses;
     }
 
+    private CommunityComment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.COMMENT_NOT_FOUND));
+    }
+
     @Transactional
     public void modify(Long postId, Long commentId, Member member, ModifyCommentRequestDTO requestDTO) {
         CommunityComment comment = commentRepository.findById(commentId)
@@ -82,5 +88,16 @@ public class CommunityCommentService {
     }
     private boolean isWriter(Member member, CommunityComment comment) {
         return member.getId().equals(comment.getMember().getId());
+    }
+
+    @Transactional
+    public void blockWriter(Long commentId, Member member) {
+        CommunityComment comment = getCommentById(commentId);
+
+        if (isWriter(member, comment)) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+        }
+
+        blockMemberService.block(member, comment.getMember());
     }
 }
