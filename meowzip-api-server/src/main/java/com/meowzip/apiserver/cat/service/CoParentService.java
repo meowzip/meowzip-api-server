@@ -2,7 +2,6 @@ package com.meowzip.apiserver.cat.service;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
-import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
@@ -26,22 +25,13 @@ public class CoParentService {
 
     private final CoParentRepository coParentRepository;
     private final MemberService memberService;
-    private final CatService catService;
+    private final CoParentCatService coParentCatService;
     private final NotificationSendService notificationSendService;
-
-    public List<CoParentMemberResponseDTO> getCoParentsByMember(Member member) {
-//        List<CoParent> coParentsByMember = coParentRepository.findAllByOwner(member);
-//
-//        return coParentsByMember.stream()
-//                .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
-//                .toList();
-        return null;
-    }
 
     // TODO: API 속도 확인 후 개선
     public List<CoParentMemberSearchResponseDTO> getMembersForCoParent(String keyword, Long catId, Member me, Pageable pageable) {
         List<Member> membersForCoParent = memberService.getMembersForCoParent(keyword, me, pageable);
-        Cat cat = catService.getCat(me, catId);
+        Cat cat = coParentCatService.getCat(me, catId);
         List<CoParent> coParents = coParentRepository.findByCatAndOwnerAndParticipantIn(cat, me, membersForCoParent);
 
         return membersForCoParent.stream()
@@ -55,7 +45,7 @@ public class CoParentService {
     @Transactional
     public void request(Member participant, RequestCoParentRequestDTO requestDTO) {
         Member receiver = memberService.getMember(requestDTO.memberId());
-        Cat cat = catService.getCat(participant, requestDTO.catId());
+        Cat cat = coParentCatService.getCat(participant, requestDTO.catId());
 
         coParentRepository.findByCatAndOwnerAndParticipant(cat, participant, receiver)
                 .ifPresent(coParent -> {
@@ -109,7 +99,7 @@ public class CoParentService {
     @Transactional
     public void cancel(Member me, Long catId, Long requestedMemberId) {
         Member requestedMember = memberService.getMember(requestedMemberId);
-        Cat cat = catService.getCat(me, catId);
+        Cat cat = coParentCatService.getCat(me, catId);
 
         CoParent coParent = coParentRepository.findByCatAndOwnerAndParticipant(cat, me, requestedMember)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
