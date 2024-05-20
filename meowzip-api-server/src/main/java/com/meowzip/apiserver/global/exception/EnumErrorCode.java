@@ -28,6 +28,7 @@ public enum EnumErrorCode {
     DIARY_NOT_FOUND(300001, "일지를 찾을 수 없습니다."),
 
     CAT_NOT_FOUND(400001, "고양이를 찾을 수 없습니다."),
+    INVALID_MET_AT(400002, "만난 날짜는 오늘 이후일 수 없습니다."),
 
     NOTIFICATION_TEMPLATE_NOT_FOUND(500001, "알림 템플릿을 찾을 수 없습니다."),
 
