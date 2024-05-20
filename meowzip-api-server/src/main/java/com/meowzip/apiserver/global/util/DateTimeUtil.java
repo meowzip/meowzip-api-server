@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.global.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -38,5 +39,13 @@ public class DateTimeUtil {
         }
 
         return time.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+    }
+
+    public static String getFormattedDateTimeInKorean(LocalDate date) {
+        String format = "yyyy년";
+        format += date.getMonthValue() > 9 ? " MM월" : " M월";
+        format += date.getDayOfMonth() > 9 ? " dd일" : " d일";
+
+        return date.format(DateTimeFormatter.ofPattern(format));
     }
 }
