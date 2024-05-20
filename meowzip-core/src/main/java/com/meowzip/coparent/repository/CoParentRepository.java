@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CoParentRepository extends JpaRepository<CoParent, Long> {
-    List<CoParent> findAllByOwner(Member owner);
+    List<CoParent> findAllByParticipant(Member participant);
 
     Optional<CoParent> findByParticipantAndId(Member participant, Long id);
 

@@ -29,6 +29,7 @@ public class CatService {
     private final CatRepository catRepository;
     private final ImageService imageService;
     private final TaggedCatService taggedCatService;
+    private final CoParentCatService coParentCatService;
 
     @Transactional
     public void register(Member member, MultipartFile image, RegisterCatRequestDTO requestDTO) {
@@ -50,7 +51,9 @@ public class CatService {
     public List<CatResponseDTO> getCats(Member member, Pageable pageable) {
         List<Cat> cats = catRepository.findAllByMemberOrderByCreatedAtAsc(member, pageable);
 
-        // todo: 공동냥육 중인 고양이 추가
+        coParentCatService.getCatsFromCoParent(member).stream()
+                .filter(cat -> !cats.contains(cat))
+                .forEach(cats::add);
 
         return cats.stream()
                 .map(CatResponseDTO::new)
@@ -71,11 +74,6 @@ public class CatService {
                 .toList();
 
         return new CatDetailResponseDTO(cat, diaries);
-    }
-
-    public Cat getCat(Member member, Long catId) {
-        return catRepository.findByMemberAndId(member, catId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
     }
 
     public List<Cat> getByMemberAndIds(Member member, List<Long> catIds) {
