@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,6 +32,10 @@ public class CatService {
 
     @Transactional
     public void register(Member member, MultipartFile image, RegisterCatRequestDTO requestDTO) {
+        if (requestDTO.metAt().isAfter(LocalDate.now())) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_MET_AT);
+        }
+
         String imageUrl = null;
 
         if (image != null) {
