@@ -44,7 +44,7 @@ public record CommentResponseDTO(
                 comment.getContent(),
                 comment.getParent() == null ? null : comment.getParent().getId(),
                 comment.getReplies().stream()
-                        .map(reply -> new CommentResponseDTO(reply, reply.getMember()))
+                        .map(reply -> new CommentResponseDTO(reply, member))
                         .toList(),
                 DateTimeUtil.toRelative(comment.getCreatedAt())
         );
