@@ -7,6 +7,7 @@ import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
+import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.entity.CommunityPostBookmark;
 import com.meowzip.community.entity.CommunityPostLike;
@@ -16,6 +17,7 @@ import com.meowzip.community.repository.CommunityPostRepository;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.member.entity.Member;
+import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ public class CommunityPostService {
     private final CommunityBlockMemberService blockMemberService;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
+    private final NotificationSendService notificationSendService;
 
     @Transactional
     public void write(Member member, WritePostRequestDTO requestDTO, List<MultipartFile> images) {
@@ -149,6 +152,9 @@ public class CommunityPostService {
 
         likeRepository.save(like);
         post.like();
+
+        // TODO 프론트 분들께 이동 링크 요청
+        notificationSendService.send(post.getMember(), NotificationCode.MN002, "/community", member.getNickname());
     }
 
     @Transactional

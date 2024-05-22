@@ -5,10 +5,12 @@ import com.meowzip.apiserver.community.dto.request.WriteCommentRequestDTO;
 import com.meowzip.apiserver.community.dto.response.CommentResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.community.entity.CommunityComment;
 import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.repository.CommunityCommentRepository;
 import com.meowzip.member.entity.Member;
+import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class CommunityCommentService {
     private final CommunityPostService postService;
     private final CommunityCommentRepository commentRepository;
     private final CommunityBlockMemberService blockMemberService;
+    private final NotificationSendService notificationSendService;
 
     @Transactional
     public void write(Long postId, Member member, WriteCommentRequestDTO requestDTO) {
@@ -36,6 +39,13 @@ public class CommunityCommentService {
 
         CommunityComment comment = requestDTO.toComment(post, member, parentComment);
         commentRepository.save(comment);
+
+        if (!post.getMember().equals(member)) {
+            String link = "/community/posts/" + postId;
+
+            // TODO 프론트 분들께 이동 링크 요청
+            notificationSendService.send(post.getMember(), NotificationCode.MN001, link, member.getNickname(), requestDTO.parentCommentId() == null ? "댓글" : "답글");
+        }
     }
 
     public List<CommentResponseDTO> showComments(Long postId, Member member) {
