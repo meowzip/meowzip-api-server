@@ -9,6 +9,7 @@ import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.community.entity.CommunityBlockMember;
 import com.meowzip.community.entity.CommunityComment;
 import com.meowzip.community.entity.CommunityPost;
+import com.meowzip.community.entity.TargetType;
 import com.meowzip.community.repository.CommunityCommentRepository;
 import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
@@ -26,6 +27,7 @@ public class CommunityCommentService {
     private final CommunityPostService postService;
     private final CommunityCommentRepository commentRepository;
     private final CommunityBlockMemberService blockMemberService;
+    private final CommunityReportService reportService;
     private final NotificationSendService notificationSendService;
 
     @Transactional
@@ -137,5 +139,16 @@ public class CommunityCommentService {
         }
 
         blockMemberService.block(member, comment.getMember());
+    }
+
+    @Transactional
+    public void report(Long commentId, Member member) {
+        CommunityComment comment = getCommentById(commentId);
+
+        if (isWriter(member, comment)) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+        }
+
+        reportService.report(member, TargetType.COMMENT, comment.getId());
     }
 }

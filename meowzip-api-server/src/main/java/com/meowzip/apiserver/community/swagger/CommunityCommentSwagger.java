@@ -39,4 +39,14 @@ public interface CommunityCommentSwagger {
     CommonResponse<Void> delete(@Parameter(hidden = true) Principal principal,
                                 @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId,
                                 @Parameter(in = ParameterIn.PATH, description = "댓글 id") Long commentId);
+
+    @Operation(summary = "댓글 작성자 차단")
+    CommonResponse<Void> blockWriter(@Parameter(hidden = true) Principal principal,
+                                     @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId,
+                                     @Parameter(in = ParameterIn.PATH, description = "댓글 id") Long commentId);
+
+    @Operation(summary = "댓글 신고")
+    CommonResponse<Void> report(@Parameter(hidden = true) Principal principal,
+                                @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId,
+                                @Parameter(in = ParameterIn.PATH, description = "댓글 id") Long commentId);
 }

@@ -80,4 +80,15 @@ public class CommunityCommentController implements CommunityCommentSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{post-id}/comments/{comment-id}/report")
+    public CommonResponse<Void> report(Principal principal,
+                                       @PathVariable("post-id") Long postId,
+                                       @PathVariable("comment-id") Long commentId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityCommentService.report(commentId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }
