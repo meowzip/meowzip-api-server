@@ -32,6 +32,7 @@ public class CommunityComment extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private CommunityComment parent;
 
+    @Setter
     @Builder.Default
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<CommunityComment> replies = new ArrayList<>();
@@ -46,5 +47,9 @@ public class CommunityComment extends BaseTimeEntity {
 
     public boolean isReply() {
         return this.parent != null;
+    }
+
+    public boolean isBlocked(Member blocked) {
+        return this.member.equals(blocked);
     }
 }

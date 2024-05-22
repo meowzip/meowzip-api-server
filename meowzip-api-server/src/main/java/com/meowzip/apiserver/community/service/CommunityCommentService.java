@@ -6,6 +6,7 @@ import com.meowzip.apiserver.community.dto.response.CommentResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
+import com.meowzip.community.entity.CommunityBlockMember;
 import com.meowzip.community.entity.CommunityComment;
 import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.repository.CommunityCommentRepository;
@@ -51,7 +52,11 @@ public class CommunityCommentService {
     public List<CommentResponseDTO> showComments(Long postId, Member member) {
         CommunityPost post = postService.getPostById(postId);
 
-        return changeCommentArchitect(post.getComments(), member);
+        var comments = post.getComments();
+        var blockMembers = blockMemberService.getByMember(member);
+        var filtered = filterComments(comments, blockMembers);
+
+        return changeCommentArchitect(filtered, member);
     }
 
     private List<CommentResponseDTO> changeCommentArchitect(List<CommunityComment> comments, Member member) {
@@ -66,6 +71,28 @@ public class CommunityCommentService {
         });
 
         return commentResponses;
+    }
+
+    private List<CommunityComment> filterComments(List<CommunityComment> comments, List<CommunityBlockMember> blockMembers) {
+        List<CommunityComment> filtered = new LinkedList<>();
+
+        for (var comment : comments) {
+            if (isBlocked(comment, blockMembers)) {
+                continue;
+            }
+
+            var filteredReplies = filterComments(comment.getReplies(), blockMembers);
+            comment.setReplies(filteredReplies);
+
+            filtered.add(comment);
+        }
+
+        return filtered;
+    }
+
+    private boolean isBlocked(CommunityComment comment, List<CommunityBlockMember> blockMembers) {
+        return blockMembers.stream()
+                .anyMatch(blockMember -> comment.isBlocked(blockMember.getBlockedMember()));
     }
 
     private CommunityComment getCommentById(Long commentId) {
@@ -96,6 +123,7 @@ public class CommunityCommentService {
 
         commentRepository.delete(comment);
     }
+
     private boolean isWriter(Member member, CommunityComment comment) {
         return member.getId().equals(comment.getMember().getId());
     }
