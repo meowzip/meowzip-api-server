@@ -131,4 +131,14 @@ public class CommunityPostController implements CommunityPostSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{post-id}/report")
+    public CommonResponse<Void> report(Principal principal,
+                                       @PathVariable(name = "post-id") Long postId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        communityPostService.report(postId, member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }

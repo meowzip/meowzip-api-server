@@ -3,7 +3,6 @@ package com.meowzip.apiserver.community.service;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.community.entity.CommunityBlockMember;
-import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.repository.CommunityBlockMemberRepository;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;

@@ -11,6 +11,7 @@ import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.community.entity.CommunityPost;
 import com.meowzip.community.entity.CommunityPostBookmark;
 import com.meowzip.community.entity.CommunityPostLike;
+import com.meowzip.community.entity.TargetType;
 import com.meowzip.community.repository.CommunityPostBookmarkRepository;
 import com.meowzip.community.repository.CommunityPostLikeRepository;
 import com.meowzip.community.repository.CommunityPostRepository;
@@ -36,6 +37,7 @@ public class CommunityPostService {
     private final CommunityPostLikeRepository likeRepository;
     private final CommunityPostBookmarkRepository bookmarkRepository;
     private final CommunityBlockMemberService blockMemberService;
+    private final CommunityReportService reportService;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
     private final NotificationSendService notificationSendService;
@@ -204,5 +206,16 @@ public class CommunityPostService {
         }
 
         blockMemberService.block(member, post.getMember());
+    }
+
+    @Transactional
+    public void report(Long postId, Member member) {
+        CommunityPost post = getPostById(postId);
+
+        if (isWriter(member, post)) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
+        }
+
+        reportService.report(member, TargetType.POST, post.getId());
     }
 }
