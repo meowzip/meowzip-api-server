@@ -41,4 +41,9 @@ public class NotificationHistory extends BaseTimeEntity {
     private boolean isRead;
 
     private LocalDateTime readAt;
+
+    public void read() {
+        this.isRead = true;
+        this.readAt = LocalDateTime.now();
+    }
 }

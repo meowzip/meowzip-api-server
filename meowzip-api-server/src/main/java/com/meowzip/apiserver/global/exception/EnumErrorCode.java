@@ -31,6 +31,7 @@ public enum EnumErrorCode {
     INVALID_MET_AT(400002, "만난 날짜는 오늘 이후일 수 없습니다."),
 
     NOTIFICATION_TEMPLATE_NOT_FOUND(500001, "알림 템플릿을 찾을 수 없습니다."),
+    NOTIFICATION_HISTORY_NOT_FOUND(500002, "요청하신 알림을 찾을 수 없습니다."),
 
     CO_PARENT_NOT_FOUND(600001, "공동냥육 데이터를 찾을 수 없습니다."),
     CO_PARENT_ALREADY_PROCESSED(600002, "이미 처리된 공동냥육 신청입니다."),
