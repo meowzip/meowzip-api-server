@@ -33,6 +33,7 @@ public class NotificationController implements NotificationSwagger {
     @PatchMapping("/{notification-id}")
     public CommonResponse<Void> readNotification(Principal principal,
                                                  @PathVariable("notification-id") Long notificationId) {
+
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         notificationService.read(member, notificationId);
 

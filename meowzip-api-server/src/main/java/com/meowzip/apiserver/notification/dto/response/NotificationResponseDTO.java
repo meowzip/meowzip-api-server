@@ -19,8 +19,12 @@ public record NotificationResponseDTO(
         @Schema(description = "이동 링크")
         String link,
 
+        @Schema(description = "읽음 여부")
+        boolean isRead,
+
         @Schema(description = "생성일")
         String createdAt
+
 ) {
 
     public NotificationResponseDTO(NotificationHistory notification) {
@@ -28,6 +32,7 @@ public record NotificationResponseDTO(
                 notification.getTitle(),
                 notification.getContent(),
                 notification.getLink(),
+                notification.isRead(),
                 DateTimeUtil.toRelative(notification.getCreatedAt())
         );
     }
