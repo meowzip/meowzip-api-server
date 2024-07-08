@@ -120,4 +120,8 @@ public class CatService {
     private boolean isOwner(Member member, Cat cat) {
         return member.equals(cat.getMember());
     }
+
+    public int countCats(Member member) {
+        return catRepository.countByMember(member);
+    }
 }

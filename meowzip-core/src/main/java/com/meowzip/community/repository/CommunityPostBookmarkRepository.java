@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface CommunityPostBookmarkRepository extends JpaRepository<CommunityPostBookmark, Long> {
 
     Optional<CommunityPostBookmark> findByPostAndMember(CommunityPost post, Member member);
+
+    int countByMember(Member member);
 }

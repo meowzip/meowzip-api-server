@@ -42,4 +42,8 @@ public class NotificationService {
     private boolean isOwner(Member member, NotificationHistory notification) {
         return notification.getReceiver().equals(member);
     }
+
+    public boolean isExistsUnreadNotification(Member member) {
+        return notificationHistoryRepository.existsByReceiverAndReadAtIsNull(member);
+    }
 }

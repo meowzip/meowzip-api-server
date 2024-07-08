@@ -15,4 +15,6 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
     List<NotificationHistory> findByReceiverAndCreatedAtAfterOrderByCreatedAtDesc(Member receiver, LocalDateTime createdAt);
 
     Optional<NotificationHistory> findByReceiverAndId(Member receiver, Long id);
+
+    boolean existsByReceiverAndReadAtIsNull(Member member);
 }
