@@ -20,4 +20,6 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
     List<Cat> findByMemberAndCatIdIn(@Param("member") Member member, @Param("ids") List<Long> ids);
 
     Optional<Cat> findByMemberAndId(Member member, Long id);
+
+    int countByMember(Member member);
 }

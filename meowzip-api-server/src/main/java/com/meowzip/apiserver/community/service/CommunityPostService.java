@@ -218,4 +218,12 @@ public class CommunityPostService {
 
         reportService.report(member, TargetType.POST, post.getId());
     }
+
+    public int countPosts(Member member) {
+        return postRepository.countByMember(member);
+    }
+
+    public int countBookmarks(Member member) {
+        return bookmarkRepository.countByMember(member);
+    }
 }
