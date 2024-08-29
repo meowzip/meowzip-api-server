@@ -5,10 +5,13 @@ import lombok.Builder;
 
 @Schema
 @Builder
-public record ProfileInfoResponseDTO(
+public record MyProfileInfoResponseDTO(
+
         String profileImageUrl,
         String nickname,
+        boolean existsNewNotification,
         int catCount,
-        int postCount
+        int postCount,
+        int bookmarkCount
 ) {
 }

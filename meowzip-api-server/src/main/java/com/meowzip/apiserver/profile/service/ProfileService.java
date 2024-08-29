@@ -3,6 +3,7 @@ package com.meowzip.apiserver.profile.service;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.community.service.CommunityPostService;
 import com.meowzip.apiserver.notification.service.NotificationService;
+import com.meowzip.apiserver.profile.dto.response.MyProfileInfoResponseDTO;
 import com.meowzip.apiserver.profile.dto.response.ProfileInfoResponseDTO;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +17,23 @@ public class ProfileService {
     private final CatService catService;
     private final CommunityPostService communityPostService;
 
-    public ProfileInfoResponseDTO getProfileInfo(Member member) {
-        return ProfileInfoResponseDTO.builder()
+    public MyProfileInfoResponseDTO getMyProfileInfo(Member member) {
+        return MyProfileInfoResponseDTO.builder()
                 .profileImageUrl(member.getProfileImage())
                 .nickname(member.getNickname())
                 .existsNewNotification(notificationService.isExistsUnreadNotification(member))
                 .catCount(catService.countCats(member))
                 .postCount(communityPostService.countPosts(member))
                 .bookmarkCount(communityPostService.countBookmarks(member))
+                .build();
+    }
+
+    public ProfileInfoResponseDTO getProfileInfo(Member member) {
+        return ProfileInfoResponseDTO.builder()
+                .profileImageUrl(member.getProfileImage())
+                .nickname(member.getNickname())
+                .catCount(catService.countCats(member))
+                .postCount(communityPostService.countPosts(member))
                 .build();
     }
 }
