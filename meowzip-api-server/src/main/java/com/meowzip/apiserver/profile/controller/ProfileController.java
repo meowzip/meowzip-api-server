@@ -1,5 +1,8 @@
 package com.meowzip.apiserver.profile.controller;
 
+import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
+import com.meowzip.apiserver.global.request.PageRequest;
+import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -10,6 +13,7 @@ import com.meowzip.apiserver.profile.swagger.ProfileSwagger;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,5 +45,16 @@ public class ProfileController implements ProfileSwagger {
         ProfileInfoResponseDTO profileInfo = profileService.getProfileInfo(member);
 
         return new CommonResponse<>(HttpStatus.OK, profileInfo);
+    }
+
+    @GetMapping("/posts")
+    public CommonListResponse<PostResponseDTO> showPostsByWriter(Principal principal,
+                                                                 @RequestParam(value = "member-id", required = false) Long memberId,
+                                                                 PageRequest pageRequest) {
+
+        Member loggedInMember = memberService.getMember(MemberUtil.getMemberId(principal));
+        Member writer = memberService.getMember(ObjectUtils.isEmpty(memberId) ? MemberUtil.getMemberId(principal) : memberId);
+
+        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(profileService.showPostsByWriter(loggedInMember, writer, pageRequest.of()));
     }
 }

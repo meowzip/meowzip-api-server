@@ -13,5 +13,7 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
 
     List<CommunityPost> findAllByOrderByCreatedAtDesc(PageRequest pageRequest);
 
+    List<CommunityPost> findAllByMemberOrderByCreatedAtDesc(Member member, PageRequest pageRequest);
+
     int countByMember(Member member);
 }
