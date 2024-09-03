@@ -8,10 +8,7 @@ import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
-import com.meowzip.community.entity.CommunityPost;
-import com.meowzip.community.entity.CommunityPostBookmark;
-import com.meowzip.community.entity.CommunityPostLike;
-import com.meowzip.community.entity.TargetType;
+import com.meowzip.community.entity.*;
 import com.meowzip.community.repository.CommunityPostBookmarkRepository;
 import com.meowzip.community.repository.CommunityPostLikeRepository;
 import com.meowzip.community.repository.CommunityPostRepository;
@@ -62,6 +59,16 @@ public class CommunityPostService {
 
         return posts.stream()
                 .map(post -> generatePostResponseDTO(post, member))
+                .toList();
+    }
+
+    public List<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, PageRequest pageRequest) {
+        List<CommunityPost> posts = postRepository.findAllByMemberOrderByCreatedAtDesc(writer, pageRequest);
+        blockMemberService.getByMember(loggedInMember)
+                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember())));
+
+        return posts.stream()
+                .map(post -> generatePostResponseDTO(post, loggedInMember))
                 .toList();
     }
 
@@ -225,5 +232,15 @@ public class CommunityPostService {
 
     public int countBookmarks(Member member) {
         return bookmarkRepository.countByMember(member);
+    }
+
+    public List<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
+        List<CommunityPost> posts = postRepository.findAllByMemberAndIsBookmarked(member.getId(), pageRequest);
+//        blockMemberService.getByMember(member)
+//                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember()))); TODO 확인 후 제거
+
+        return posts.stream()
+                .map(post -> generatePostResponseDTO(post, member))
+                .toList();
     }
 }
