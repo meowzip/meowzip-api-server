@@ -27,4 +27,8 @@ public interface ProfileSwagger {
     CommonListResponse<PostResponseDTO> showPostsByWriter(Principal principal,
                                                           @Parameter(in = ParameterIn.QUERY, name = "member-id") Long memberId,
                                                           PageRequest pageRequest);
+
+    @Operation(summary = "북마크한 게시글 조회")
+    CommonListResponse<PostResponseDTO> showBookmarkedPosts(Principal principal,
+                                                            PageRequest pageRequest);
 }

@@ -233,4 +233,14 @@ public class CommunityPostService {
     public int countBookmarks(Member member) {
         return bookmarkRepository.countByMember(member);
     }
+
+    public List<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
+        List<CommunityPost> posts = postRepository.findAllByMemberAndIsBookmarked(member.getId(), pageRequest);
+//        blockMemberService.getByMember(member)
+//                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember()))); TODO 확인 후 제거
+
+        return posts.stream()
+                .map(post -> generatePostResponseDTO(post, member))
+                .toList();
+    }
 }

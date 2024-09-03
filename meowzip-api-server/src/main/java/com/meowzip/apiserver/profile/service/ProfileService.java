@@ -44,4 +44,8 @@ public class ProfileService {
     public List<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, PageRequest pageRequest) {
         return communityPostService.showPostsByWriter(loggedInMember, writer, pageRequest);
     }
+
+    public List<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
+        return communityPostService.showBookmarkedPosts(member, pageRequest);
+    }
 }

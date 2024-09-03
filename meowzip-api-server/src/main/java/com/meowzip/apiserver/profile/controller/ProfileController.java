@@ -57,4 +57,11 @@ public class ProfileController implements ProfileSwagger {
 
         return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(profileService.showPostsByWriter(loggedInMember, writer, pageRequest.of()));
     }
+
+    @GetMapping("/bookmarks")
+    public CommonListResponse<PostResponseDTO> showBookmarkedPosts(Principal principal, PageRequest pageRequest) {
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+
+        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(profileService.showBookmarkedPosts(member, pageRequest.of()));
+    }
 }
