@@ -28,6 +28,7 @@ public interface CatSwagger {
 
     @Operation(summary = "고양이 목록 조회")
     CommonListResponse<CatResponseDTO> showCats(@Parameter(hidden = true) Principal principal,
+                                                @Parameter(in = ParameterIn.QUERY, description = "회원 id / 프로필 페이지에서 타인 모음집 조회 시 사용") Long memberId,
                                                 @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 
     @Operation(summary = "고양이 상세 조회")
