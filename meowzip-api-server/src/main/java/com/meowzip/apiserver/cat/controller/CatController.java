@@ -14,6 +14,7 @@ import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,9 +42,10 @@ public class CatController implements CatSwagger {
 
     @GetMapping
     public CommonListResponse<CatResponseDTO> showCats(Principal principal,
+                                                       @RequestParam(name = "member-id", required = false) Long memberId,
                                                        PageRequest pageRequest) {
 
-        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        Member member = memberService.getMember(ObjectUtils.isEmpty(memberId) ? MemberUtil.getMemberId(principal) : memberId);
         List<CatResponseDTO> cats = catService.getCats(member, pageRequest.of());
 
         return new CommonListResponse<CatResponseDTO>(HttpStatus.OK).add(cats);
