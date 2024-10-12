@@ -23,4 +23,8 @@ public class ImageGroupService {
         return imageGroupRepository.findById(id)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.IMAGE_NOT_FOUND));
     }
+
+    public void delete(ImageGroup originImageGroup) {
+        imageGroupRepository.delete(originImageGroup);
+    }
 }

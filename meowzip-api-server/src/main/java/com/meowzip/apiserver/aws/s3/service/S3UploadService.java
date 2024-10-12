@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.aws.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.meowzip.image.entity.Image;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,9 @@ public class S3UploadService {
 
     public String getImagePublicURL(Image image) {
         return cloudfrontUrl + File.separator + dir + File.separator + image.getDomain() + File.separator + image.getName();
+    }
+
+    public void delete(String path) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, path));
     }
 }

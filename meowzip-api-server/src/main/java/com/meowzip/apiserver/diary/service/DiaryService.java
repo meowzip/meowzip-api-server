@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +133,14 @@ public class DiaryService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
-        ImageGroup imageGroup = processImages(images, requestDTO, diary);
+        ImageGroup imageGroup;
+
+        try {
+            imageGroup = processImages(images, requestDTO, diary);
+        } catch (IOException e) {
+            log.error("image upload failed");
+            throw new ClientException.BadRequest(EnumErrorCode.IMAGE_UPLOAD_FAILED);
+        }
 
         List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
 
@@ -146,7 +154,12 @@ public class DiaryService {
         diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredDate(), requestDTO.caredTime(), imageGroup);
     }
 
-    private ImageGroup processImages(List<MultipartFile> images, ModifyDiaryRequestDTO requestDTO, Diary diary) {
+    private ImageGroup processImages(List<MultipartFile> images, ModifyDiaryRequestDTO requestDTO, Diary diary) throws IOException {
+        // 이미지를 모두 삭제한 경우
+        if (ObjectUtils.isEmpty(requestDTO.imageUrls()) && ObjectUtils.isEmpty(images)) {
+            return null;
+        }
+
         ImageGroup originImageGroup = diary.getImageGroup();
 
         // 기존에 이미지가 없던 글
@@ -158,6 +171,9 @@ public class DiaryService {
         return processOriginImages(images, originImageGroup, requestDTO.imageUrls());
     }
 
+    /**
+     * 기존에 이미지가 없던 글에 새로운 이미지를 업로드
+     */
     private ImageGroup processNewImages(List<MultipartFile> images) {
         if (ObjectUtils.isEmpty(images)) {
             return null;
@@ -167,8 +183,14 @@ public class DiaryService {
         return imageGroupService.getById(imageGroupId);
     }
 
-    private ImageGroup processOriginImages(List<MultipartFile> images, ImageGroup originImageGroup, List<String> imageUrls) {
-        return null;
+    private ImageGroup processOriginImages(List<MultipartFile> images, ImageGroup originImageGroup, List<String> imageUrls) throws IOException {
+        if (!originImageGroup.isChanged(images)) {
+            return originImageGroup;
+        }
+
+        imageService.replace(originImageGroup.getId(), images, imageUrls, ImageDomain.DIARY);
+
+        return originImageGroup;
     }
 
     private boolean isWriter(Member member, Diary diary) {
