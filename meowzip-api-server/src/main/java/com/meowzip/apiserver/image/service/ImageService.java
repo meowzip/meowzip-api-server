@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -59,5 +60,35 @@ public class ImageService {
         return images.stream()
                 .map(s3UploadService::getImagePublicURL)
                 .toList();
+    }
+
+    @Transactional
+    public void replace(Long imageGroupId, List<MultipartFile> newImages, List<String> imageUrls, ImageDomain domain) throws IOException {
+        ImageGroup imageGroup = imageGroupService.getById(imageGroupId);
+        List<Image> originalImages = imageRepository.findByImageGroup(imageGroup);
+
+        for (Image originalImage : originalImages) {
+            if (imageUrls.contains(s3UploadService.getImagePublicURL(originalImage))) {
+                continue;
+            }
+
+            s3UploadService.delete(originalImage.getDomain().name() + "/" + originalImage.getName());
+            imageRepository.delete(originalImage);
+        }
+
+        if (ObjectUtils.isEmpty(newImages)) {
+            return;
+        }
+
+        for (MultipartFile image : newImages) {
+            String url = s3UploadService.upload(image, domain.name());
+            imageRepository.save(Image.builder()
+                    .imageGroup(imageGroup)
+                    .domain(domain)
+                    .name(getFilename(url))
+                    .originalName(image.getOriginalFilename())
+                    .size(image.getSize())
+                    .build());
+        }
     }
 }

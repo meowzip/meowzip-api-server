@@ -26,6 +26,9 @@ public record ModifyDiaryRequestDTO(
         @NotBlank
         String content,
 
+        @Schema(description = "이미지 url 목록")
+        List<String> imageUrls,
+
         @Schema(description = "태그된 고양이 id 목록", example = "[1, 2, 3]")
         List<Long> catIds,
 
