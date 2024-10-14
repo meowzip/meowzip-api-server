@@ -50,7 +50,9 @@ public class SecurityConfig {
                 .cors(cors -> {
                     cors.configurationSource(request -> {
                         var corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.addAllowedOriginPattern("*");
+                        corsConfiguration.addAllowedOriginPattern("http://localhost:3000");
+                        corsConfiguration.addAllowedOriginPattern("http://localhost:8080");
+                        corsConfiguration.addAllowedOriginPattern("https://dev.meowzip.com");
                         corsConfiguration.addAllowedHeader("*");
                         corsConfiguration.addAllowedMethod("*");
                         corsConfiguration.setAllowCredentials(true);
