@@ -5,6 +5,7 @@ import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.global.exception.ServerException;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
@@ -17,15 +18,18 @@ import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommunityPostService {
@@ -35,6 +39,7 @@ public class CommunityPostService {
     private final CommunityPostBookmarkRepository bookmarkRepository;
     private final CommunityBlockMemberService blockMemberService;
     private final CommunityReportService reportService;
+    private final CommunityImageService communityImageService;
     private final ImageService imageService;
     private final ImageGroupService imageGroupService;
     private final NotificationSendService notificationSendService;
@@ -113,12 +118,13 @@ public class CommunityPostService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
-        ImageGroup imageGroup = post.getImageGroup();
+        ImageGroup imageGroup;
 
-        // TODO: 이미지 관련 로직
-        if (images != null && !images.isEmpty()) {
-            Long imageGroupId = imageService.upload(images, ImageDomain.COMMUNITY);
-            imageGroup = imageGroupService.getById(imageGroupId);
+        try {
+            imageGroup = communityImageService.processImages(images, requestDTO, post);
+        } catch (IOException e) {
+            log.error("image upload failed");
+            throw new ServerException.InternalServerError(EnumErrorCode.IMAGE_UPLOAD_FAILED);
         }
 
         post.modify(requestDTO.content(), imageGroup);

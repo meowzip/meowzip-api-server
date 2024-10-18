@@ -7,6 +7,7 @@ import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.apiserver.diary.dto.response.MonthlyDiaryResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.global.exception.ServerException;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
@@ -139,7 +140,7 @@ public class DiaryService {
             imageGroup = processImages(images, requestDTO, diary);
         } catch (IOException e) {
             log.error("image upload failed");
-            throw new ClientException.BadRequest(EnumErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new ServerException.InternalServerError(EnumErrorCode.IMAGE_UPLOAD_FAILED);
         }
 
         List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
