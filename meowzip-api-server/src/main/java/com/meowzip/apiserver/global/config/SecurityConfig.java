@@ -54,6 +54,7 @@ public class SecurityConfig {
                         corsConfiguration.addAllowedOriginPattern("http://localhost:8080");
                         corsConfiguration.addAllowedOriginPattern("https://dev.meowzip.com");
                         corsConfiguration.addAllowedOriginPattern("https://dev.meowzip.com/api/auth/callback/google");
+                        corsConfiguration.addAllowedOriginPattern("https://meowzip-front.vercel.app");
                         corsConfiguration.addAllowedHeader("*");
                         corsConfiguration.addAllowedMethod("*");
                         corsConfiguration.setAllowCredentials(true);
