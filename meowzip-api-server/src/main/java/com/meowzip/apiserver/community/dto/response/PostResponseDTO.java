@@ -14,10 +14,13 @@ public record PostResponseDTO(
         Long id,
 
         @Schema(description = "작성자 id", example = "1")
-        Long memberId,
+        Long writerId,
 
         @Schema(description = "작성자 닉네임", example = "냥냥이")
-        String memberNickname,
+        String writerNickname,
+
+        @Schema(description = "작성자 프로필 이미지", example = "profile.jpg")
+        String writerProfileImage,
 
         @Schema(description = "내가 작성한 게시글인지 여부", example = "true")
         boolean isMine,
@@ -48,6 +51,7 @@ public record PostResponseDTO(
         this(post.getId(),
                 post.getMember().getId(),
                 post.getMember().getNickname(),
+                post.getMember().getProfileImage(),
                 post.getMember().equals(member),
                 post.getContent(),
                 images,
