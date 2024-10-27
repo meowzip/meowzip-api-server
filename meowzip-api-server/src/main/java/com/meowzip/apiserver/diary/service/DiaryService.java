@@ -144,15 +144,19 @@ public class DiaryService {
         }
 
         List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
+        List<TaggedCat> newTaggedCats = new ArrayList<>();
 
         if (!ObjectUtils.isEmpty(requestDTO.catIds())) {
+            taggedCatService.deleteTaggedCats(taggedCats);
             List<Cat> cats = catService.getByMemberAndIds(member, requestDTO.catIds());
-            taggedCats = cats.stream()
+            newTaggedCats = cats.stream()
                     .map(cat -> TaggedCat.create(cat, diary))
                     .toList();
+
+            taggedCatService.register(newTaggedCats);
         }
 
-        diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), taggedCats, requestDTO.caredDate(), requestDTO.caredTime(), imageGroup);
+        diary.modify(requestDTO.isGivenWater(), requestDTO.isFeed(), requestDTO.content(), newTaggedCats, requestDTO.caredDate(), requestDTO.caredTime(), imageGroup);
     }
 
     private ImageGroup processImages(List<MultipartFile> images, ModifyDiaryRequestDTO requestDTO, Diary diary) throws IOException {
