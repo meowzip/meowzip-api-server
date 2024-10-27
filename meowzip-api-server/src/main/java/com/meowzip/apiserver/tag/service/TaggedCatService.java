@@ -28,4 +28,8 @@ public class TaggedCatService {
     public List<TaggedCat> getTaggedCatsByDiary(Diary diary) {
         return taggedCatRepository.findAllByDiary(diary);
     }
+
+    public void deleteTaggedCats(List<TaggedCat> taggedCats) {
+        taggedCatRepository.deleteAll(taggedCats);
+    }
 }
