@@ -66,11 +66,11 @@ public class DiaryService {
 
     private List<String> getImageUrls(Diary diary) {
         List<String> images = new ArrayList<>();
-        if (diary.getImageGroup() != null) {
-            images = imageService.getImageUrl(diary.getImageGroup().getId());
+        if (diary.getImageGroup() == null) {
+            return images;
         }
 
-        return images;
+        return imageService.getImageUrl(diary.getImageGroup().getId());
     }
 
     public List<MonthlyDiaryResponseDTO> getDiariesByMonth(Member member, int year, int month) {

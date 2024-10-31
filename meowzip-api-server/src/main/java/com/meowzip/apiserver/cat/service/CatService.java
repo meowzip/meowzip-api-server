@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -64,13 +65,17 @@ public class CatService {
         Cat cat = catRepository.findById(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
 
-        if (!isOwner(member, cat) && !cat.isCoParented(member)) {
-            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
-        }
+        // TODO: 마이페이지 모음집 진입을 위해 권한 관련 로직 주석처리. QA 후 필요없으면 지울 것
+//        if (!isOwner(member, cat) && !cat.isCoParented(member)) {
+//            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
+//        }
 
         List<DiaryResponseDTO> diaries = taggedCatService.getTaggedCatsByCat(cat).stream()
                 .map(TaggedCat::getDiary)
-                .map(diary -> new DiaryResponseDTO(diary, imageService.getImageUrl(diary.getImageGroup().getId())))
+                .map(diary -> {
+                    var diaryImageGroup = diary.getImageGroup();
+                    return new DiaryResponseDTO(diary, ObjectUtils.isEmpty(diaryImageGroup) ? List.of() : imageService.getImageUrl(diaryImageGroup.getId()));
+                })
                 .toList();
 
         return new CatDetailResponseDTO(cat, diaries);
