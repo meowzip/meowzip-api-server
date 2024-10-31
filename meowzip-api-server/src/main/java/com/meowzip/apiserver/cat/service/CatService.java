@@ -65,18 +65,15 @@ public class CatService {
         Cat cat = catRepository.findById(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
 
-        // TODO: 마이페이지 모음집 진입을 위해 권한 관련 로직 주석처리. QA 후 필요없으면 지울 것
-//        if (!isOwner(member, cat) && !cat.isCoParented(member)) {
-//            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
-//        }
-
-        List<DiaryResponseDTO> diaries = taggedCatService.getTaggedCatsByCat(cat).stream()
-                .map(TaggedCat::getDiary)
-                .map(diary -> {
-                    var diaryImageGroup = diary.getImageGroup();
-                    return new DiaryResponseDTO(diary, ObjectUtils.isEmpty(diaryImageGroup) ? List.of() : imageService.getImageUrl(diaryImageGroup.getId()));
-                })
-                .toList();
+        List<DiaryResponseDTO> diaries = (!isOwner(member, cat) && !cat.isCoParented(member)) ?
+                List.of() :
+                taggedCatService.getTaggedCatsByCat(cat).stream()
+                        .map(TaggedCat::getDiary)
+                        .map(diary -> {
+                            var diaryImageGroup = diary.getImageGroup();
+                            return new DiaryResponseDTO(diary, ObjectUtils.isEmpty(diaryImageGroup) ? List.of() : imageService.getImageUrl(diaryImageGroup.getId()));
+                        })
+                        .toList();
 
         return new CatDetailResponseDTO(cat, diaries);
     }
