@@ -44,9 +44,12 @@ public record CatDetailResponseDTO(
         List<CoParentMemberResponseDTO> coParents,
 
         @Schema(description = "다이어리 목록", implementation = DiaryResponseDTO.class)
-        List<DiaryResponseDTO> diaries
+        List<DiaryResponseDTO> diaries,
+
+        @Schema(description = "내 고양이인지 여부")
+        boolean isMine
 ) {
-    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries) {
+    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries, boolean isMine) {
         this(cat.getId(),
                 cat.getImageUrl(),
                 cat.getName(),
@@ -60,7 +63,8 @@ public record CatDetailResponseDTO(
                         .filter(CoParent::isApproval)
                         .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
                         .toList(),
-                diaries
+                diaries,
+                isMine
         );
     }
 }
