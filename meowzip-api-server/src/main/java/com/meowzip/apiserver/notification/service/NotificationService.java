@@ -4,6 +4,7 @@ import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.notification.dto.response.NotificationResponseDTO;
 import com.meowzip.member.entity.Member;
+import com.meowzip.notification.entity.NotificationCategory;
 import com.meowzip.notification.entity.NotificationHistory;
 import com.meowzip.notification.repository.NotificationHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class NotificationService {
         LocalDateTime criteria = LocalDateTime.now().minusWeeks(8);
 
         return notificationHistoryRepository.findByReceiverAndCreatedAtAfterOrderByCreatedAtDesc(member, criteria).stream()
+                .filter(notification -> notification.getTemplate().getCategory() == NotificationCategory.COMMUNITY)
                 .map(NotificationResponseDTO::new)
                 .toList();
     }
@@ -45,5 +47,14 @@ public class NotificationService {
 
     public boolean isExistsUnreadNotification(Member member) {
         return notificationHistoryRepository.existsByReceiverAndReadAtIsNull(member);
+    }
+
+    public List<NotificationResponseDTO> showCoParentNotifications(Member member) {
+        LocalDateTime criteria = LocalDateTime.now().minusWeeks(8);
+
+        return notificationHistoryRepository.findByReceiverAndCreatedAtAfterOrderByCreatedAtDesc(member, criteria).stream()
+                .filter(notification -> notification.getTemplate().getCategory() == NotificationCategory.COPARENTING)
+                .map(NotificationResponseDTO::new)
+                .toList();
     }
 }
