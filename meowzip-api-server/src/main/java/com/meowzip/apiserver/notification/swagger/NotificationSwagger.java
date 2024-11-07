@@ -14,6 +14,9 @@ public interface NotificationSwagger {
     @Operation(summary = "알림 리스트 조회")
     CommonListResponse<NotificationResponseDTO> showNotifications(Principal principal);
 
+    @Operation(summary = "공동냥육 알림 리스트 조회")
+    CommonListResponse<NotificationResponseDTO> showCoParentNotifications(Principal principal);
+
     @Operation(summary = "알림 읽음 처리")
     CommonResponse<Void> readNotification(Principal principal, Long notificationId);
 }
