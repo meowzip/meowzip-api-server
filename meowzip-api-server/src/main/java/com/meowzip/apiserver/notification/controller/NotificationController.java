@@ -30,6 +30,14 @@ public class NotificationController implements NotificationSwagger {
                 .add(notificationService.showNotifications(member));
     }
 
+    @GetMapping("/co-parent")
+    public CommonListResponse<NotificationResponseDTO> showCoParentNotifications(Principal principal) {
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+
+        return new CommonListResponse<NotificationResponseDTO>(HttpStatus.OK)
+                .add(notificationService.showCoParentNotifications(member));
+    }
+
     @PatchMapping("/{notification-id}")
     public CommonResponse<Void> readNotification(Principal principal,
                                                  @PathVariable("notification-id") Long notificationId) {
