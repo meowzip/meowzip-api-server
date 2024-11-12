@@ -53,6 +53,7 @@ public class CatService {
         List<Cat> cats = catRepository.findAllByMemberOrderByCreatedAtAsc(member, pageable);
 
         coParentCatService.getCatsFromCoParent(member).stream()
+                .filter(cat -> cat.isCoParented(member))
                 .filter(cat -> !cats.contains(cat))
                 .forEach(cats::add);
 

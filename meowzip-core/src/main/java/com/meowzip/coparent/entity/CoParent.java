@@ -34,7 +34,7 @@ public class CoParent extends BaseTimeEntity {
     private Status status;
 
     public boolean isParticipant(Member participant) {
-        return this.participant.equals(participant);
+        return this.participant.equals(participant) && this.status == Status.APPROVAL;
     }
 
     public void accept() {
