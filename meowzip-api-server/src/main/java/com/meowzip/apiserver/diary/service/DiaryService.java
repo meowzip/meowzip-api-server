@@ -10,14 +10,17 @@ import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
+import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
 import com.meowzip.cat.entity.Cat;
+import com.meowzip.coparent.entity.CoParent;
 import com.meowzip.diary.entity.Diary;
 import com.meowzip.diary.entity.MonthlyDiaryInterface;
 import com.meowzip.diary.repository.DiaryRepository;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.image.entity.ImageGroup;
 import com.meowzip.member.entity.Member;
+import com.meowzip.notification.entity.NotificationCode;
 import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,7 @@ public class DiaryService {
     private final ImageGroupService imageGroupService;
     private final CatService catService;
     private final TaggedCatService taggedCatService;
+    private final NotificationSendService notificationSendService;
 
     public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date) {
         List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDate(member, date, pageRequest);
@@ -110,6 +114,19 @@ public class DiaryService {
                     .toList();
 
             taggedCatService.register(taggedCats);
+
+            notifyToCoParents(member, cats);
+        }
+    }
+
+    private void notifyToCoParents(Member member, List<Cat> cats) {
+        for (Cat cat : cats) {
+            List<CoParent> coParents = cat.getCoParents();
+            coParents.stream()
+                    .filter(CoParent::isApproval)
+                    .map(CoParent::getParticipant)
+                    .filter(coParentMember -> !coParentMember.equals(member))
+                    .forEach(coParentMember -> notificationSendService.send(coParentMember, NotificationCode.MN003, "", member.getNickname(), cat.getName()));
         }
     }
 

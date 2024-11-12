@@ -85,11 +85,11 @@ public class CatService {
     }
 
     public List<Cat> getByMemberAndIds(Member member, List<Long> catIds) {
-        List<Cat> cats = catRepository.findByMemberAndCatIdIn(member, catIds);
+        List<Cat> cats = catRepository.findByMemberOrCoParentAndCatIdIn(member, catIds);
 
         // TODO: Custom Exception으로 바꾸기
         if (cats.size() != catIds.size() || cats.isEmpty()) {
-            throw new RuntimeException();
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
         return cats;
