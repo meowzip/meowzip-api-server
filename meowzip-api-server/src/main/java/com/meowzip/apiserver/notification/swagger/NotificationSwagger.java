@@ -2,6 +2,7 @@ package com.meowzip.apiserver.notification.swagger;
 
 import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
+import com.meowzip.apiserver.notification.dto.response.CoParentNotificationResponseDTO;
 import com.meowzip.apiserver.notification.dto.response.NotificationResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,7 @@ public interface NotificationSwagger {
     CommonListResponse<NotificationResponseDTO> showNotifications(Principal principal);
 
     @Operation(summary = "공동냥육 알림 리스트 조회")
-    CommonListResponse<NotificationResponseDTO> showCoParentNotifications(Principal principal);
+    CommonListResponse<CoParentNotificationResponseDTO> showCoParentNotifications(Principal principal);
 
     @Operation(summary = "알림 읽음 처리")
     CommonResponse<Void> readNotification(Principal principal, Long notificationId);

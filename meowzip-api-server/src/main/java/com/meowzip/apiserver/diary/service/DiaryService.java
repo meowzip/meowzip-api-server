@@ -115,18 +115,18 @@ public class DiaryService {
 
             taggedCatService.register(taggedCats);
 
-            notifyToCoParents(member, cats);
+            notifyToCoParents(member, cats, diary.getId());
         }
     }
 
-    private void notifyToCoParents(Member member, List<Cat> cats) {
+    private void notifyToCoParents(Member member, List<Cat> cats, Long diaryId) {
         for (Cat cat : cats) {
             List<CoParent> coParents = cat.getCoParents();
             coParents.stream()
                     .filter(CoParent::isApproval)
                     .map(CoParent::getParticipant)
                     .filter(coParentMember -> !coParentMember.equals(member))
-                    .forEach(coParentMember -> notificationSendService.send(coParentMember, NotificationCode.MN003, "", member.getNickname(), cat.getName()));
+                    .forEach(coParentMember -> notificationSendService.send(coParentMember, member, NotificationCode.MN003, String.valueOf(diaryId), cat.getName()));
         }
     }
 

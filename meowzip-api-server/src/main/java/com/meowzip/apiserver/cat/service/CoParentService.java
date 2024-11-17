@@ -42,6 +42,20 @@ public class CoParentService {
                 .toList();
     }
 
+    public boolean isResponded(Long coParentId) {
+        CoParent coParent = coParentRepository.findById(coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+
+        return !coParent.isStandBy();
+    }
+
+    public boolean isExpired(Long coParentId) {
+        CoParent coParent = coParentRepository.findById(coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+
+        return coParent.isExpired();
+    }
+
     @Transactional
     public void request(Member participant, RequestCoParentRequestDTO requestDTO) {
         Member receiver = memberService.getMember(requestDTO.memberId());
@@ -54,10 +68,9 @@ public class CoParentService {
                     }
                 });
 
-        coParentRepository.save(requestDTO.toCoParent(receiver, cat));
+        CoParent saved = coParentRepository.save(requestDTO.toCoParent(receiver, cat));
 
-        // todo: 프론트 분들께 이동 링크 요청
-        notificationSendService.send(receiver, NotificationCode.MN004, "/cats/co-parents", participant.getNickname());
+        notificationSendService.send(receiver, participant, NotificationCode.MN004, String.valueOf(saved.getId()), "");
     }
 
     @Transactional
@@ -65,7 +78,7 @@ public class CoParentService {
         CoParent coParent = getCoParent(participant, coParentId);
         coParent.accept();
 
-        notificationSendService.send(coParent.getOwner(), NotificationCode.MN005, "/cats/co-parents", participant.getNickname(), coParent.getCat().getName());
+        notificationSendService.send(coParent.getOwner(), participant, NotificationCode.MN005, String.valueOf(coParent.getId()), coParent.getCat().getName());
     }
 
     @Transactional
@@ -73,7 +86,7 @@ public class CoParentService {
         CoParent coParent = getCoParent(participant, coParentId);
         coParent.reject();
 
-        notificationSendService.send(coParent.getOwner(), NotificationCode.MN006, "/cats/co-parents", participant.getNickname());
+        notificationSendService.send(coParent.getOwner(), participant, NotificationCode.MN006, String.valueOf(coParent.getId()), participant.getNickname());
     }
 
     public CoParentInfoResponseDTO getCoParentInfo(Member participant, Long coParentId) {

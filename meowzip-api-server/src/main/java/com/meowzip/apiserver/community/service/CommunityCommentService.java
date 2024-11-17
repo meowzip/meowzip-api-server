@@ -44,10 +44,7 @@ public class CommunityCommentService {
         commentRepository.save(comment);
 
         if (!post.getMember().equals(member)) {
-            String link = "/community/posts/" + postId;
-
-            // TODO 프론트 분들께 이동 링크 요청
-            notificationSendService.send(post.getMember(), NotificationCode.MN001, link, member.getNickname(), requestDTO.parentCommentId() == null ? "댓글" : "답글");
+            notificationSendService.send(post.getMember(), member, NotificationCode.MN001, String.valueOf(postId), requestDTO.parentCommentId() == null ? "댓글" : "답글");
         }
     }
 
