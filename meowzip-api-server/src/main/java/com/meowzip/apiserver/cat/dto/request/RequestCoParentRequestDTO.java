@@ -6,6 +6,8 @@ import com.meowzip.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 @Schema
 public record RequestCoParentRequestDTO(
 
@@ -24,6 +26,7 @@ public record RequestCoParentRequestDTO(
                         .owner(cat.getMember())
                         .cat(cat)
                         .status(CoParent.Status.STANDBY)
+                        .acceptableDatetime(LocalDateTime.now().plusDays(7))
                         .build();
         }
 }
