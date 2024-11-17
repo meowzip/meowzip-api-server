@@ -6,6 +6,8 @@ import com.meowzip.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table
 @Getter
@@ -33,6 +35,8 @@ public class CoParent extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
+    private LocalDateTime acceptableDatetime;
+
     public boolean isParticipant(Member participant) {
         return this.participant.equals(participant) && this.status == Status.APPROVAL;
     }
@@ -57,5 +61,9 @@ public class CoParent extends BaseTimeEntity {
 
     public boolean isApproval() {
         return status == Status.APPROVAL;
+    }
+
+    public boolean isExpired() {
+        return acceptableDatetime.isBefore(LocalDateTime.now());
     }
 }

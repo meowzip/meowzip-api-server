@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 
@@ -45,5 +46,18 @@ public class NotificationHistory extends BaseTimeEntity {
     public void read() {
         this.isRead = true;
         this.readAt = LocalDateTime.now();
+    }
+
+    public Long getDetailLink() {
+        if (ObjectUtils.isEmpty(link) || !link.contains("/")) {
+            return null;
+        }
+
+        String detailLink = link.substring(link.lastIndexOf("/") + 1);
+        if (!detailLink.matches("\\d+")) {
+            return null;
+        }
+
+        return Long.parseLong(detailLink);
     }
 }

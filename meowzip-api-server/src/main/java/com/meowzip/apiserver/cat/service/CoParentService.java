@@ -42,6 +42,20 @@ public class CoParentService {
                 .toList();
     }
 
+    public boolean isResponded(Long coParentId) {
+        CoParent coParent = coParentRepository.findById(coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+
+        return !coParent.isStandBy();
+    }
+
+    public boolean isExpired(Long coParentId) {
+        CoParent coParent = coParentRepository.findById(coParentId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
+
+        return coParent.isExpired();
+    }
+
     @Transactional
     public void request(Member participant, RequestCoParentRequestDTO requestDTO) {
         Member receiver = memberService.getMember(requestDTO.memberId());

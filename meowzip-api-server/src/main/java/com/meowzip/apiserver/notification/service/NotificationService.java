@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.notification.service;
 
+import com.meowzip.apiserver.cat.service.CoParentService;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.notification.dto.response.CoParentNotificationResponseDTO;
@@ -20,6 +21,7 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationHistoryRepository notificationHistoryRepository;
+    private final CoParentService coParentService;
 
     public List<NotificationResponseDTO> showNotifications(Member member) {
         LocalDateTime criteria = LocalDateTime.now().minusWeeks(8);
@@ -55,7 +57,17 @@ public class NotificationService {
 
         return notificationHistoryRepository.findByReceiverAndCreatedAtAfterOrderByCreatedAtDesc(member, criteria).stream()
                 .filter(notification -> notification.getTemplate().getCategory() == NotificationCategory.COPARENTING)
-                .map(CoParentNotificationResponseDTO::new)
+                .map(notification -> {
+                    Long coParentId = notification.getDetailLink();
+                    boolean isResponded = false;
+                    boolean isExpired = true;
+                    if (coParentId != null) {
+                        isResponded = coParentService.isResponded(coParentId);
+                        isExpired = coParentService.isExpired(coParentId);
+                    }
+
+                    return new CoParentNotificationResponseDTO(notification, isExpired, isResponded);
+                })
                 .toList();
     }
 }
