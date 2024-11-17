@@ -13,8 +13,8 @@ public record NotificationResponseDTO(
         @Schema(description = "제목")
         String title,
 
-        @Schema(description = "내용")
-        String content,
+        @Schema(description = "알림 보낸 사람 닉네임")
+        String senderNickname,
 
         @Schema(description = "이동 링크")
         String link,
@@ -30,7 +30,7 @@ public record NotificationResponseDTO(
     public NotificationResponseDTO(NotificationHistory notification) {
         this(notification.getId(),
                 notification.getTitle(),
-                notification.getContent(),
+                notification.getSenderNickname(),
                 notification.getLink(),
                 notification.isRead(),
                 DateTimeUtil.toRelative(notification.getCreatedAt())

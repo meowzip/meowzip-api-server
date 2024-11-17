@@ -168,8 +168,7 @@ public class CommunityPostService {
         likeRepository.save(like);
         post.like();
 
-        // TODO 프론트 분들께 이동 링크 요청
-        notificationSendService.send(post.getMember(), NotificationCode.MN002, "/community", member.getNickname());
+        notificationSendService.send(post.getMember(), member, NotificationCode.MN002, String.valueOf(postId), "");
     }
 
     @Transactional

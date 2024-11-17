@@ -31,9 +31,9 @@ public class NotificationHistory extends BaseTimeEntity {
     @JoinColumn(name = "template_id")
     private NotificationTemplate template;
 
-    private String title;
+    private String senderNickname;
 
-    private String content;
+    private String title;
 
     private String link;
 
