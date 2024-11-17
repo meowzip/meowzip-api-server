@@ -4,6 +4,7 @@ import com.meowzip.apiserver.global.response.CommonListResponse;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
+import com.meowzip.apiserver.notification.dto.response.CoParentNotificationResponseDTO;
 import com.meowzip.apiserver.notification.dto.response.NotificationResponseDTO;
 import com.meowzip.apiserver.notification.service.NotificationService;
 import com.meowzip.apiserver.notification.swagger.NotificationSwagger;
@@ -31,10 +32,10 @@ public class NotificationController implements NotificationSwagger {
     }
 
     @GetMapping("/co-parent")
-    public CommonListResponse<NotificationResponseDTO> showCoParentNotifications(Principal principal) {
+    public CommonListResponse<CoParentNotificationResponseDTO> showCoParentNotifications(Principal principal) {
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        return new CommonListResponse<NotificationResponseDTO>(HttpStatus.OK)
+        return new CommonListResponse<CoParentNotificationResponseDTO>(HttpStatus.OK)
                 .add(notificationService.showCoParentNotifications(member));
     }
 
