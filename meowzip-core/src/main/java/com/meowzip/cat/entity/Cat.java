@@ -46,6 +46,17 @@ public class Cat extends BaseTimeEntity {
         return !coParents.isEmpty();
     }
 
+    public int getCoParentedCount() {
+        if (coParents.isEmpty()) {
+            return 0;
+        }
+
+        return coParents.stream()
+                .filter(CoParent::isApproval)
+                .toList()
+                .size();
+    }
+
     public boolean isCoParented(Member member) {
         return coParents.stream()
                 .anyMatch(coParent -> coParent.isParticipant(member));

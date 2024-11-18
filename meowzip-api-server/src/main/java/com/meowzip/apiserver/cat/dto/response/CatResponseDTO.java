@@ -38,7 +38,7 @@ public record CatResponseDTO(
                 cat.getImageUrl(),
                 cat.getName(),
                 cat.isCoParented(),
-                cat.isCoParented() ? cat.getCoParents().size() : 0,
+                cat.getCoParentedCount(),
                 cat.getDDay(),
                 cat.getSex(),
                 cat.getIsNeutered()
