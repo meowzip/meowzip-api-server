@@ -35,10 +35,10 @@ public class CoParentService {
         List<CoParent> coParents = coParentRepository.findByCatAndOwnerAndParticipantIn(cat, me, membersForCoParent);
 
         return membersForCoParent.stream()
-                .filter(member -> coParents.stream().anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy()) ||
-                        coParents.stream().noneMatch(coParent -> coParent.isParticipant(member)))
+                .filter(member -> coParents.stream().anyMatch(coParent -> coParent.isParticipant(cat, member) && coParent.isStandBy()) ||
+                        coParents.stream().noneMatch(coParent -> coParent.isParticipant(cat, member)))
                 .map(member -> new CoParentMemberSearchResponseDTO(member, coParents.stream()
-                        .anyMatch(coParent -> coParent.isParticipant(member) && coParent.isStandBy())))
+                        .anyMatch(coParent -> coParent.isParticipant(cat, member) && coParent.isStandBy())))
                 .toList();
     }
 

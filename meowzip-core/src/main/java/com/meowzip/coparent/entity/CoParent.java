@@ -41,6 +41,10 @@ public class CoParent extends BaseTimeEntity {
         return this.participant.equals(participant) && this.status == Status.APPROVAL;
     }
 
+    public boolean isParticipant(Cat cat, Member participant) {
+        return this.cat.equals(cat) && this.participant.equals(participant);
+    }
+
     public void accept() {
         this.status = Status.APPROVAL;
     }
