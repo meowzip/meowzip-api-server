@@ -31,7 +31,7 @@ public class CatController implements CatSwagger {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<Void> register(Principal principal,
-                                         @RequestPart(name = "image") MultipartFile image,
+                                         @RequestPart(name = "image", required = false) MultipartFile image,
                                          @RequestPart(name = "cat") RegisterCatRequestDTO requestDTO) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));

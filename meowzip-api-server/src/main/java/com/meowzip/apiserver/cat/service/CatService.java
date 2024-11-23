@@ -38,15 +38,23 @@ public class CatService {
             throw new ClientException.BadRequest(EnumErrorCode.INVALID_MET_AT);
         }
 
-        String imageUrl = null;
-
-        if (image != null) {
-            Long imageGroupId = imageService.upload(List.of(image), ImageDomain.CAT);
-            imageUrl = imageService.getImageUrl(imageGroupId).get(0);
-        }
+        String imageUrl = getImageUrl(requestDTO.imageUrl(), image);
 
         Cat cat = requestDTO.toCat(member, imageUrl);
         catRepository.save(cat);
+    }
+
+    private String getImageUrl(String defaultImageUrl, MultipartFile image) {
+        if (!ObjectUtils.isEmpty(defaultImageUrl)) {
+            return defaultImageUrl;
+        }
+
+        if (image == null) {
+            return null;
+        }
+
+        Long imageGroupId = imageService.upload(List.of(image), ImageDomain.CAT);
+        return imageService.getImageUrl(imageGroupId).get(0);
     }
 
     public List<CatResponseDTO> getCats(Member member, Pageable pageable) {
