@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Schema
 public record RegisterCatRequestDTO(
@@ -32,7 +31,10 @@ public record RegisterCatRequestDTO(
 
         @Schema(description = "메모")
         @NotBlank(message = "메모를 입력해주세요.")
-        String memo
+        String memo,
+
+        @Schema(description = "이미지 URL")
+        String imageUrl
 ) {
 
     public Cat toCat(Member member, String imageUrl) {

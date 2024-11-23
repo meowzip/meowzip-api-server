@@ -20,9 +20,6 @@ public record CatResponseDTO(
         @Schema(description = "공동냥육 여부")
         boolean isCoParented,
 
-        @Schema(description = "공동냥육 참여하는 사람 수", example = "2")
-        Integer coParentedCount,
-
         @Schema(description = "만난 지 nn일")
         int dDay,
 
@@ -38,7 +35,6 @@ public record CatResponseDTO(
                 cat.getImageUrl(),
                 cat.getName(),
                 cat.isCoParented(),
-                cat.getCoParentedCount(),
                 cat.getDDay(),
                 cat.getSex(),
                 cat.getIsNeutered()

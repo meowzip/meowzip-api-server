@@ -59,7 +59,7 @@ public class Cat extends BaseTimeEntity {
 
     public boolean isCoParented(Member member) {
         return coParents.stream()
-                .anyMatch(coParent -> coParent.isParticipant(member));
+                .anyMatch(coParent -> coParent.isParticipant(member) && coParent.isApproval());
     }
 
     public int getDDay() {
