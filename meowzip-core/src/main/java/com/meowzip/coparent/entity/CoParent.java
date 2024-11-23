@@ -53,6 +53,10 @@ public class CoParent extends BaseTimeEntity {
         return status == Status.STANDBY;
     }
 
+    public boolean isRejected() {
+        return status == Status.REJECT;
+    }
+
     public void reject() {
         this.status = Status.REJECT;
     }

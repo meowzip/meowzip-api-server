@@ -76,6 +76,11 @@ public class CoParentService {
     @Transactional
     public void accept(Member participant, Long coParentId) {
         CoParent coParent = getCoParent(participant, coParentId);
+
+        if (coParent.isApproval()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
+        }
+
         coParent.accept();
 
         notificationSendService.send(coParent.getOwner(), participant, NotificationCode.MN005, String.valueOf(coParent.getId()), coParent.getCat().getName());
@@ -84,6 +89,11 @@ public class CoParentService {
     @Transactional
     public void reject(Member participant, Long coParentId) {
         CoParent coParent = getCoParent(participant, coParentId);
+
+        if (coParent.isRejected()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
+        }
+
         coParent.reject();
 
         notificationSendService.send(coParent.getOwner(), participant, NotificationCode.MN006, String.valueOf(coParent.getId()), participant.getNickname());
@@ -98,9 +108,6 @@ public class CoParentService {
     private CoParent getCoParent(Member participant, Long coParentId) {
         CoParent coParent = coParentRepository.findByParticipantAndId(participant, coParentId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
-        if (!coParent.isParticipant(participant)) {
-            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
-        }
 
         if (!coParent.isStandBy()) {
             throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
