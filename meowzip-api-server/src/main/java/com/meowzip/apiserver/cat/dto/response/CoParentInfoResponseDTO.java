@@ -4,7 +4,6 @@ import com.meowzip.cat.entity.Neutered;
 import com.meowzip.cat.entity.Sex;
 import com.meowzip.coparent.entity.CoParent;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 public record CoParentInfoResponseDTO(
 
@@ -21,7 +20,7 @@ public record CoParentInfoResponseDTO(
         String ownerProfileImage,
 
         @Schema(description = "고양이 이미지 URL")
-        String imageUrl,
+        String catImageUrl,
 
         @Schema(description = "고양이 성별")
         Sex sex,
