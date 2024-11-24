@@ -17,6 +17,9 @@ public record CoParentInfoResponseDTO(
         @Schema(description = "주인(공동냥육 신청자) 닉네임")
         String ownerNickname,
 
+        @Schema(description = "주인(공동냥육 신청자) 프로필 사진")
+        String ownerProfileImage,
+
         @Schema(description = "고양이 이미지 URL")
         String imageUrl,
 
@@ -31,6 +34,7 @@ public record CoParentInfoResponseDTO(
         this(coParent.getId(),
                 coParent.getCat().getName(),
                 coParent.getOwner().getNickname(),
+                coParent.getOwner().getProfileImage(),
                 coParent.getCat().getImageUrl(),
                 coParent.getCat().getSex(),
                 coParent.getCat().getIsNeutered());
