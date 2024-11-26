@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -97,18 +98,15 @@ public class CatService {
     }
 
     private List<Member> getCoParents(Cat cat, Member member, boolean isOwner) {
-        List<CoParent> coParents = cat.getCoParents();
-        List<Member> members = new ArrayList<>(coParents.stream()
+        List<Member> members = cat.getCoParents().stream()
                 .filter(CoParent::isApproval)
                 .map(CoParent::getParticipant)
-                .toList());
+                .filter(m -> !m.equals(member)) // 현재 사용자를 제외
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        if (isOwner) {
-            return members;
+        if (!isOwner && cat.getMember() != null && !cat.getMember().equals(member)) {
+            members.add(cat.getMember());
         }
-
-        members.add(cat.getMember());
-        members.remove(member);
 
         return members;
     }
