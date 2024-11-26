@@ -27,4 +27,7 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
     Optional<Cat> findByMemberAndId(Member member, Long id);
 
     int countByMember(Member member);
+
+    @Query("SELECT c FROM Cat c JOIN FETCH c.member WHERE c.id = :catId")
+    Optional<Cat> findByIdWithMember(@Param("catId") long catId);
 }
