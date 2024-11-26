@@ -5,7 +5,7 @@ import com.meowzip.apiserver.global.util.DateTimeUtil;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.entity.Neutered;
 import com.meowzip.cat.entity.Sex;
-import com.meowzip.coparent.entity.CoParent;
+import com.meowzip.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public record CatDetailResponseDTO(
         @Schema(description = "내 고양이인지 여부")
         boolean isMine
 ) {
-    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries, boolean isMine) {
+    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries, boolean isMine, List<Member> coParents) {
         this(cat.getId(),
                 cat.getImageUrl(),
                 cat.getName(),
@@ -59,9 +59,8 @@ public record CatDetailResponseDTO(
                 cat.getIsNeutered(),
                 DateTimeUtil.getFormattedDateTimeInKorean(cat.getMetAt()),
                 cat.getMemo(),
-                cat.getCoParents().stream()
-                        .filter(CoParent::isApproval)
-                        .map(coParent -> new CoParentMemberResponseDTO(coParent.getParticipant()))
+                coParents.stream()
+                        .map(CoParentMemberResponseDTO::new)
                         .toList(),
                 diaries,
                 isMine

@@ -10,6 +10,7 @@ import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.repository.CatRepository;
+import com.meowzip.coparent.entity.CoParent;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.member.entity.Member;
 import com.meowzip.tag.entity.TaggedCat;
@@ -21,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -70,11 +72,13 @@ public class CatService {
                 .toList();
     }
 
+    // TODO: API 속도 개선
     public CatDetailResponseDTO getCatDetails(Member member, Long catId) {
-        Cat cat = catRepository.findById(catId)
+        Cat cat = catRepository.findByIdWithMember(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
 
-        List<DiaryResponseDTO> diaries = (!isOwner(member, cat) && !cat.isCoParented(member)) ?
+        boolean isOwner = isOwner(member, cat);
+        List<DiaryResponseDTO> diaries = (!isOwner && !cat.isCoParented(member)) ?
                 List.of() :
                 taggedCatService.getTaggedCatsByCat(cat).stream()
                         .map(TaggedCat::getDiary)
@@ -84,12 +88,29 @@ public class CatService {
                         })
                         .toList();
 
-        boolean isMine = isOwner(member, cat);
+        boolean isMine = isOwner;
         if (!isMine) {
             isMine = coParentCatService.getCatsFromCoParent(member).contains(cat);
         }
 
-        return new CatDetailResponseDTO(cat, diaries, isMine);
+        return new CatDetailResponseDTO(cat, diaries, isMine, getCoParents(cat, member, isOwner));
+    }
+
+    private List<Member> getCoParents(Cat cat, Member member, boolean isOwner) {
+        List<CoParent> coParents = cat.getCoParents();
+        List<Member> members = new ArrayList<>(coParents.stream()
+                .filter(CoParent::isApproval)
+                .map(CoParent::getParticipant)
+                .toList());
+
+        if (isOwner) {
+            return members;
+        }
+
+        members.add(cat.getMember());
+        members.remove(member);
+
+        return members;
     }
 
     public List<Cat> getByMemberAndIds(Member member, List<Long> catIds) {
