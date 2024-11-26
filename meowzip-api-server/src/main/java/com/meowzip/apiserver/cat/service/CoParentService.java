@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.service;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
+import com.meowzip.apiserver.cat.dto.response.AcceptCoParentResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
@@ -74,7 +75,7 @@ public class CoParentService {
     }
 
     @Transactional
-    public void accept(Member participant, Long coParentId) {
+    public AcceptCoParentResponseDTO accept(Member participant, Long coParentId) {
         CoParent coParent = getCoParent(participant, coParentId);
 
         if (coParent.isApproval()) {
@@ -84,6 +85,8 @@ public class CoParentService {
         coParent.accept();
 
         notificationSendService.send(coParent.getOwner(), participant, NotificationCode.MN005, String.valueOf(coParent.getId()), coParent.getCat().getName());
+
+        return new AcceptCoParentResponseDTO(coParent.getCat().getId());
     }
 
     @Transactional
