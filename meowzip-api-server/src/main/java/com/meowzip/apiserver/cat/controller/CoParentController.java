@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.controller;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
+import com.meowzip.apiserver.cat.dto.response.AcceptCoParentResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.cat.service.CoParentService;
@@ -61,13 +62,12 @@ public class CoParentController implements CoParentSwagger {
     }
 
     @PostMapping("/{co-parent-id}/accept")
-    public CommonResponse<Void> acceptCoParent(Principal principal,
-                                              @PathVariable("co-parent-id") Long coParentId) {
+    public CommonResponse<AcceptCoParentResponseDTO> acceptCoParent(Principal principal,
+                                                                    @PathVariable("co-parent-id") Long coParentId) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        coParentService.accept(member, coParentId);
 
-        return new CommonResponse<>(HttpStatus.OK);
+        return new CommonResponse<>(HttpStatus.OK, coParentService.accept(member, coParentId));
     }
 
     @PostMapping("/{co-parent-id}/reject")

@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.cat.swagger;
 
 import com.meowzip.apiserver.cat.dto.request.RequestCoParentRequestDTO;
+import com.meowzip.apiserver.cat.dto.response.AcceptCoParentResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
@@ -35,8 +36,8 @@ public interface CoParentSwagger {
                                                             @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
 
     @Operation(summary = "공동냥육 신청 수락")
-    CommonResponse<Void> acceptCoParent(@Parameter(hidden = true) Principal principal,
-                                       @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
+    CommonResponse<AcceptCoParentResponseDTO> acceptCoParent(@Parameter(hidden = true) Principal principal,
+                                                             @Parameter(name = "co-parent-id", description = "공동냥육 ID", required = true) Long coParentId);
 
     @Operation(summary = "공동냥육 신청 거절")
     CommonResponse<Void> rejectCoParent(@Parameter(hidden = true) Principal principal,
