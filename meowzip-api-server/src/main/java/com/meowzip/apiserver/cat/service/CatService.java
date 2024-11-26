@@ -138,6 +138,9 @@ public class CatService {
     }
 
     public int countCats(Member member) {
-        return catRepository.countByMember(member);
+        int myCatCount = catRepository.countByMember(member);
+        int coParentCount = coParentCatService.getCatsFromCoParent(member).size();
+
+        return myCatCount + coParentCount;
     }
 }

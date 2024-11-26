@@ -19,7 +19,9 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
     @Query("select c from Cat c " +
             "left join c.coParents cp " +
             "where (c.member = :member or cp.participant = :member or cp.owner = :member) " +
-            "and c.id in :ids")
+            "and c.id in :ids " +
+            "and cp.status = 'APPROVAL'"
+    )
     List<Cat> findByMemberOrCoParentAndCatIdIn(@Param("member") Member member, @Param("ids") List<Long> ids);
 
     Optional<Cat> findByMemberAndId(Member member, Long id);
