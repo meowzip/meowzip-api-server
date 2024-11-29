@@ -43,7 +43,13 @@ public class Cat extends BaseTimeEntity {
     private List<CoParent> coParents;
 
     public boolean isCoParented() {
-        return !coParents.isEmpty();
+        return !getCoParents().isEmpty();
+    }
+
+    public List<CoParent> getCoParents() {
+        return coParents.stream()
+                .filter(CoParent::isApproval)
+                .toList();
     }
 
     public int getCoParentedCount() {
