@@ -60,4 +60,8 @@ public class NotificationHistory extends BaseTimeEntity {
 
         return Long.parseLong(detailLink);
     }
+
+    public String getType() {
+        return this.template.getCode().getType();
+    }
 }

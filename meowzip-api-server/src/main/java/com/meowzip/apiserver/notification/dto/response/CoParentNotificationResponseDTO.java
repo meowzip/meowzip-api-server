@@ -12,7 +12,7 @@ public record CoParentNotificationResponseDTO(
         long id,
 
         @Schema(description = "알림 타입")
-        CoParentNotificationType type,
+        NotificationType type,
 
         @Schema(description = "제목")
         String title,
@@ -38,7 +38,7 @@ public record CoParentNotificationResponseDTO(
 
     public CoParentNotificationResponseDTO(NotificationHistory notification, boolean isExpired, boolean isResponded) {
         this(notification.getId(),
-                CoParentNotificationType.from(notification.getTemplate().getCode()),
+                NotificationType.from(notification.getType()),
                 notification.getTitle(),
                 notification.getSenderNickname(),
                 notification.getLink(),
