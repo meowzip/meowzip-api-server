@@ -10,6 +10,9 @@ public record NotificationResponseDTO(
         @Schema(description = "알림 ID")
         long id,
 
+        @Schema(description = "알림 타입")
+        NotificationType type,
+
         @Schema(description = "제목")
         String title,
 
@@ -29,6 +32,7 @@ public record NotificationResponseDTO(
 
     public NotificationResponseDTO(NotificationHistory notification) {
         this(notification.getId(),
+                NotificationType.from(notification.getType()),
                 notification.getTitle(),
                 notification.getSenderNickname(),
                 notification.getLink(),
