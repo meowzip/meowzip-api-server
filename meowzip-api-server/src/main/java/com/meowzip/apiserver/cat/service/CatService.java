@@ -78,9 +78,8 @@ public class CatService {
         Cat cat = catRepository.findByIdWithMember(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
 
-        boolean isOwner = isOwner(member, cat);
-        List<DiaryResponseDTO> diaries = (!isOwner && !cat.isCoParented(member)) ?
-                List.of() :
+        boolean isOwner = isOwner(member, cat); // 내가 고양이 주인인지 확인
+        List<DiaryResponseDTO> diaries = isNotCoParent(member, cat) ? List.of() :
                 taggedCatService.getTaggedCatsByCat(cat).stream()
                         .map(TaggedCat::getDiary)
                         .map(diary -> {
@@ -97,14 +96,22 @@ public class CatService {
         return new CatDetailResponseDTO(cat, diaries, isMine, getCoParents(cat, member, isOwner));
     }
 
+    private boolean isNotCoParent(Member member, Cat cat) {
+        return !isOwner(member, cat) && !cat.isCoParented(member);
+    }
+
     private List<Member> getCoParents(Cat cat, Member member, boolean isOwner) {
+        if (cat.getCoParents().isEmpty()) {
+            return List.of();
+        }
+
         List<Member> members = cat.getCoParents().stream()
                 .filter(CoParent::isApproval)
                 .map(CoParent::getParticipant)
                 .filter(m -> !m.equals(member)) // 현재 사용자를 제외
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        if (!isOwner && cat.getMember() != null && !cat.getMember().equals(member)) {
+        if (!isOwner) {
             members.add(cat.getMember());
         }
 
