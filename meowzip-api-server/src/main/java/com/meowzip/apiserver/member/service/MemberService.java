@@ -228,9 +228,8 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void withdraw(Long memberId) {
-//        Member member = getMember(memberId);
-//        member.withdraw();
-        memberRepository.deleteById(memberId);
+        Member member = getMember(memberId);
+        member.withdraw();
     }
 
     public List<Member> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
