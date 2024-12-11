@@ -12,6 +12,10 @@ public class DateTimeUtil {
         return time.format(DateTimeFormatter.ofPattern("a hh:mm"));
     }
 
+    public static String toFormattedDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("M월 d일"));
+    }
+
     public static String toRelative(LocalDateTime time) {
         LocalDateTime now = LocalDateTime.now();
         long diff = time.until(now, ChronoUnit.SECONDS);
