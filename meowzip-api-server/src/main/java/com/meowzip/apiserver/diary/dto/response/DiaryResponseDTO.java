@@ -25,6 +25,9 @@ public record DiaryResponseDTO(
         @Schema(description = "이미지 URL 목록", example = "[\"image1.jpg\", \"image2.jpg\"]")
         List<String> images,
 
+        @Schema(description = "작성 날짜", example = "10월 1일")
+        String caredDate,
+
         @Schema(description = "작성 시간", example = "오후 06:00")
         String caredTime,
 
@@ -44,6 +47,7 @@ public record DiaryResponseDTO(
                 diary.isFeed(),
                 diary.getContent(),
                 images,
+                DateTimeUtil.toFormattedDate(diary.getCaredDate()),
                 DateTimeUtil.toAmPm(diary.getCaredTime()),
                 diary.getMember().getId(),
                 diary.getMember().getNickname(),
