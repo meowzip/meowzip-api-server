@@ -29,6 +29,7 @@ public class ProfileService {
                 .catCount(catService.countCats(member))
                 .postCount(communityPostService.countPosts(member))
                 .bookmarkCount(communityPostService.countBookmarks(member))
+                .receivePushNotification(member.isReceivePushNotification())
                 .build();
     }
 
