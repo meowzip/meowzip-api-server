@@ -89,4 +89,12 @@ public class MemberController implements MemberSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PatchMapping("/auth/v1.0.0/members/notifications")
+    public CommonResponse<Void> toggleNotificationReceive(Principal principal) {
+        memberService.togglePushNotificationReceive(MemberUtil.getMemberId(principal));
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
 }

@@ -12,6 +12,7 @@ public record MyProfileInfoResponseDTO(
         boolean existsNewNotification,
         int catCount,
         int postCount,
-        int bookmarkCount
+        int bookmarkCount,
+        boolean receivePushNotification
 ) {
 }

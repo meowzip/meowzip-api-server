@@ -1,6 +1,5 @@
 package com.meowzip.apiserver.member.service;
 
-import com.meowzip.apiserver.cat.dto.response.CoParentMemberResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
@@ -240,5 +239,10 @@ public class MemberService implements UserDetailsService {
 
     public void countMembers() {
         memberRepository.count();
+    }
+
+    @Transactional
+    public void togglePushNotificationReceive(Long memberId) {
+        getMember(memberId).togglePushNotificationReceive();
     }
 }

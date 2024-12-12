@@ -32,14 +32,22 @@ public class Member extends BaseTimeEntity {
     @Column(name = "profile_image")
     private String profileImage;
 
+    @Column(name = "receive_push_notification")
+    private boolean receivePushNotification;
+
     @Enumerated(value = EnumType.STRING)
     private Status status;
+
 
     @Column(name = "withdrew_at")
     private LocalDateTime withdrewAt;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void togglePushNotificationReceive() {
+        this.receivePushNotification = !this.receivePushNotification;
     }
 
     public enum Status {
