@@ -44,4 +44,7 @@ public interface MemberSwagger {
 
     @Operation(summary = "회원 삭제, 추후 탈퇴로 변경 예정")
     CommonResponse<Void> withdraw(@Parameter(hidden = true) Principal principal);
+
+    @Operation(summary = "알림 수신 여부 on/off")
+    CommonResponse<Void> toggleNotificationReceive(Principal principal);
 }
