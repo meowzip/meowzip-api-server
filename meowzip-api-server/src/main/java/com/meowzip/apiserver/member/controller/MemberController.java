@@ -4,10 +4,7 @@ import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
-import com.meowzip.apiserver.member.dto.response.EmailExistsResponseDTO;
-import com.meowzip.apiserver.member.dto.response.MemberResponseDTO;
-import com.meowzip.apiserver.member.dto.response.NicknameValidationResponseDTO;
-import com.meowzip.apiserver.member.dto.response.SignUpResponseDTO;
+import com.meowzip.apiserver.member.dto.response.*;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.swagger.MemberSwagger;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -95,6 +92,11 @@ public class MemberController implements MemberSwagger {
         memberService.togglePushNotificationReceive(MemberUtil.getMemberId(principal));
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/v1.0.0/members/notifications")
+    public CommonResponse<ReceivePushNotificationResDTO> showNotificationReceive(Principal principal) {
+        return new CommonResponse<>(HttpStatus.OK, memberService.showNotificationReceive(MemberUtil.getMemberId(principal)));
     }
 
 }

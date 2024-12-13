@@ -245,4 +245,8 @@ public class MemberService implements UserDetailsService {
     public void togglePushNotificationReceive(Long memberId) {
         getMember(memberId).togglePushNotificationReceive();
     }
+
+    public ReceivePushNotificationResDTO showNotificationReceive(Long memberId) {
+        return new ReceivePushNotificationResDTO(getMember(memberId).isReceivePushNotification());
+    }
 }
