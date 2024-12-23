@@ -3,6 +3,7 @@ package com.meowzip.apiserver.member.service;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
+import com.meowzip.apiserver.global.exception.WithdrawalMemberException;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.member.dto.UserProfile;
 import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
@@ -147,6 +148,10 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(EnumErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
+        if (!member.isActive()) {
+            throw new WithdrawalMemberException(EnumErrorCode.INVALID_MEMBER.getMessage());
+        }
+
         return new User(String.valueOf(member.getId()), member.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
@@ -228,9 +233,8 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void withdraw(Long memberId) {
-//        Member member = getMember(memberId);
-//        member.withdraw();
-        memberRepository.deleteById(memberId);
+        Member member = getMember(memberId);
+        member.withdraw();
     }
 
     public List<Member> getMembersForCoParent(String keyword, Member me, Pageable pageable) {
