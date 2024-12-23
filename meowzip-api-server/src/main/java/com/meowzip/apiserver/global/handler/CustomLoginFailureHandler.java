@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.View;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
 //        discordService.send(request, HttpStatus.UNAUTHORIZED, errorResponse.getMessage());
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(errorResponse.getStatus().value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
