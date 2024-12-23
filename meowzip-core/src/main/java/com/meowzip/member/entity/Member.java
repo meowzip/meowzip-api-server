@@ -67,4 +67,8 @@ public class Member extends BaseTimeEntity {
         this.status = Status.WITHDRAWAL;
         this.withdrewAt = LocalDateTime.now();
     }
+
+    public boolean isActive() {
+        return this.status == Status.ACTIVE;
+    }
 }
