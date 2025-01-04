@@ -49,8 +49,8 @@ public class DiaryService {
     private final TaggedCatService taggedCatService;
     private final NotificationSendService notificationSendService;
 
-    public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date) {
-        List<Diary> diaries = diaryRepository.findAllByMemberAndCaredDate(member, date, pageRequest);
+    public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date, Long catId) {
+        List<Diary> diaries = diaryRepository.findDiariesByMemberAndCaredDateAndOptionalCatId(member, date, catId, pageRequest);
 
         return diaries.stream()
                 .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
