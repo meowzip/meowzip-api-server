@@ -6,7 +6,7 @@ import com.meowzip.apiserver.cat.dto.response.CatResponseDTO;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.cat.swagger.CatSwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,14 +40,13 @@ public class CatController implements CatSwagger {
     }
 
     @GetMapping
-    public CommonListResponse<CatResponseDTO> showCats(Principal principal,
-                                                       @RequestParam(name = "member-id", required = false) Long memberId,
-                                                       PageRequest pageRequest) {
+    public CommonListResponseV2<CatResponseDTO> showCats(Principal principal,
+                                                         @RequestParam(name = "member-id", required = false) Long memberId,
+                                                         PageRequest pageRequest) {
 
         Member member = memberService.getMember(ObjectUtils.isEmpty(memberId) ? MemberUtil.getMemberId(principal) : memberId);
-        List<CatResponseDTO> cats = catService.getCats(member, pageRequest.of());
 
-        return new CommonListResponse<CatResponseDTO>(HttpStatus.OK).add(cats);
+        return catService.getCats(member, pageRequest.of());
     }
 
     @GetMapping("/{cat-id}")

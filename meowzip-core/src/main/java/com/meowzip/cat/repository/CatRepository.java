@@ -2,6 +2,7 @@ package com.meowzip.cat.repository;
 
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.member.entity.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,12 @@ import java.util.Optional;
 @Repository
 public interface CatRepository extends JpaRepository<Cat, Long> {
 
-    List<Cat> findAllByMemberOrderByCreatedAtAsc(Member member, Pageable pageable);
+    @Query("SELECT DISTINCT c FROM Cat c " +
+            "LEFT JOIN CoParent cp ON cp.cat = c " +
+            "WHERE c.member = :member " +
+            "OR (cp.owner = :member) " +
+            "OR (cp.participant = :member AND cp.status = 'APPROVAL')")
+    Page<Cat> findAllCatsByMember(@Param("member") Member member, Pageable pageable);
 
     @Query("select c from Cat c " +
             "left join c.coParents cp " +

@@ -4,7 +4,7 @@ import com.meowzip.apiserver.cat.dto.request.RegisterCatRequestDTO;
 import com.meowzip.apiserver.cat.dto.response.CatDetailResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CatResponseDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,9 +27,9 @@ public interface CatSwagger {
                                                   "\n - 성별 values: F(여), M(남), UNDEFINED(모름)") RegisterCatRequestDTO requestDTO);
 
     @Operation(summary = "고양이 목록 조회")
-    CommonListResponse<CatResponseDTO> showCats(@Parameter(hidden = true) Principal principal,
-                                                @Parameter(in = ParameterIn.QUERY, description = "회원 id / 프로필 페이지에서 타인 모음집 조회 시 사용") Long memberId,
-                                                @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
+    CommonListResponseV2<CatResponseDTO> showCats(@Parameter(hidden = true) Principal principal,
+                                                  @Parameter(in = ParameterIn.QUERY, description = "회원 id / 프로필 페이지에서 타인 모음집 조회 시 사용") Long memberId,
+                                                  @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 
     @Operation(summary = "고양이 상세 조회")
     CommonResponse<CatDetailResponseDTO> showCat(@Parameter(hidden = true) Principal principal,
