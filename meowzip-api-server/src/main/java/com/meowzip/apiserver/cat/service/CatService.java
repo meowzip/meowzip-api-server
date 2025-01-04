@@ -6,6 +6,7 @@ import com.meowzip.apiserver.cat.dto.response.CatResponseDTO;
 import com.meowzip.apiserver.diary.dto.response.DiaryResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.tag.service.TaggedCatService;
 import com.meowzip.cat.entity.Cat;
@@ -16,7 +17,9 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,17 +63,14 @@ public class CatService {
         return imageService.getImageUrl(imageGroupId).get(0);
     }
 
-    public List<CatResponseDTO> getCats(Member member, Pageable pageable) {
-        List<Cat> cats = catRepository.findAllByMemberOrderByCreatedAtAsc(member, pageable);
+    public CommonListResponseV2<CatResponseDTO> getCats(Member member, Pageable pageable) {
+        Page<Cat> catPage = catRepository.findAllCatsByMember(member, pageable);
 
-        coParentCatService.getCatsFromCoParent(member).stream()
-                .filter(cat -> cat.isCoParented(member))
-                .filter(cat -> !cats.contains(cat))
-                .forEach(cats::add);
-
-        return cats.stream()
+        List<CatResponseDTO> responseDTOS = catPage.getContent().stream()
                 .map(CatResponseDTO::new)
                 .toList();
+
+        return new CommonListResponseV2<CatResponseDTO>(HttpStatus.OK).add(responseDTOS, catPage.hasNext());
     }
 
     // TODO: API 속도 개선
