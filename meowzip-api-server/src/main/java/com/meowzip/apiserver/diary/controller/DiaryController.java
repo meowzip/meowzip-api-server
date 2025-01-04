@@ -35,10 +35,11 @@ public class DiaryController implements DiarySwagger {
     @GetMapping
     public CommonListResponse<DiaryResponseDTO> showDiaries(Principal principal,
                                                             PageRequest pageRequest,
-                                                            @RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+                                                            @RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                            @RequestParam(name = "cat-id", required = false) Long catId) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        List<DiaryResponseDTO> diaries = diaryService.getDiaries(member, pageRequest.of(), date);
+        List<DiaryResponseDTO> diaries = diaryService.getDiaries(member, pageRequest.of(), date, catId);
 
         return new CommonListResponse<DiaryResponseDTO>(HttpStatus.OK).add(diaries);
     }

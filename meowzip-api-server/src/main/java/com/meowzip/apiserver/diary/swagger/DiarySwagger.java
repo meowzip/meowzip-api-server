@@ -24,7 +24,8 @@ public interface DiarySwagger {
     @Operation(summary = "일지 목록 조회")
     CommonListResponse<DiaryResponseDTO> showDiaries(@Parameter(hidden = true) Principal principal,
                                                      @Parameter(schema = @Schema(implementation = PageRequest.class)) PageRequest pageRequest,
-                                                     @Parameter(in = ParameterIn.QUERY, name = "date", description = "yyyy-MM-dd") LocalDate date);
+                                                     @Parameter(in = ParameterIn.QUERY, name = "date", description = "yyyy-MM-dd") LocalDate date,
+                                                     @Parameter(in = ParameterIn.QUERY, name = "cat-id", description = "고양이 id") Long catId);
 
     @Operation(summary = "일지 상세 조회")
     CommonResponse<DiaryResponseDTO> showDiary(@Parameter(hidden = true) Principal principal,
