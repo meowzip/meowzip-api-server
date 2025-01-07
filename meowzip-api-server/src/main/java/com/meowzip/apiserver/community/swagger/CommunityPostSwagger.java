@@ -4,7 +4,7 @@ import com.meowzip.apiserver.community.dto.request.ModifyPostRequestDTO;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,8 +27,8 @@ public interface CommunityPostSwagger {
                                @Parameter(name = "images") List<MultipartFile> images);
 
     @Operation(summary = "게시글 리스트 조회")
-    CommonListResponse<PostResponseDTO> showPosts(@Parameter(hidden = true) Principal principal,
-                                                  @Parameter(schema = @Schema(implementation = PageRequest.class),
+    CommonListResponseV2<PostResponseDTO> showPosts(@Parameter(hidden = true) Principal principal,
+                                                    @Parameter(schema = @Schema(implementation = PageRequest.class),
                                                       required = true) PageRequest pageRequest);
 
     @Operation(summary = "게시글 상세 조회")
