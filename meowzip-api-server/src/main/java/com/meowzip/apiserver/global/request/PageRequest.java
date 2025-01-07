@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.data.domain.Sort;
 
 @Schema
 @Getter
@@ -35,5 +36,9 @@ public class PageRequest {
 
     public org.springframework.data.domain.PageRequest of() {
         return org.springframework.data.domain.PageRequest.of(getPage(), getSize());
+    }
+
+    public org.springframework.data.domain.PageRequest of(Sort.Direction direction, String sortBy) {
+        return org.springframework.data.domain.PageRequest.of(getPage(), getSize(), Sort.by(direction, sortBy));
     }
 }

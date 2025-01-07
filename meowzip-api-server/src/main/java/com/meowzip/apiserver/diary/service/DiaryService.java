@@ -8,6 +8,7 @@ import com.meowzip.apiserver.diary.dto.response.MonthlyDiaryResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
@@ -25,7 +26,9 @@ import com.meowzip.tag.entity.TaggedCat;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,12 +52,14 @@ public class DiaryService {
     private final TaggedCatService taggedCatService;
     private final NotificationSendService notificationSendService;
 
-    public List<DiaryResponseDTO> getDiaries(Member member, PageRequest pageRequest, LocalDate date, Long catId) {
-        List<Diary> diaries = diaryRepository.findDiariesByMemberAndCaredDateAndOptionalCatId(member, date, catId, pageRequest);
+    public CommonListResponseV2<DiaryResponseDTO> getDiaries(Member member, Pageable pageable, LocalDate date, Long catId) {
+        Page<Diary> diaries = diaryRepository.findDiariesByMemberAndCaredDateAndOptionalCatId(member.getId(), date, catId, pageable);
 
-        return diaries.stream()
+        List<DiaryResponseDTO> resDTOs = diaries.stream()
                 .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
                 .toList();
+
+        return new CommonListResponseV2<DiaryResponseDTO>(HttpStatus.OK).add(resDTOs, diaries.hasNext());
     }
 
     public DiaryResponseDTO getDiary(Member member, Long diaryId) {

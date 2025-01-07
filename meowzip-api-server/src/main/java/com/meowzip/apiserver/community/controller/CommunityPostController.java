@@ -6,7 +6,7 @@ import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.community.service.CommunityPostService;
 import com.meowzip.apiserver.community.swagger.CommunityPostSwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -41,13 +41,12 @@ public class CommunityPostController implements CommunityPostSwagger {
     }
 
     @GetMapping
-    public CommonListResponse<PostResponseDTO> showPosts(Principal principal,
-                                                         PageRequest pageRequest) {
+    public CommonListResponseV2<PostResponseDTO> showPosts(Principal principal,
+                                                           PageRequest pageRequest) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        List<PostResponseDTO> posts = communityPostService.showPosts(member, pageRequest.of());
 
-        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(posts);
+        return communityPostService.showPosts(member, pageRequest);
     }
 
     @GetMapping("/{post-id}")

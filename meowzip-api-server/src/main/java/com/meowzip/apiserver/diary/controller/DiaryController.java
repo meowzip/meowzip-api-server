@@ -8,6 +8,7 @@ import com.meowzip.apiserver.diary.service.DiaryService;
 import com.meowzip.apiserver.diary.swagger.DiarySwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
 import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -33,15 +34,14 @@ public class DiaryController implements DiarySwagger {
     private final MemberService memberService;
 
     @GetMapping
-    public CommonListResponse<DiaryResponseDTO> showDiaries(Principal principal,
+    public CommonListResponseV2<DiaryResponseDTO> showDiaries(Principal principal,
                                                             PageRequest pageRequest,
                                                             @RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                                             @RequestParam(name = "cat-id", required = false) Long catId) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
-        List<DiaryResponseDTO> diaries = diaryService.getDiaries(member, pageRequest.of(), date, catId);
 
-        return new CommonListResponse<DiaryResponseDTO>(HttpStatus.OK).add(diaries);
+        return diaryService.getDiaries(member, pageRequest.of(), date, catId);
     }
 
     @GetMapping("/{diary-id}")
@@ -54,8 +54,8 @@ public class DiaryController implements DiarySwagger {
 
     @GetMapping("/monthly")
     public CommonListResponse<MonthlyDiaryResponseDTO> showDiariesByMonth(Principal principal,
-                                                                  @RequestParam(name = "year") int year,
-                                                                  @RequestParam(name = "month") int month) {
+                                                                          @RequestParam(name = "year") int year,
+                                                                          @RequestParam(name = "month") int month) {
 
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
         List<MonthlyDiaryResponseDTO> diaries = diaryService.getDiariesByMonth(member, year, month);

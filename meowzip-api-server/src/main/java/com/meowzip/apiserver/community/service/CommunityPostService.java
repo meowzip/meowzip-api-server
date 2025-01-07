@@ -6,6 +6,7 @@ import com.meowzip.apiserver.community.dto.request.WritePostRequestDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.ServerException;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.image.service.ImageGroupService;
 import com.meowzip.apiserver.image.service.ImageService;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
@@ -19,7 +20,10 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,14 +61,14 @@ public class CommunityPostService {
         postRepository.save(post);
     }
 
-    public List<PostResponseDTO> showPosts(Member member, PageRequest pageRequest) {
-        List<CommunityPost> posts = postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
-        blockMemberService.getByMember(member)
-                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember())));
+    public CommonListResponseV2<PostResponseDTO> showPosts(Member member, com.meowzip.apiserver.global.request.PageRequest pageRequest) {
+        Page<CommunityPost> posts = postRepository.findAllFilteredByBlockedMembers(member, pageRequest.of(Sort.Direction.DESC, "createdAt"));
 
-        return posts.stream()
+        List<PostResponseDTO> resDTOs = posts.getContent().stream()
                 .map(post -> generatePostResponseDTO(post, member))
                 .toList();
+
+        return new CommonListResponseV2<PostResponseDTO>(HttpStatus.OK).add(resDTOs, posts.hasNext());
     }
 
     public List<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, PageRequest pageRequest) {
