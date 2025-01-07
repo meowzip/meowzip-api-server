@@ -2,7 +2,7 @@ package com.meowzip.diary.repository;
 
 import com.meowzip.diary.entity.Diary;
 import com.meowzip.diary.entity.MonthlyDiaryInterface;
-import com.meowzip.member.entity.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,15 +15,21 @@ import java.util.List;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    @Query("SELECT d FROM Diary d " +
-            "JOIN d.taggedCats tc " +
-            "WHERE d.member = :member AND d.caredDate = :caredDate " +
-            "AND (:catId IS NULL OR tc.cat.id = :catId)")
-    List<Diary> findDiariesByMemberAndCaredDateAndOptionalCatId(
-            @Param("member") Member member,
+    @Query(value = "SELECT DISTINCT d.* FROM diary d " +
+            "LEFT JOIN tagged_cat tc ON d.id = tc.diary_id " +
+            "WHERE d.member_id = :memberId AND d.cared_date = :caredDate " +
+            "AND (:catId IS NULL OR tc.cat_id = :catId)",
+            countQuery = "SELECT COUNT(DISTINCT d.id) FROM diary d " +
+                    "LEFT JOIN tagged_cat tc ON d.id = tc.diary_id " +
+                    "WHERE d.member_id = :memberId AND d.cared_date = :caredDate " +
+                    "AND (:catId IS NULL OR tc.cat_id = :catId)",
+            nativeQuery = true)
+    Page<Diary> findDiariesByMemberAndCaredDateAndOptionalCatId(
+            @Param("memberId") Long memberId,
             @Param("caredDate") LocalDate caredDate,
             @Param("catId") Long catId,
             Pageable pageable);
+
 
     @Query(value = "select " +
             "d.cared_date as date, count(d.id) as diaryCount from diary d " +
