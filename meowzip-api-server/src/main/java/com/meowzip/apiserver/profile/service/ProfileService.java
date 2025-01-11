@@ -3,12 +3,14 @@ package com.meowzip.apiserver.profile.service;
 import com.meowzip.apiserver.cat.service.CatService;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.community.service.CommunityPostService;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.notification.service.NotificationService;
 import com.meowzip.apiserver.profile.dto.response.MyProfileInfoResponseDTO;
 import com.meowzip.apiserver.profile.dto.response.ProfileInfoResponseDTO;
 import com.meowzip.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +43,11 @@ public class ProfileService {
                 .build();
     }
 
-    public List<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, PageRequest pageRequest) {
-        return communityPostService.showPostsByWriter(loggedInMember, writer, pageRequest);
+    public CommonListResponseV2<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, Pageable pageable) {
+        return communityPostService.showPostsByWriter(loggedInMember, writer, pageable);
     }
 
-    public List<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
+    public CommonListResponseV2<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
         return communityPostService.showBookmarkedPosts(member, pageRequest);
     }
 }
