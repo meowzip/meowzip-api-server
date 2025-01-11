@@ -89,8 +89,8 @@ public class CommunityPostService {
     }
 
     private PostResponseDTO generatePostResponseDTO(CommunityPost post, Member member) {
-        boolean isLiked = getIsLiked(post, member);
-        boolean isBookmarked = getIsBookmarked(post, member);
+        boolean isLiked = isLiked(post, member);
+        boolean isBookmarked = isBookmarked(post, member);
 
         return new PostResponseDTO(post, getImageUrls(post), member, isLiked, isBookmarked);
     }
@@ -104,12 +104,12 @@ public class CommunityPostService {
         return images;
     }
 
-    private boolean getIsLiked(CommunityPost post, Member member) {
+    private boolean isLiked(CommunityPost post, Member member) {
         Optional<CommunityPostLike> like = likeRepository.findByPostAndMember(post, member);
         return like.isPresent();
     }
 
-    private boolean getIsBookmarked(CommunityPost post, Member member) {
+    private boolean isBookmarked(CommunityPost post, Member member) {
         Optional<CommunityPostBookmark> bookmark = bookmarkRepository.findByPostAndMember(post, member);
         return bookmark.isPresent();
     }
@@ -156,62 +156,45 @@ public class CommunityPostService {
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
     }
 
+    // TODO: 테스트 코드 작성
     @Transactional
     public void like(Long postId, Member member) {
         CommunityPost post = getPostById(postId);
-
         likeRepository.findByPostAndMember(post, member)
-                .ifPresent(like -> {
-                    throw new ClientException.Conflict(EnumErrorCode.ALREADY_LIKED);
-                });
+                .ifPresentOrElse(
+                        like -> {
+                            likeRepository.delete(like);
+                            post.unlike();
+                        },
+                        () -> {
+                            CommunityPostLike like = CommunityPostLike.builder()
+                                    .post(post)
+                                    .member(member)
+                                    .build();
 
-        CommunityPostLike like = CommunityPostLike.builder()
-                .post(post)
-                .member(member)
-                .build();
-
-        likeRepository.save(like);
-        post.like();
-
-        notificationSendService.send(post.getMember(), member, NotificationCode.MN002, String.valueOf(postId), "");
+                            likeRepository.save(like);
+                            post.like();
+                            notificationSendService.send(post.getMember(), member, NotificationCode.MN002, String.valueOf(postId), "");
+                        });
     }
 
-    @Transactional
-    public void unlike(Long postId, Member member) {
-        CommunityPost post = getPostById(postId);
-
-        CommunityPostLike like = likeRepository.findByPostAndMember(post, member)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_LIKED));
-
-        likeRepository.delete(like);
-        post.unlike();
-    }
-
+    // TODO: 테스트 코드 작성
     @Transactional
     public void bookmark(Long postId, Member member) {
         CommunityPost post = getPostById(postId);
 
         bookmarkRepository.findByPostAndMember(post, member)
-                .ifPresent(bookmark -> {
-                    throw new ClientException.Conflict(EnumErrorCode.ALREADY_BOOKMARKED);
-                });
+                .ifPresentOrElse(
+                        bookmarkRepository::delete,
+                        () -> {
+                            CommunityPostBookmark bookmark = CommunityPostBookmark.builder()
+                                    .post(post)
+                                    .member(member)
+                                    .build();
 
-        CommunityPostBookmark bookmark = CommunityPostBookmark.builder()
-                .post(post)
-                .member(member)
-                .build();
-
-        bookmarkRepository.save(bookmark);
-    }
-
-    @Transactional
-    public void unbookmark(Long postId, Member member) {
-        CommunityPost post = getPostById(postId);
-
-        CommunityPostBookmark bookmark = bookmarkRepository.findByPostAndMember(post, member)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_BOOKMARKED));
-
-        bookmarkRepository.delete(bookmark);
+                            bookmarkRepository.save(bookmark);
+                        }
+                );
     }
 
     @Transactional
