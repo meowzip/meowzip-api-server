@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.notification.controller;
 
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.request.PageRequest;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -24,19 +25,20 @@ public class NotificationController implements NotificationSwagger {
     private final MemberService memberService;
 
     @GetMapping
-    public CommonListResponse<NotificationResponseDTO> showNotifications(Principal principal) {
+    public CommonListResponseV2<NotificationResponseDTO> showNotifications(Principal principal,
+                                                                           PageRequest pageRequest) {
+
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        return new CommonListResponse<NotificationResponseDTO>(HttpStatus.OK)
-                .add(notificationService.showNotifications(member));
+        return notificationService.showNotifications(member, pageRequest.of());
     }
 
     @GetMapping("/co-parent")
-    public CommonListResponse<CoParentNotificationResponseDTO> showCoParentNotifications(Principal principal) {
+    public CommonListResponseV2<CoParentNotificationResponseDTO> showCoParentNotifications(Principal principal,
+                                                                                           PageRequest pageRequest) {
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        return new CommonListResponse<CoParentNotificationResponseDTO>(HttpStatus.OK)
-                .add(notificationService.showCoParentNotifications(member));
+        return notificationService.showCoParentNotifications(member, pageRequest.of());
     }
 
     @PatchMapping("/{notification-id}")
