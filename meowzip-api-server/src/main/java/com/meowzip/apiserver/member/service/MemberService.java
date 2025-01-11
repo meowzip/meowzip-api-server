@@ -241,6 +241,10 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findAllByNicknameContainingAndIdNot(keyword, me.getId(), pageable);
     }
 
+    public int countMembersByNickname(String nickname, Member me) {
+        return memberRepository.countByNicknameContainingAndIdNot(nickname, me.getId());
+    }
+
     public void countMembers() {
         memberRepository.count();
     }

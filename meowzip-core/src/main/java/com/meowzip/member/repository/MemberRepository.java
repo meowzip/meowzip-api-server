@@ -20,4 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT COUNT(m) FROM Member m")
     long count();
+
+    int countByNicknameContainingAndIdNot(String nickname, Long id);
 }

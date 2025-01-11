@@ -7,7 +7,7 @@ import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.cat.service.CoParentService;
 import com.meowzip.apiserver.cat.swagger.CoParentSwagger;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,16 +28,14 @@ public class CoParentController implements CoParentSwagger {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public CommonListResponse<CoParentMemberSearchResponseDTO> showMembersForCoParent(Principal principal,
-                                                                                @RequestParam("keyword") String keyword,
-                                                                                @RequestParam("cat-id") Long catId,
-                                                                                PageRequest pageRequest) {
+    public CommonListResponseV2<CoParentMemberSearchResponseDTO> showMembersForCoParent(Principal principal,
+                                                                                        @RequestParam("keyword") String keyword,
+                                                                                        @RequestParam("cat-id") Long catId,
+                                                                                        PageRequest pageRequest) {
 
         Member me = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        List<CoParentMemberSearchResponseDTO> members = coParentService.getMembersForCoParent(keyword, catId, me, pageRequest.of());
-
-        return new CommonListResponse<CoParentMemberSearchResponseDTO>(HttpStatus.OK).add(members);
+        return coParentService.getMembersForCoParent(keyword, catId, me, pageRequest.of());
     }
 
     @PostMapping("/request")

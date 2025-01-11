@@ -5,7 +5,7 @@ import com.meowzip.apiserver.cat.dto.response.AcceptCoParentResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
-import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,10 +22,10 @@ public interface CoParentSwagger {
             승인 대기 중이거나, 신청 내역이 없는 회원만 조회합니다.\n
             이미 신청 완료된 회원은 조회되지 않습니다.
             """)
-    CommonListResponse<CoParentMemberSearchResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
-                                                                               @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
-                                                                               @Parameter(name = "cat-id", description = "공동냥육 신청할 고양이 ID", required = true) Long catId,
-                                                                               @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
+    CommonListResponseV2<CoParentMemberSearchResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
+                                                                                 @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
+                                                                                 @Parameter(name = "cat-id", description = "공동냥육 신청할 고양이 ID", required = true) Long catId,
+                                                                                 @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 
     @Operation(summary = "공동냥육 신청")
     CommonResponse<Void> requestCoParent(@Parameter(hidden = true) Principal principal,
