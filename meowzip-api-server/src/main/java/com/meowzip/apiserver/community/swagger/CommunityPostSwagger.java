@@ -47,21 +47,13 @@ public interface CommunityPostSwagger {
     CommonResponse<Void> delete(@Parameter(hidden = true) Principal principal,
                                 @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
-    @Operation(summary = "게시글 좋아요")
+    @Operation(summary = "게시글 좋아요(토글)")
     CommonResponse<Void> like(@Parameter(hidden = true) Principal principal,
                               @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
-    @Operation(summary = "게시글 좋아요 취소")
-    CommonResponse<Void> unlike(@Parameter(hidden = true) Principal principal,
-                                @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
-
-    @Operation(summary = "게시글 북마크")
+    @Operation(summary = "게시글 북마크(토글)")
     CommonResponse<Void> bookmark(@Parameter(hidden = true) Principal principal,
                                   @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
-
-    @Operation(summary = "게시글 북마크 취소")
-    CommonResponse<Void> unbookmark(@Parameter(hidden = true) Principal principal,
-                                    @Parameter(in = ParameterIn.PATH, description = "게시글 id") Long postId);
 
     @Operation(summary = "게시글 작성자 차단")
     CommonResponse<Void> blockWriter(@Parameter(hidden = true) Principal principal,
