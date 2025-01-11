@@ -3,6 +3,7 @@ package com.meowzip.apiserver.profile.controller;
 import com.meowzip.apiserver.community.dto.response.PostResponseDTO;
 import com.meowzip.apiserver.global.request.PageRequest;
 import com.meowzip.apiserver.global.response.CommonListResponse;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.global.response.CommonResponse;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
@@ -48,20 +49,20 @@ public class ProfileController implements ProfileSwagger {
     }
 
     @GetMapping("/posts")
-    public CommonListResponse<PostResponseDTO> showPostsByWriter(Principal principal,
-                                                                 @RequestParam(value = "member-id", required = false) Long memberId,
-                                                                 PageRequest pageRequest) {
+    public CommonListResponseV2<PostResponseDTO> showPostsByWriter(Principal principal,
+                                                                   @RequestParam(value = "member-id", required = false) Long memberId,
+                                                                   PageRequest pageRequest) {
 
         Member loggedInMember = memberService.getMember(MemberUtil.getMemberId(principal));
         Member writer = memberService.getMember(ObjectUtils.isEmpty(memberId) ? MemberUtil.getMemberId(principal) : memberId);
 
-        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(profileService.showPostsByWriter(loggedInMember, writer, pageRequest.of()));
+        return profileService.showPostsByWriter(loggedInMember, writer, pageRequest.of());
     }
 
     @GetMapping("/bookmarks")
-    public CommonListResponse<PostResponseDTO> showBookmarkedPosts(Principal principal, PageRequest pageRequest) {
+    public CommonListResponseV2<PostResponseDTO> showBookmarkedPosts(Principal principal, PageRequest pageRequest) {
         Member member = memberService.getMember(MemberUtil.getMemberId(principal));
 
-        return new CommonListResponse<PostResponseDTO>(HttpStatus.OK).add(profileService.showBookmarkedPosts(member, pageRequest.of()));
+        return profileService.showBookmarkedPosts(member, pageRequest.of());
     }
 }

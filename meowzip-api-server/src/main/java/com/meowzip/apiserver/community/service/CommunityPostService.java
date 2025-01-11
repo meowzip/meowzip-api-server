@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -71,14 +72,14 @@ public class CommunityPostService {
         return new CommonListResponseV2<PostResponseDTO>(HttpStatus.OK).add(resDTOs, posts.hasNext());
     }
 
-    public List<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, PageRequest pageRequest) {
-        List<CommunityPost> posts = postRepository.findAllByMemberOrderByCreatedAtDesc(writer, pageRequest);
-        blockMemberService.getByMember(loggedInMember)
-                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember())));
+    public CommonListResponseV2<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, Pageable pageable) {
+        Page<CommunityPost> posts = postRepository.findAllByMemberOrderByCreatedAtDesc(writer, pageable);
 
-        return posts.stream()
+        List<PostResponseDTO> responseDTOs = posts.stream()
                 .map(post -> generatePostResponseDTO(post, loggedInMember))
                 .toList();
+
+        return new CommonListResponseV2<PostResponseDTO>(HttpStatus.OK).add(responseDTOs, posts.hasNext());
     }
 
     public PostResponseDTO showPost(Member member, Long postId) {
@@ -243,13 +244,13 @@ public class CommunityPostService {
         return bookmarkRepository.countByMember(member);
     }
 
-    public List<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
-        List<CommunityPost> posts = postRepository.findAllByMemberAndIsBookmarked(member.getId(), pageRequest);
-//        blockMemberService.getByMember(member)
-//                .forEach(block -> posts.removeIf(post -> post.isBlocked(block.getBlockedMember()))); TODO 확인 후 제거
+    public CommonListResponseV2<PostResponseDTO> showBookmarkedPosts(Member member, PageRequest pageRequest) {
+        Page<CommunityPost> posts = postRepository.findAllByMemberAndIsBookmarked(member.getId(), pageRequest);
 
-        return posts.stream()
+        List<PostResponseDTO> responseDTOs = posts.getContent().stream()
                 .map(post -> generatePostResponseDTO(post, member))
                 .toList();
+
+        return new CommonListResponseV2<PostResponseDTO>(HttpStatus.OK).add(responseDTOs, posts.hasNext());
     }
 }
