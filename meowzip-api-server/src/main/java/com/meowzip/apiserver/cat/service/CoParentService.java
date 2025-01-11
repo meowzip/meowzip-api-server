@@ -6,6 +6,7 @@ import com.meowzip.apiserver.cat.dto.response.CoParentInfoResponseDTO;
 import com.meowzip.apiserver.cat.dto.response.CoParentMemberSearchResponseDTO;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.notification.service.NotificationSendService;
 import com.meowzip.cat.entity.Cat;
@@ -15,10 +16,13 @@ import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,18 +33,38 @@ public class CoParentService {
     private final CoParentCatService coParentCatService;
     private final NotificationSendService notificationSendService;
 
-    // TODO: API 속도 확인 후 개선
-    public List<CoParentMemberSearchResponseDTO> getMembersForCoParent(String keyword, Long catId, Member me, Pageable pageable) {
+    public CommonListResponseV2<CoParentMemberSearchResponseDTO> getMembersForCoParent(
+            String keyword, Long catId, Member me, Pageable pageable) {
+
+        int countMembersByNickname = memberService.countMembersByNickname(keyword, me);
         List<Member> membersForCoParent = memberService.getMembersForCoParent(keyword, me, pageable);
         Cat cat = coParentCatService.getCat(me, catId);
         List<CoParent> coParents = coParentRepository.findByCatAndOwnerAndParticipantIn(cat, me, membersForCoParent);
 
-        return membersForCoParent.stream()
-                .filter(member -> coParents.stream().anyMatch(coParent -> coParent.isParticipant(cat, member) && coParent.isStandBy()) ||
-                        coParents.stream().noneMatch(coParent -> coParent.isParticipant(cat, member)))
-                .map(member -> new CoParentMemberSearchResponseDTO(member, coParents.stream()
-                        .anyMatch(coParent -> coParent.isParticipant(cat, member) && coParent.isStandBy())))
+        Map<Member, Boolean> coParentStatusMap = getCoParentStatusMap(cat, coParents);
+
+        List<CoParentMemberSearchResponseDTO> responseDTOs = membersForCoParent.stream()
+                .filter(member -> isMemberVisible(member, cat, coParentStatusMap, coParents))
+                .map(member -> new CoParentMemberSearchResponseDTO(member, coParentStatusMap.getOrDefault(member, false)))
                 .toList();
+
+        boolean hasNext = countMembersByNickname > pageable.getPageSize();
+        return new CommonListResponseV2<CoParentMemberSearchResponseDTO>(HttpStatus.OK).add(responseDTOs, hasNext);
+    }
+
+    private Map<Member, Boolean> getCoParentStatusMap(Cat cat, List<CoParent> coParents) {
+        return coParents.stream()
+                .collect(Collectors.toMap(
+                        CoParent::getParticipant,
+                        coParent -> coParent.isStandBy() && coParent.isParticipant(cat, coParent.getParticipant()),
+                        (existing, replacement) -> existing
+                ));
+    }
+
+    private boolean isMemberVisible(Member member, Cat cat, Map<Member, Boolean> coParentStatusMap, List<CoParent> coParents) {
+        boolean isStandBy = coParentStatusMap.getOrDefault(member, false);
+        boolean isNotParticipant = coParents.stream().noneMatch(coParent -> coParent.isParticipant(cat, member));
+        return isStandBy || isNotParticipant;
     }
 
     public boolean isResponded(Long coParentId) {
