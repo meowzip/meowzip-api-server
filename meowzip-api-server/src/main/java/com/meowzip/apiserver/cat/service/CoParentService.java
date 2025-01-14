@@ -48,7 +48,8 @@ public class CoParentService {
                 .map(member -> new CoParentMemberSearchResponseDTO(member, coParentStatusMap.getOrDefault(member, false)))
                 .toList();
 
-        boolean hasNext = countMembersByNickname > pageable.getPageSize();
+        long endIndex = pageable.getOffset() + pageable.getPageSize();
+        boolean hasNext = endIndex < countMembersByNickname;
         return new CommonListResponseV2<CoParentMemberSearchResponseDTO>(HttpStatus.OK).add(responseDTOs, hasNext);
     }
 

@@ -4,6 +4,7 @@ import com.meowzip.member.entity.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,10 +17,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByNickname(String nickname);
 
-    List<Member> findAllByNicknameContainingAndIdNot(String nickname, Long memberId, Pageable pageable);
+    @Query("""
+                SELECT m
+                FROM Member m
+                WHERE (:nickname IS NULL OR m.nickname LIKE %:nickname%)
+                  AND m.id <> :memberId
+            """)
+    List<Member> findAllByNicknameContainingAndIdNot(@Param("nickname") String nickname, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT COUNT(m) FROM Member m")
     long count();
 
-    int countByNicknameContainingAndIdNot(String nickname, Long id);
+    @Query("SELECT COUNT(m) FROM Member m WHERE (:nickname IS NULL OR m.nickname LIKE %:nickname%) AND m.id <> :id")
+    int countByNicknameContainingAndIdNot(@Param("nickname") String nickname, @Param("id") Long id);
 }
