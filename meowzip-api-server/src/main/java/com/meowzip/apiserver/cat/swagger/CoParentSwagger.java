@@ -23,7 +23,7 @@ public interface CoParentSwagger {
             이미 신청 완료된 회원은 조회되지 않습니다.
             """)
     CommonListResponseV2<CoParentMemberSearchResponseDTO> showMembersForCoParent(@Parameter(hidden = true) Principal principal,
-                                                                                 @Parameter(name = "keyword", description = "검색어", required = true) String keyword,
+                                                                                 @Parameter(name = "keyword", description = "검색어") String keyword,
                                                                                  @Parameter(name = "cat-id", description = "공동냥육 신청할 고양이 ID", required = true) Long catId,
                                                                                  @Parameter(in = ParameterIn.QUERY) PageRequest pageRequest);
 

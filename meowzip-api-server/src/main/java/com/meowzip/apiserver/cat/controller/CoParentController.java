@@ -29,7 +29,7 @@ public class CoParentController implements CoParentSwagger {
 
     @GetMapping("/members")
     public CommonListResponseV2<CoParentMemberSearchResponseDTO> showMembersForCoParent(Principal principal,
-                                                                                        @RequestParam("keyword") String keyword,
+                                                                                        @RequestParam(name = "keyword", required = false) String keyword,
                                                                                         @RequestParam("cat-id") Long catId,
                                                                                         PageRequest pageRequest) {
 
