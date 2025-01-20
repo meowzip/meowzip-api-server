@@ -88,12 +88,7 @@ public class CatService {
                         })
                         .toList();
 
-        boolean isMine = isOwner;
-        if (!isMine) {
-            isMine = coParentCatService.getCatsFromCoParent(member).contains(cat);
-        }
-
-        return new CatDetailResponseDTO(cat, diaries, isMine, getCoParents(cat, member, isOwner));
+        return new CatDetailResponseDTO(cat, diaries, isOwner, coParentCatService.getCatsFromCoParent(member).contains(cat), getCoParents(cat, member, isOwner));
     }
 
     private boolean isNotCoParent(Member member, Cat cat) {
