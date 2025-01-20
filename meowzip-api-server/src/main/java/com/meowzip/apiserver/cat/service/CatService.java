@@ -88,7 +88,12 @@ public class CatService {
                         })
                         .toList();
 
-        return new CatDetailResponseDTO(cat, diaries, isOwner, coParentCatService.getCatsFromCoParent(member).contains(cat), getCoParents(cat, member, isOwner));
+        return new CatDetailResponseDTO(cat,
+                diaries,
+                isOwner,
+                isOwner || coParentCatService.getCatsFromCoParent(member).contains(cat),
+                getCoParents(cat, member, isOwner)
+        );
     }
 
     private boolean isNotCoParent(Member member, Cat cat) {
