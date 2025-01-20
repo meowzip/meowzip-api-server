@@ -47,9 +47,12 @@ public record CatDetailResponseDTO(
         List<DiaryResponseDTO> diaries,
 
         @Schema(description = "내 고양이인지 여부")
-        boolean isMine
+        boolean isOwner,
+
+        @Schema(description = "일지 조회 가능 여부")
+        boolean isAccessibleToDiaries
 ) {
-    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries, boolean isMine, List<Member> coParents) {
+    public CatDetailResponseDTO(Cat cat, List<DiaryResponseDTO> diaries, boolean isMine, boolean isAccessibleToDiaries, List<Member> coParents) {
         this(cat.getId(),
                 cat.getImageUrl(),
                 cat.getName(),
@@ -63,7 +66,8 @@ public record CatDetailResponseDTO(
                         .map(CoParentMemberResponseDTO::new)
                         .toList(),
                 diaries,
-                isMine
+                isMine,
+                isAccessibleToDiaries
         );
     }
 }
