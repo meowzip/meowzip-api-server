@@ -12,6 +12,7 @@ import com.meowzip.apiserver.tag.service.TaggedCatService;
 import com.meowzip.cat.entity.Cat;
 import com.meowzip.cat.repository.CatRepository;
 import com.meowzip.coparent.entity.CoParent;
+import com.meowzip.diary.entity.Diary;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.member.entity.Member;
 import com.meowzip.tag.entity.TaggedCat;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +75,6 @@ public class CatService {
         return new CommonListResponseV2<CatResponseDTO>(HttpStatus.OK).add(responseDTOS, catPage.hasNext());
     }
 
-    // TODO: API 속도 개선
     public CatDetailResponseDTO getCatDetails(Member member, Long catId) {
         Cat cat = catRepository.findByIdWithMember(catId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CAT_NOT_FOUND));
@@ -82,6 +83,8 @@ public class CatService {
         List<DiaryResponseDTO> diaries = isNotCoParent(member, cat) ? List.of() :
                 taggedCatService.getTaggedCatsByCat(cat).stream()
                         .map(TaggedCat::getDiary)
+                        .sorted(Comparator.comparing(Diary::getCreatedAt).reversed())
+                        .limit(3)
                         .map(diary -> {
                             var diaryImageGroup = diary.getImageGroup();
                             return new DiaryResponseDTO(diary, ObjectUtils.isEmpty(diaryImageGroup) ? List.of() : imageService.getImageUrl(diaryImageGroup.getId()));
