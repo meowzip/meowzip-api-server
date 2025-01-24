@@ -66,7 +66,7 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.DIARY_NOT_FOUND));
 
-        if (!isWriter(member, diary)) {
+        if (!isAccessible(member, diary)) {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
@@ -222,5 +222,14 @@ public class DiaryService {
 
     private boolean isWriter(Member member, Diary diary) {
         return member.getId().equals(diary.getMember().getId());
+    }
+
+    private boolean isAccessible(Member member, Diary diary) {
+        if (isWriter(member, diary)) {
+            return true;
+        }
+
+        List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
+        return taggedCats.stream().anyMatch(taggedCat -> taggedCat.getCat().isCoParented(member));
     }
 }
