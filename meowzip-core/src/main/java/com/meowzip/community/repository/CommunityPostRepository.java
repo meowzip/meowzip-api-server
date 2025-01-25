@@ -26,12 +26,13 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
             "    SELECT 1 FROM CommunityBlockMember b " +
             "    WHERE b.member = :member AND b.blockedMember = p.member" +
             ")" +
-            "AND p.member = :member")
-    Page<CommunityPost> findAllByMemberOrderByCreatedAtDesc(@Param("member") Member member,
-                                                            Pageable pageable);
+            "AND p.member = :member " +
+            "ORDER BY p.id DESC")
+    Page<CommunityPost> findAllByMemberOrderByIdDesc(@Param("member") Member member,
+                                                     Pageable pageable);
 
     int countByMember(Member member);
 
-    @Query("SELECT b.post FROM CommunityPostBookmark b WHERE b.member.id = :memberId")
+    @Query("SELECT b.post FROM CommunityPostBookmark b WHERE b.member.id = :memberId ORDER BY b.id DESC")
     Page<CommunityPost> findAllByMemberAndIsBookmarked(@Param("memberId") Long memberId, Pageable pageable);
 }

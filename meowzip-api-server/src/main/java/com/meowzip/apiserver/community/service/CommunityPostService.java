@@ -73,7 +73,7 @@ public class CommunityPostService {
     }
 
     public CommonListResponseV2<PostResponseDTO> showPostsByWriter(Member loggedInMember, Member writer, Pageable pageable) {
-        Page<CommunityPost> posts = postRepository.findAllByMemberOrderByCreatedAtDesc(writer, pageable);
+        Page<CommunityPost> posts = postRepository.findAllByMemberOrderByIdDesc(writer, pageable);
 
         List<PostResponseDTO> responseDTOs = posts.stream()
                 .map(post -> generatePostResponseDTO(post, loggedInMember))
