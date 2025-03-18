@@ -35,6 +35,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "receive_push_notification")
     private boolean receivePushNotification;
 
+    private String fcmToken;
+
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
