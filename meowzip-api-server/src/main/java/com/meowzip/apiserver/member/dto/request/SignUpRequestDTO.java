@@ -24,7 +24,10 @@ public record SignUpRequestDTO(
         LoginType loginType,
 
         @Schema(description = "OAuth2 SNS ID")
-        String oauthId
+        String oauthId,
+
+        @Schema(description = "FCM 토큰")
+        String fcmToken
 ) {
 
     public Member toMember(String nickname) {
@@ -34,6 +37,7 @@ public record SignUpRequestDTO(
                 .nickname(nickname)
                 .loginType(loginType)
                 .status(Member.Status.ACTIVE)
+                .fcmToken(fcmToken)
                 .build();
     }
 
