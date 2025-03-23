@@ -30,6 +30,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         Member member = memberService.getMember(Long.valueOf(principal.getUsername()));
+
+        memberService.refreshFcmToken(member.getId(), request.getAttribute("fcmToken").toString());
         JwtResponseDTO jwt = jwtService.createJwt(member);
 
         response.setStatus(HttpServletResponse.SC_OK);

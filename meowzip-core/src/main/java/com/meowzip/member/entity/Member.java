@@ -70,6 +70,10 @@ public class Member extends BaseTimeEntity {
         this.withdrewAt = LocalDateTime.now();
     }
 
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
     public boolean isActive() {
         return this.status == Status.ACTIVE;
     }

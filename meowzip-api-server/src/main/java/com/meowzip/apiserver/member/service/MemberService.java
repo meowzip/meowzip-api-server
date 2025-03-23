@@ -257,4 +257,10 @@ public class MemberService implements UserDetailsService {
     public ReceivePushNotificationResDTO showNotificationReceive(Long memberId) {
         return new ReceivePushNotificationResDTO(getMember(memberId).isReceivePushNotification());
     }
+
+    @Transactional
+    public void refreshFcmToken(Long memberId, String fcmToken) {
+        Member member = getMember(memberId);
+        member.updateFcmToken(fcmToken);
+    }
 }
