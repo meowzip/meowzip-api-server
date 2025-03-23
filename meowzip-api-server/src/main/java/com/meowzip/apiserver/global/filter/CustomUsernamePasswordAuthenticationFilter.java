@@ -25,7 +25,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends AbstractAuthenti
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         if (!request.getContentType().equals("application/json")) {
             throw new RuntimeException("Authentication Content-Type not supported: " + request.getContentType());
         }
@@ -34,6 +34,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends AbstractAuthenti
         LoginRequestDTO loginRequestDTO = objectMapper.readValue(requestBody, LoginRequestDTO.class);
 
         var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDTO.email(), loginRequestDTO.password());
+        request.setAttribute("fcmToken", loginRequestDTO.fcmToken());
 
         return this.getAuthenticationManager().authenticate(authenticationToken);
     }
