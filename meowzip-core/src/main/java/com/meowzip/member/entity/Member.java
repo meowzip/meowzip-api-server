@@ -35,11 +35,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "receive_push_notification")
     private boolean receivePushNotification;
 
-    private String fcmToken;
-
     @Enumerated(value = EnumType.STRING)
     private Status status;
-
 
     @Column(name = "withdrew_at")
     private LocalDateTime withdrewAt;
@@ -68,10 +65,6 @@ public class Member extends BaseTimeEntity {
     public void withdraw() {
         this.status = Status.WITHDRAWAL;
         this.withdrewAt = LocalDateTime.now();
-    }
-
-    public void updateFcmToken(String fcmToken) {
-        this.fcmToken = fcmToken;
     }
 
     public boolean isActive() {

@@ -10,6 +10,8 @@ import com.meowzip.apiserver.member.dto.request.ResetPasswordRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.meowzip.apiserver.member.dto.request.SignUpRequestDTO;
 import com.meowzip.apiserver.member.dto.response.*;
+import com.meowzip.fcm.entity.FcmToken;
+import com.meowzip.fcm.repository.FcmTokenRepository;
 import com.meowzip.image.entity.ImageDomain;
 import com.meowzip.member.entity.LoginType;
 import com.meowzip.member.entity.Member;
@@ -48,6 +50,7 @@ public class MemberService implements UserDetailsService {
     private final ResetPasswordEmailService resetPasswordEmailService;
     private final ImageService imageService;
     private final ForbiddenNicknameService forbiddenNicknameService;
+    private final FcmTokenRepository fcmTokenRepository;
 
     private static final String[] NICKNAME_PREFIXES = {"발랄한", "명랑한", "친절한", "충실한", "온순한"};
     private static final String RANDOM_NICKNAME = "캔따개";
@@ -69,6 +72,10 @@ public class MemberService implements UserDetailsService {
         member.encodePassword(passwordEncoder);
 
         memberRepository.save(member);
+
+        if (!ObjectUtils.isEmpty(requestDTO.fcmToken())) {
+            fcmTokenRepository.save(requestDTO.toFcmToken(member));
+        }
 
         return new SignUpResponseDTO(member.getNickname());
     }
@@ -261,6 +268,12 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public void refreshFcmToken(Long memberId, String fcmToken) {
         Member member = getMember(memberId);
-        member.updateFcmToken(fcmToken);
+        FcmToken byTokenAndMember = fcmTokenRepository.findByTokenAndMember(fcmToken, member);
+
+        if (byTokenAndMember != null) {
+            return;
+        }
+
+        fcmTokenRepository.save(FcmToken.create(member, fcmToken));
     }
 }

@@ -1,5 +1,6 @@
 package com.meowzip.apiserver.member.dto.request;
 
+import com.meowzip.fcm.entity.FcmToken;
 import com.meowzip.member.entity.LoginType;
 import com.meowzip.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,8 +38,11 @@ public record SignUpRequestDTO(
                 .nickname(nickname)
                 .loginType(loginType)
                 .status(Member.Status.ACTIVE)
-                .fcmToken(fcmToken)
                 .build();
+    }
+
+    public FcmToken toFcmToken(Member member) {
+        return FcmToken.create(member, fcmToken);
     }
 
     public boolean isOAuth() {
