@@ -19,6 +19,9 @@ public record CommentResponseDTO(
         @Schema(description = "작성자 닉네임", example = "냥냥이")
         String memberNickname,
 
+        @Schema(description = "작성자 프로필 이미지", example = "https://meowzip.com/profile.jpg")
+        String profileImageUrl,
+
         @Schema(description = "내가 작성한 댓글인지 여부", example = "true")
         boolean isMine,
 
@@ -40,6 +43,7 @@ public record CommentResponseDTO(
                 comment.getId(),
                 comment.getMember().getId(),
                 comment.getMember().getNickname(),
+                comment.getMember().getProfileImage(),
                 comment.getMember().equals(member),
                 comment.getContent(),
                 comment.getParent() == null ? null : comment.getParent().getId(),
