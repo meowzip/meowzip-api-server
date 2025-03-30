@@ -38,7 +38,10 @@ public record DiaryResponseDTO(
         String memberNickname,
 
         @Schema(description = "태그된 고양이 목록", implementation = TaggedCatResponseDTO.class)
-        List<TaggedCatResponseDTO> taggedCats
+        List<TaggedCatResponseDTO> taggedCats,
+
+        @Schema(description = "돌봄 일시", example = "24.10.01 오전 06:00")
+        String caredDateTime
 ) {
 
     public DiaryResponseDTO(Diary diary, List<String> images) {
@@ -53,6 +56,8 @@ public record DiaryResponseDTO(
                 diary.getMember().getNickname(),
                 diary.getTaggedCats().stream()
                         .map(taggedCat -> new TaggedCatResponseDTO(taggedCat.getCat()))
-                        .toList());
+                        .toList(),
+                DateTimeUtil.toFormattedDateTime(diary.getCaredDate(), diary.getCaredTime())
+        );
     }
 }

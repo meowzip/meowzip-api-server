@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 public class DateTimeUtil {
 
@@ -14,6 +15,12 @@ public class DateTimeUtil {
 
     public static String toFormattedDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern("M월 d일"));
+    }
+
+    public static String toFormattedDateTime(LocalDate date, LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+        return dateTime.format(DateTimeFormatter.ofPattern("yy.MM.dd a hh:mm", Locale.KOREA));
     }
 
     public static String toRelative(LocalDateTime time) {
