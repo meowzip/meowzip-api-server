@@ -23,4 +23,7 @@ public interface NotificationSwagger {
 
     @Operation(summary = "알림 읽음 처리")
     CommonResponse<Void> readNotification(Principal principal, Long notificationId);
+
+    @Operation(summary = "알림 모두 읽음 처리")
+    CommonResponse<Void> readAllNotifications(Principal principal);
 }

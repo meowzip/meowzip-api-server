@@ -78,4 +78,10 @@ public class NotificationService {
 
         return new CommonListResponseV2<CoParentNotificationResponseDTO>(HttpStatus.OK).add(responseDTOs, notificationHistories.hasNext());
     }
+
+    @Transactional
+    public void readAll(Member member) {
+        var notificationHistories = notificationHistoryRepository.findByReceiverAndReadAtIsNull(member);
+        notificationHistories.forEach(NotificationHistory::read);
+    }
 }
