@@ -50,4 +50,12 @@ public class NotificationController implements NotificationSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @PatchMapping
+    public CommonResponse<Void> readAllNotifications(Principal principal) {
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        notificationService.readAll(member);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }
