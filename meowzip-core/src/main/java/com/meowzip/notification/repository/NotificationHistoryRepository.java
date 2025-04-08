@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +27,5 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
 
     Optional<NotificationHistory> findByReceiverAndId(Member receiver, Long id);
 
-    boolean existsByReceiverAndReadAtIsNull(Member member);
+    boolean existsByReceiverAndReadAtIsNullAndCreatedAtAfter(Member member, LocalDateTime createdAt);
 }
