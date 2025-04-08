@@ -53,7 +53,9 @@ public class NotificationService {
     }
 
     public boolean isExistsUnreadNotification(Member member) {
-        return notificationHistoryRepository.existsByReceiverAndReadAtIsNull(member);
+        LocalDateTime criteria = LocalDateTime.now().minusWeeks(8);
+
+        return notificationHistoryRepository.existsByReceiverAndReadAtIsNullAndCreatedAtAfter(member, criteria);
     }
 
     public CommonListResponseV2<CoParentNotificationResponseDTO> showCoParentNotifications(Member member, Pageable pageable) {
