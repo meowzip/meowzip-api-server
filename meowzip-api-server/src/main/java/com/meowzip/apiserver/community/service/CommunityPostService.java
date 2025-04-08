@@ -175,9 +175,8 @@ public class CommunityPostService {
                             likeRepository.save(like);
                             post.like();
 
-                            // TODO: 본인 게시물 좋아요 알림 제외
                             if (!isWriter(member, post)) {
-                                notificationSendService.send(post.getMember(), member, NotificationCode.MN001, String.valueOf(postId), "");
+                                notificationSendService.send(post.getMember(), member, NotificationCode.MN002, String.valueOf(postId), "");
                             }
                         });
     }
