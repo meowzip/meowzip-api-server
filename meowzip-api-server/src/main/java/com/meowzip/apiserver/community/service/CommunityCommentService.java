@@ -16,6 +16,7 @@ import com.meowzip.notification.entity.NotificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,10 @@ public class CommunityCommentService {
         if (requestDTO.parentCommentId() != null) {
             parentComment = commentRepository.findById(requestDTO.parentCommentId())
                     .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.COMMENT_NOT_FOUND));
+        }
+
+        if (!ObjectUtils.isEmpty(parentComment) && parentComment.isReply()) {
+            throw new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST);
         }
 
         CommunityComment comment = requestDTO.toComment(post, member, parentComment);
