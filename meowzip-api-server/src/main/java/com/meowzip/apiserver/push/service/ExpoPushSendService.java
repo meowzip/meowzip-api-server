@@ -1,6 +1,7 @@
 package com.meowzip.apiserver.push.service;
 
 import com.meowzip.apiserver.push.dto.request.ExpoPushMessageRQ;
+import com.meowzip.apiserver.push.dto.request.ExpoPushMessageRS;
 import com.meowzip.fcm.entity.FcmToken;
 import com.meowzip.fcm.repository.FcmTokenRepository;
 import com.meowzip.notification.entity.NotificationHistory;
@@ -55,10 +56,11 @@ public class ExpoPushSendService {
                     .accept(MediaType.APPLICATION_JSON)
                     .bodyValue(message)
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(ExpoPushMessageRS.class)
                     .doOnNext(response -> {
                         log.info("Expo push response: {}", response);
-                        pushSendHistory.updateResponse(response);
+                        pushSendHistory.updateResponse(response.getData().toString(),
+                                response.getData().getId(), response.getData().getStatus());
                     })
                     .doOnError(error -> {
                         log.error("Push failed: {}", error.getMessage());
