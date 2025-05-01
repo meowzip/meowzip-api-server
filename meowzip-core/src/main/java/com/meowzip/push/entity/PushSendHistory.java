@@ -29,6 +29,8 @@ public class PushSendHistory extends BaseTimeEntity {
     @JoinColumn(name = "notification_history_id")
     private NotificationHistory notificationHistory;
 
+    private String pushId;
+
     private String request;
     private String response;
     private String errorMessage;
@@ -47,9 +49,10 @@ public class PushSendHistory extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateResponse(String response) {
+    public void updateResponse(String response, String pushId, String status) {
+        this.status = status.equals("ok") ? Status.SUCCESS : Status.FAILURE;
+        this.pushId = pushId;
         this.response = response;
-        this.status = Status.SUCCESS;
     }
 
     public void updateErrorMessage(String errorMessage) {
