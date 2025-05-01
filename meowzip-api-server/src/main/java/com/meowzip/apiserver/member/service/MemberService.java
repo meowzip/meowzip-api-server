@@ -116,20 +116,16 @@ public class MemberService implements UserDetailsService {
     }
 
     private String generateRandomNickname() {
-        StringBuilder nickname = new StringBuilder();
-
         while (true) {
-            final int randomInt = new Random().nextInt(1000);
+            StringBuilder nickname = new StringBuilder();
+            int randomInt = new Random().nextInt(1000);
             nickname.append(NICKNAME_PREFIXES[new Random().nextInt(5)])
                     .append(RANDOM_NICKNAME).append(randomInt);
 
-            // TODO: 랜덤 닉네임 숫자 count 후 얼마 남지 않았을 경우 알림 보내는 기능 추가
             if (!isNicknameDuplicated(nickname.toString())) {
-                break;
+                return nickname.toString();
             }
         }
-
-        return nickname.toString();
     }
 
     private boolean isNicknameDuplicated(String nickname) {
