@@ -2,6 +2,7 @@ package com.meowzip.apiserver.notification.service;
 
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
+import com.meowzip.apiserver.push.service.ExpoPushSendService;
 import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCode;
 import com.meowzip.notification.entity.NotificationTemplate;
@@ -17,12 +18,16 @@ public class NotificationSendService {
 
     private final NotificationTemplateRepository notificationTemplateRepository;
     private final NotificationHistoryRepository notificationHistoryRepository;
+    private final ExpoPushSendService expoPushSendService;
 
     @Transactional
     public void send(Member receiver, Member sender, NotificationCode code, String link, String... replacers) {
         NotificationTemplate template = notificationTemplateRepository.findByCode(code)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_TEMPLATE_NOT_FOUND));
 
-        notificationHistoryRepository.save(template.toNotification(receiver, link, sender.getNickname(), replacers));
+        var notification = template.toNotification(receiver, link, sender.getNickname(), replacers);
+        notificationHistoryRepository.save(notification);
+
+        expoPushSendService.sendNotification(notification);
     }
 }

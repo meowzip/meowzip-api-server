@@ -64,4 +64,8 @@ public class NotificationHistory extends BaseTimeEntity {
     public String getType() {
         return this.template.getCode().getType();
     }
+
+    public String getPushBody() {
+        return this.senderNickname + this.template.getTitle();
+    }
 }

@@ -64,7 +64,7 @@ public class MemberController implements MemberSwagger {
     }
 
     @GetMapping("/auth/v1.0.0/members/validate-nickname")
-    public CommonResponse<NicknameValidationResponseDTO> checkNicknameAvailable(@RequestParam String nickname) {
+    public CommonResponse<NicknameValidationResponseDTO> checkNicknameAvailable(@RequestParam(value = "nickname") String nickname) {
         NicknameValidationResponseDTO responseDTO = memberService.checkNicknameAvailable(nickname);
 
         return new CommonResponse<>(HttpStatus.OK, responseDTO);
