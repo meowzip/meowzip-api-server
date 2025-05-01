@@ -29,4 +29,8 @@ public class FcmToken extends BaseTimeEntity {
                 .token(token)
                 .build();
     }
+
+    public boolean isValidExpoToken() {
+        return token.startsWith("ExponentPushToken[") && token.endsWith("]");
+    }
 }
