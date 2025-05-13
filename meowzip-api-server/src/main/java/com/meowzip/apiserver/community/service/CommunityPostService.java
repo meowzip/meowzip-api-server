@@ -144,6 +144,8 @@ public class CommunityPostService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
+        likeRepository.deleteAllByPost(post);
+        bookmarkRepository.deleteAllByPost(post);
         postRepository.delete(post);
     }
 

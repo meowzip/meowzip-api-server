@@ -14,4 +14,6 @@ public interface CommunityPostBookmarkRepository extends JpaRepository<Community
     Optional<CommunityPostBookmark> findByPostAndMember(CommunityPost post, Member member);
 
     int countByMember(Member member);
+
+    void deleteAllByPost(CommunityPost post);
 }
