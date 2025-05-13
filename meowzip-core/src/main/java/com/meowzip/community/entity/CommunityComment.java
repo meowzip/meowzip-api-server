@@ -34,7 +34,7 @@ public class CommunityComment extends BaseTimeEntity {
 
     @Setter
     @Builder.Default
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> replies = new ArrayList<>();
 
     private String content;
