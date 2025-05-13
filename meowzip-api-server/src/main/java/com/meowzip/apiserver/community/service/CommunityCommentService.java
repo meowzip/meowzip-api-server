@@ -125,6 +125,9 @@ public class CommunityCommentService {
             throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
+        // 자식 댓글도 삭제
+        comment.getReplies().clear();
+
         commentRepository.delete(comment);
     }
 
