@@ -46,8 +46,8 @@ public class JwtService {
 
     @Transactional
     public JwtResponseDTO createJwt(Member member) {
-        String accessToken = jwtUtil.createAccessToken(member, JwtExpiration.minutesOf(accessTokenExpiration));
-        String refreshToken = jwtUtil.createRefreshToken(member, JwtExpiration.minutesOf(refreshTokenExpiration));
+        String accessToken = jwtUtil.createAccessToken(member, JwtExpiration.daysOf(accessTokenExpiration));
+        String refreshToken = jwtUtil.createRefreshToken(member, JwtExpiration.daysOf(refreshTokenExpiration));
 
         refreshTokenService.save(member.getId(), refreshToken, accessToken);
 
