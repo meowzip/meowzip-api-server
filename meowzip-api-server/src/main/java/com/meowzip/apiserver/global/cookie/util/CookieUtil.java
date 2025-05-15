@@ -10,7 +10,7 @@ public class CookieUtil {
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .maxAge(60 * 60 * 2)
+                .maxAge(60 * 60 * 24 * 7)
                 .build()
                 .toString();
     }
