@@ -5,17 +5,19 @@ import com.meowzip.apiserver.global.discord.service.DiscordService;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.exception.response.ErrorResponse;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -24,8 +26,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final DiscordService discordService;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        ClientException e = new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        log.error("AuthenticationEntryPoint 호출: {}", authException.getMessage());
+
+        EnumErrorCode errorCode = ObjectUtils.isEmpty(request.getHeader("Authorization")) ? EnumErrorCode.TOKEN_REQUIRED : EnumErrorCode.TOKEN_INVALID;
+        ClientException e = new ClientException.Unauthorized(errorCode);
 //        discordService.send(request, e.getHttpStatus(), e.getMessage());
 
         response.setStatus(e.getHttpStatus().value());

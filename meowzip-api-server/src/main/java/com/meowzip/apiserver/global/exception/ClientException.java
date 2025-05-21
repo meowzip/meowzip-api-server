@@ -3,6 +3,7 @@ package com.meowzip.apiserver.global.exception;
 import org.springframework.http.HttpStatus;
 
 public abstract class ClientException extends BaseException {
+
     public ClientException(EnumErrorCode enumErrorCode) {
         super(enumErrorCode);
     }
@@ -11,8 +12,8 @@ public abstract class ClientException extends BaseException {
         super(enumErrorCode, ex);
     }
 
-    public ClientException(int result, String message) {
-        super(result, message);
+    public ClientException(EnumErrorCode code, String message) {
+        super(code, message);
     }
 
     public static class BadRequest extends ClientException {
@@ -20,8 +21,8 @@ public abstract class ClientException extends BaseException {
             super(enumErrorCode);
         }
 
-        public BadRequest(int result, String message) {
-            super(result, message);
+        public BadRequest(EnumErrorCode code, String message) {
+            super(code, message);
         }
 
         @Override

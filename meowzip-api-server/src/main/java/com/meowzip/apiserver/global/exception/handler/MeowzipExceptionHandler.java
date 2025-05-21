@@ -31,7 +31,7 @@ public class MeowzipExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException ex, HttpServletRequest req) {
         String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        ClientException.BadRequest error = new ClientException.BadRequest(400, message);
+        ClientException.BadRequest error = new ClientException.BadRequest(EnumErrorCode.BAD_REQUEST, message);
 
         preHandle(error, req, message);
 
