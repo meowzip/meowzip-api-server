@@ -12,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -34,6 +34,7 @@ public class SecurityConfig {
     private final CustomLoginFailureHandler loginFailureHandler;
     private final CustomLogoutHandler logoutHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
+    private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
     private final JwtService jwtService;
     private final ObjectMapper objectMapper;
@@ -42,7 +43,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService oAuth2UserService;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {
@@ -100,26 +101,25 @@ public class SecurityConfig {
                 })
         ;
 
-        http.addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(customUsernamePasswordAuthenticationFilter, LogoutFilter.class);
+        http.addFilterAfter(customUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtService), CustomUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return memberService;
+    public AuthenticationManager authenticationManager() {
+        var provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(memberService);
+
+        return new ProviderManager(provider);
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+    // TODO: @Bean annotation?
+    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() throws Exception {
         var filter = new CustomUsernamePasswordAuthenticationFilter(objectMapper);
-        filter.setAuthenticationManager(authenticationManager);
+        filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(loginSuccessHandler);
         filter.setAuthenticationFailureHandler(loginFailureHandler);
 
