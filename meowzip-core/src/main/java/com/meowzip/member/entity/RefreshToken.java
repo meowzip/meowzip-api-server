@@ -8,16 +8,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash(value = "refresh_token", timeToLive = 60 * 60 * 24 * 3)
+@RedisHash(value = "refresh_token", timeToLive = 60 * 60 * 24 * 3)  // 3일
 public class RefreshToken {
 
     @Id
-    private String refreshToken;
+    private UUID id;
 
     @Indexed
-    private String memberId;
+    private Long memberId;
+
+    @Indexed
+    private String refreshToken;
 }

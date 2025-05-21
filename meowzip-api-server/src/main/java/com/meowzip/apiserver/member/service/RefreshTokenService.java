@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class RefreshTokenService {
@@ -15,8 +17,9 @@ public class RefreshTokenService {
     @Transactional
     public void save(Long memberId, String refreshToken, String accessToken) {
         RefreshToken entity = RefreshToken.builder()
+                .id(UUID.randomUUID())
                 .refreshToken(refreshToken)
-                .memberId(String.valueOf(memberId))
+                .memberId(memberId)
                 .build();
 
         refreshTokenRepository.save(entity);
@@ -24,11 +27,11 @@ public class RefreshTokenService {
 
     @Transactional
     public void remove(Long memberId) {
-        refreshTokenRepository.findByMemberId(String.valueOf(memberId))
+        refreshTokenRepository.findByMemberId(memberId)
                 .ifPresent(refreshTokenRepository::delete);
     }
 
     public boolean isExists(String refreshToken) {
-        return refreshTokenRepository.findById(refreshToken).isPresent();
+        return refreshTokenRepository.findByRefreshToken(refreshToken).isPresent();
     }
 }
