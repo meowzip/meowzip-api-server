@@ -8,23 +8,22 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public abstract class BaseException extends RuntimeException {
 
-    protected int result;
+    protected EnumErrorCode code;
     protected String message;
 
-
-    public BaseException(EnumErrorCode enumErrorCode) {
-        this.result = enumErrorCode.getResult();
-        this.message = enumErrorCode.getMessage();
+    public BaseException(EnumErrorCode code) {
+        this.code = code;
+        this.message = code.getMessage();
     }
 
-    public BaseException(EnumErrorCode enumErrorCode, Throwable ex) {
-        this.result = enumErrorCode.getResult();
-        this.message = enumErrorCode.getMessage();
+    public BaseException(EnumErrorCode code, Throwable ex) {
+        this.code = code;
+        this.message = code.getMessage();
         this.initCause(ex);
     }
 
-    public BaseException(int result, String message) {
-        this.result = result;
+    public BaseException(EnumErrorCode code, String message) {
+        this.code = code;
         this.message = message;
     }
 
