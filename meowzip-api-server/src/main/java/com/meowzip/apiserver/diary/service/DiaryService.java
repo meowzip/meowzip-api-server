@@ -56,6 +56,7 @@ public class DiaryService {
         Page<Diary> diaries = diaryRepository.findDiariesByCaredDateAndOptionalCatId(date, catId, pageable);
 
         List<DiaryResponseDTO> resDTOs = diaries.stream()
+                .filter(diary -> isAccessible(member, diary))
                 .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
                 .toList();
 
@@ -230,6 +231,6 @@ public class DiaryService {
         }
 
         List<TaggedCat> taggedCats = taggedCatService.getTaggedCatsByDiary(diary);
-        return taggedCats.stream().anyMatch(taggedCat -> taggedCat.getCat().isCoParented(member));
+        return taggedCats.stream().anyMatch(taggedCat -> taggedCat.getCat().isCoParentedWith(member));
     }
 }

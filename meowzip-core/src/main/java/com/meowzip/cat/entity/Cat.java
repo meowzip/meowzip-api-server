@@ -63,7 +63,7 @@ public class Cat extends BaseTimeEntity {
                 .size();
     }
 
-    public boolean isCoParented(Member member) {
+    public boolean isCoParentedWith(Member member) {
         return coParents.stream()
                 .anyMatch(coParent -> coParent.isParticipant(member) && coParent.isApproval());
     }
