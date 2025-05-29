@@ -100,7 +100,7 @@ public class CatService {
     }
 
     private boolean isNotCoParent(Member member, Cat cat) {
-        return !isOwner(member, cat) && !cat.isCoParented(member);
+        return !isOwner(member, cat) && !cat.isCoParentedWith(member);
     }
 
     private List<Member> getCoParents(Cat cat, Member member, boolean isOwner) {
