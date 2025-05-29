@@ -17,16 +17,15 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Query(value = "SELECT DISTINCT d.* FROM diary d " +
             "LEFT JOIN tagged_cat tc ON d.id = tc.diary_id " +
-            "WHERE d.member_id = :memberId AND d.cared_date = :caredDate " +
+            "WHERE d.cared_date = :caredDate " +
             "AND (:catId IS NULL OR tc.cat_id = :catId)" +
             "ORDER BY d.id DESC",
             countQuery = "SELECT COUNT(DISTINCT d.id) FROM diary d " +
                     "LEFT JOIN tagged_cat tc ON d.id = tc.diary_id " +
-                    "WHERE d.member_id = :memberId AND d.cared_date = :caredDate " +
+                    "WHERE d.cared_date = :caredDate " +
                     "AND (:catId IS NULL OR tc.cat_id = :catId)",
             nativeQuery = true)
-    Page<Diary> findDiariesByMemberAndCaredDateAndOptionalCatId(
-            @Param("memberId") Long memberId,
+    Page<Diary> findDiariesByCaredDateAndOptionalCatId(
             @Param("caredDate") LocalDate caredDate,
             @Param("catId") Long catId,
             Pageable pageable);

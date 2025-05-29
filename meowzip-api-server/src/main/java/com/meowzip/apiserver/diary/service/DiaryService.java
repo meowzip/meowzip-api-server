@@ -53,7 +53,7 @@ public class DiaryService {
     private final NotificationSendService notificationSendService;
 
     public CommonListResponseV2<DiaryResponseDTO> getDiaries(Member member, Pageable pageable, LocalDate date, Long catId) {
-        Page<Diary> diaries = diaryRepository.findDiariesByMemberAndCaredDateAndOptionalCatId(member.getId(), date, catId, pageable);
+        Page<Diary> diaries = diaryRepository.findDiariesByCaredDateAndOptionalCatId(date, catId, pageable);
 
         List<DiaryResponseDTO> resDTOs = diaries.stream()
                 .map(diary -> new DiaryResponseDTO(diary, getImageUrls(diary)))
