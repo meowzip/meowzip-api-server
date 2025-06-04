@@ -1,6 +1,8 @@
 package com.meowzip.apiserver.notification.service;
 
 import com.meowzip.apiserver.cat.service.CoParentService;
+import com.meowzip.apiserver.community.service.CommunityPostService;
+import com.meowzip.apiserver.diary.service.DiaryService;
 import com.meowzip.apiserver.global.exception.ClientException;
 import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.response.CommonListResponseV2;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +27,8 @@ public class NotificationService {
 
     private final NotificationHistoryRepository notificationHistoryRepository;
     private final CoParentService coParentService;
+    private final CommunityPostService communityPostService;
+    private final DiaryService diaryService;
 
     public CommonListResponseV2<NotificationResponseDTO> showNotifications(Member member, Pageable pageable) {
         LocalDateTime criteria = LocalDateTime.now().minusWeeks(8);
@@ -41,12 +46,37 @@ public class NotificationService {
         var notification = notificationHistoryRepository.findByReceiverAndId(member, notificationId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_HISTORY_NOT_FOUND));
 
+        validateNotification(notification);
+
         if (!isOwner(member, notification)) {
             throw new IllegalArgumentException("You are not the owner of this notification");
         }
 
         notification.read();
     }
+
+    private void validateNotification(NotificationHistory notification) {
+        if (ObjectUtils.isEmpty(notification)) {
+            return;
+        }
+
+        Long contentId = notification.extractIdFromLink();
+
+        switch (notification.getTemplate().getCode()) {
+            case MN001, MN002 -> {
+                communityPostService.getPostById(contentId);
+            }
+
+            case MN003 -> {
+                diaryService.getDiary(notification.getReceiver(), contentId);
+            }
+
+            case MN004, MN005, MN006 -> {
+                // TODO: 공동냥육 알림에 대한 검증 로직 추가 필요
+            }
+        }
+    }
+
 
     private boolean isOwner(Member member, NotificationHistory notification) {
         return notification.getReceiver().equals(member);
