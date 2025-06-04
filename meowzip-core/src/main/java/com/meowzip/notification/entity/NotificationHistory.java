@@ -68,4 +68,17 @@ public class NotificationHistory extends BaseTimeEntity {
     public String getPushBody() {
         return this.senderNickname + this.getTitle();
     }
+
+    public Long extractIdFromLink() {
+        if (this.link == null || this.link.isEmpty() || !this.link.contains("/")) {
+            return null;
+        }
+
+        String idString = this.link.substring(this.link.lastIndexOf("/") + 1);
+        if (!idString.matches("\\d+")) {
+            return null;
+        }
+
+        return Long.parseLong(idString);
+    }
 }
