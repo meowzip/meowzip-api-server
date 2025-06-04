@@ -8,6 +8,8 @@ import com.meowzip.apiserver.global.exception.EnumErrorCode;
 import com.meowzip.apiserver.global.response.CommonListResponseV2;
 import com.meowzip.apiserver.notification.dto.response.CoParentNotificationResponseDTO;
 import com.meowzip.apiserver.notification.dto.response.NotificationResponseDTO;
+import com.meowzip.apiserver.notification.dto.response.NotificationValidationResDTO;
+import com.meowzip.coparent.entity.CoParent;
 import com.meowzip.member.entity.Member;
 import com.meowzip.notification.entity.NotificationCategory;
 import com.meowzip.notification.entity.NotificationHistory;
@@ -17,9 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -46,37 +48,54 @@ public class NotificationService {
         var notification = notificationHistoryRepository.findByReceiverAndId(member, notificationId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_HISTORY_NOT_FOUND));
 
-        validateNotification(notification);
-
         if (!isOwner(member, notification)) {
-            throw new IllegalArgumentException("You are not the owner of this notification");
+            throw new ClientException.Forbidden(EnumErrorCode.FORBIDDEN);
         }
 
         notification.read();
     }
 
-    private void validateNotification(NotificationHistory notification) {
-        if (ObjectUtils.isEmpty(notification)) {
-            return;
-        }
+    public NotificationValidationResDTO validateNotification(Member receiver, Long notificationId) {
+        var notification = notificationHistoryRepository.findByReceiverAndId(receiver, notificationId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_HISTORY_NOT_FOUND));
 
         Long contentId = notification.getDetailLink();
-
-        switch (notification.getTemplate().getCode()) {
-            case MN001, MN002 -> {
-                communityPostService.getPostById(contentId);
-            }
-
-            case MN003 -> {
-                diaryService.getDiary(notification.getReceiver(), contentId);
-            }
-
-            case MN004, MN005, MN006 -> {
-                coParentService.validateCoParent(notification.getReceiver(), contentId);
-            }
+        if (contentId == null) {
+            return NotificationValidationResDTO.invalid(EnumErrorCode.BAD_REQUEST.getMessage());
         }
+
+        return switch (notification.getTemplate().getCode()) {
+            case MN001, MN002 -> validateCommunityPost(contentId);
+            case MN003 -> validateDiary(contentId);
+            case MN004, MN005, MN006 -> validateCoParent(notification.getReceiver(), contentId);
+        };
     }
 
+    private NotificationValidationResDTO validateCommunityPost(Long postId) {
+        return communityPostService.getPostIfExists(postId).isPresent()
+                ? NotificationValidationResDTO.valid()
+                : NotificationValidationResDTO.invalid(EnumErrorCode.POST_NOT_FOUND.getMessage());
+    }
+
+    private NotificationValidationResDTO validateDiary(Long diaryId) {
+        return diaryService.getDiaryById(diaryId).isPresent()
+                ? NotificationValidationResDTO.valid()
+                : NotificationValidationResDTO.invalid(EnumErrorCode.DIARY_NOT_FOUND.getMessage());
+    }
+
+    private NotificationValidationResDTO validateCoParent(Member receiver, Long coParentId) {
+        Optional<CoParent> coParent = coParentService.getByCoParentId(receiver, coParentId);
+
+        if (coParent.isEmpty()) {
+            return NotificationValidationResDTO.invalid(EnumErrorCode.CO_PARENT_NOT_FOUND.getMessage());
+        }
+
+        if (coParent.get().isCanceled()) {
+            return NotificationValidationResDTO.invalid(EnumErrorCode.CO_PARENT_NOT_FOUND.getMessage());
+        }
+
+        return NotificationValidationResDTO.valid();
+    }
 
     private boolean isOwner(Member member, NotificationHistory notification) {
         return notification.getReceiver().equals(member);

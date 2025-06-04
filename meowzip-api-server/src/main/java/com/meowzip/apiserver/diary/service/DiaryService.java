@@ -35,10 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,6 +69,10 @@ public class DiaryService {
         }
 
         return new DiaryResponseDTO(diary, getImageUrls(diary));
+    }
+
+    public Optional<Diary> getDiaryById(Long diaryId) {
+        return diaryRepository.findById(diaryId);
     }
 
     private List<String> getImageUrls(Diary diary) {
