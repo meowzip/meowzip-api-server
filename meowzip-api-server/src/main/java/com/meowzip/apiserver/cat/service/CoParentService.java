@@ -68,18 +68,25 @@ public class CoParentService {
         return isStandBy || isNotParticipant;
     }
 
-    public boolean isResponded(Long coParentId) {
-        CoParent coParent = coParentRepository.findById(coParentId)
+    public void validateCoParent(Member participant, Long coParentId) {
+        CoParent coParent = coParentRepository.findByParticipantAndId(participant, coParentId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
 
-        return !coParent.isStandBy();
+        if (coParent.isCanceled()) {
+            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_NOT_FOUND);
+        }
+    }
+
+    public boolean isResponded(Long coParentId) {
+        return coParentRepository.findById(coParentId)
+                .map(coParent -> !coParent.isStandBy())
+                .orElse(false);
     }
 
     public boolean isExpired(Long coParentId) {
-        CoParent coParent = coParentRepository.findById(coParentId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
-
-        return coParent.isExpired();
+        return coParentRepository.findById(coParentId)
+                .map(CoParent::isExpired)
+                .orElse(true);
     }
 
     @Transactional
@@ -156,6 +163,6 @@ public class CoParentService {
             throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_ALREADY_PROCESSED);
         }
 
-        coParentRepository.delete(coParent);
+        coParent.cancel();
     }
 }

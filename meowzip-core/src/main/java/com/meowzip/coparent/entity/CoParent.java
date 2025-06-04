@@ -64,7 +64,9 @@ public class CoParent extends BaseTimeEntity {
     public enum Status {
         STANDBY,
         APPROVAL,
-        REJECT;
+        REJECT,
+        CANCELED
+        ;
     }
 
     public boolean isApproval() {
@@ -73,5 +75,13 @@ public class CoParent extends BaseTimeEntity {
 
     public boolean isExpired() {
         return acceptableDatetime.isBefore(LocalDateTime.now());
+    }
+
+    public void cancel() {
+        this.status = Status.CANCELED;
+    }
+
+    public boolean isCanceled() {
+        return status == Status.CANCELED;
     }
 }
