@@ -60,7 +60,7 @@ public class NotificationService {
             return;
         }
 
-        Long contentId = notification.extractIdFromLink();
+        Long contentId = notification.getDetailLink();
 
         switch (notification.getTemplate().getCode()) {
             case MN001, MN002 -> {
