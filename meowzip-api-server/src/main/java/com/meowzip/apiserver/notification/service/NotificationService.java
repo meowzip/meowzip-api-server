@@ -60,7 +60,7 @@ public class NotificationService {
             return;
         }
 
-        Long contentId = notification.extractIdFromLink();
+        Long contentId = notification.getDetailLink();
 
         switch (notification.getTemplate().getCode()) {
             case MN001, MN002 -> {
@@ -72,7 +72,7 @@ public class NotificationService {
             }
 
             case MN004, MN005, MN006 -> {
-                // TODO: 공동냥육 알림에 대한 검증 로직 추가 필요
+                coParentService.validateCoParent(notification.getReceiver(), contentId);
             }
         }
     }
