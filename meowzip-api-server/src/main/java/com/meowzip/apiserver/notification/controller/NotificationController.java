@@ -7,6 +7,7 @@ import com.meowzip.apiserver.member.service.MemberService;
 import com.meowzip.apiserver.member.util.MemberUtil;
 import com.meowzip.apiserver.notification.dto.response.CoParentNotificationResponseDTO;
 import com.meowzip.apiserver.notification.dto.response.NotificationResponseDTO;
+import com.meowzip.apiserver.notification.dto.response.NotificationValidationResDTO;
 import com.meowzip.apiserver.notification.service.NotificationService;
 import com.meowzip.apiserver.notification.swagger.NotificationSwagger;
 import com.meowzip.member.entity.Member;
@@ -57,5 +58,15 @@ public class NotificationController implements NotificationSwagger {
         notificationService.readAll(member);
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{notification-id}/validate")
+    public CommonResponse<NotificationValidationResDTO> validateNotification(Principal principal,
+                                                                             @PathVariable("notification-id") Long notificationId) {
+
+        Member member = memberService.getMember(MemberUtil.getMemberId(principal));
+        NotificationValidationResDTO response = notificationService.validateNotification(member, notificationId);
+
+        return new CommonResponse<>(HttpStatus.OK, response);
     }
 }

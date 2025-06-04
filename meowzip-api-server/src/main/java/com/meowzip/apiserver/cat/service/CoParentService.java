@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -68,13 +69,8 @@ public class CoParentService {
         return isStandBy || isNotParticipant;
     }
 
-    public void validateCoParent(Member participant, Long coParentId) {
-        CoParent coParent = coParentRepository.findByParticipantAndId(participant, coParentId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.CO_PARENT_NOT_FOUND));
-
-        if (coParent.isCanceled()) {
-            throw new ClientException.BadRequest(EnumErrorCode.CO_PARENT_NOT_FOUND);
-        }
+    public Optional<CoParent> getByCoParentId(Member participant, Long coParentId) {
+        return coParentRepository.findByParticipantAndId(participant, coParentId);
     }
 
     public boolean isResponded(Long coParentId) {

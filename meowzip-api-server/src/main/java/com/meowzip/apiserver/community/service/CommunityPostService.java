@@ -153,6 +153,10 @@ public class CommunityPostService {
         return member.getId().equals(post.getMember().getId());
     }
 
+    public Optional<CommunityPost> getPostIfExists(Long postId) {
+        return postRepository.findById(postId);
+    }
+
     public CommunityPost getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.POST_NOT_FOUND));
