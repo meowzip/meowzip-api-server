@@ -60,14 +60,15 @@ public class NotificationService {
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOTIFICATION_HISTORY_NOT_FOUND));
 
         Long contentId = notification.getDetailLink();
-        if (contentId == null) {
+        if (!notification.isCoParentResponseNotification() && contentId == null) {
             return NotificationValidationResDTO.invalid(EnumErrorCode.BAD_REQUEST.getMessage());
         }
 
         return switch (notification.getTemplate().getCode()) {
             case MN001, MN002 -> validateCommunityPost(contentId);
             case MN003 -> validateDiary(contentId);
-            case MN004, MN005, MN006 -> validateCoParent(notification.getReceiver(), contentId);
+            case MN004 -> validateCoParentByParticipant(notification.getReceiver(), contentId);
+            case MN005, MN006 -> NotificationValidationResDTO.valid();
         };
     }
 
@@ -83,8 +84,8 @@ public class NotificationService {
                 : NotificationValidationResDTO.invalid(EnumErrorCode.DIARY_NOT_FOUND.getMessage());
     }
 
-    private NotificationValidationResDTO validateCoParent(Member receiver, Long coParentId) {
-        Optional<CoParent> coParent = coParentService.getByCoParentId(receiver, coParentId);
+    private NotificationValidationResDTO validateCoParentByParticipant(Member receiver, Long coParentId) {
+        Optional<CoParent> coParent = coParentService.getByParticipantAndCoParentId(receiver, coParentId);
 
         if (coParent.isEmpty()) {
             return NotificationValidationResDTO.invalid(EnumErrorCode.CO_PARENT_NOT_FOUND.getMessage());

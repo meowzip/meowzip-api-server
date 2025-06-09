@@ -68,4 +68,9 @@ public class NotificationHistory extends BaseTimeEntity {
     public String getPushBody() {
         return this.senderNickname + this.getTitle();
     }
+
+    public boolean isCoParentResponseNotification() {
+        return this.template.getCode() == NotificationCode.MN005
+                || this.template.getCode() == NotificationCode.MN006;
+    }
 }
