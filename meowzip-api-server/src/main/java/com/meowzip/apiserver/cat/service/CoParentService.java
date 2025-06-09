@@ -69,8 +69,9 @@ public class CoParentService {
         return isStandBy || isNotParticipant;
     }
 
-    public Optional<CoParent> getByCoParentId(Member participant, Long coParentId) {
-        return coParentRepository.findByParticipantAndId(participant, coParentId);
+    public Optional<CoParent> getByParticipantAndCoParentId(Member receiver, Long coParentId) {
+        return coParentRepository.findByParticipantAndId(receiver, coParentId)
+                .filter(CoParent::isStandBy);
     }
 
     public boolean isResponded(Long coParentId) {
