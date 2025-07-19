@@ -19,7 +19,8 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
             "LEFT JOIN CoParent cp ON cp.cat = c " +
             "WHERE c.member = :member " +
             "OR (cp.owner = :member) " +
-            "OR (cp.participant = :member AND cp.status = 'APPROVAL')")
+            "OR (cp.participant = :member AND cp.status = 'APPROVAL') " +
+            "ORDER BY c.createdAt DESC")
     Page<Cat> findAllCatsByMember(@Param("member") Member member, Pageable pageable);
 
     @Query("select c from Cat c " +
