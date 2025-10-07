@@ -10,7 +10,7 @@ import java.util.Locale;
 public class DateTimeUtil {
 
     public static String toAmPm(LocalTime time) {
-        return time.format(DateTimeFormatter.ofPattern("a hh:mm"));
+        return time.format(DateTimeFormatter.ofPattern("a hh:mm", Locale.KOREA));
     }
 
     public static String toFormattedDate(LocalDate date) {
