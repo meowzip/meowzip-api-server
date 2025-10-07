@@ -47,7 +47,10 @@ public class Diary extends BaseTimeEntity {
         this.isGivenWater = givenWater;
         this.isFeed = feed;
         this.content = content;
-        this.taggedCats = taggedCats;
+
+        this.taggedCats.clear();
+        this.taggedCats.addAll(taggedCats);
+
         this.caredDate = caredDate;
         this.caredTime = caredTime;
         this.imageGroup = imageGroup;
