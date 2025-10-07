@@ -31,7 +31,7 @@ public class CommunityPost extends BaseTimeEntity {
 
     private String content;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> comments = new ArrayList<>();
 
     private int likeCount = 0;

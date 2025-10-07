@@ -39,7 +39,7 @@ public class Cat extends BaseTimeEntity {
 
     private LocalDate metAt;
 
-    @OneToMany(mappedBy = "cat")
+    @OneToMany(mappedBy = "cat", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CoParent> coParents;
 
     public boolean isCoParented() {

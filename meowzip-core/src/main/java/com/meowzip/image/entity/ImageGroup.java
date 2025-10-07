@@ -20,7 +20,7 @@ public class ImageGroup {
     private Long id;
 
     @Builder.Default
-    @OneToMany(mappedBy = "imageGroup", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "imageGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     public boolean isChanged(List<MultipartFile> images) {
