@@ -28,7 +28,7 @@ public class Diary extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "diary")
+    @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaggedCat> taggedCats = new ArrayList<>();
 
     private LocalDate caredDate;
