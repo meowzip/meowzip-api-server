@@ -12,6 +12,7 @@ import com.meowzip.apiserver.member.service.RefreshTokenService;
 import com.meowzip.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 @Slf4j
@@ -65,7 +65,10 @@ public class JwtService {
     }
 
     @Transactional
-    public HttpHeaders reissue(Cookie[] cookies, HttpServletResponse response) {
+    public HttpHeaders reissue(HttpServletRequest request, HttpServletResponse response) {
+		String accessToken = request.getHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME).replace("Bearer ", "");
+		Cookie[] cookies = request.getCookies();
+
         if (ObjectUtils.isEmpty(cookies)) {
             throw new ClientException.BadRequest(EnumErrorCode.TOKEN_REQUIRED);
         }
@@ -83,8 +86,18 @@ public class JwtService {
             throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
         }
 
-        Long memberId = jwtUtil.validateRefreshToken(refreshToken).get("memberId", Long.class);
-        JwtResponseDTO jwt = createJwt(memberService.getMember(memberId));
+		Long memberIdFromAccessToken = jwtUtil.extractClaimsFromExpiredAccessToken(accessToken)
+				.get("memberId", Long.class);
+        Long memberIdFromRefreshToken = jwtUtil.validateRefreshToken(refreshToken).get("memberId", Long.class);
+
+		if (!memberIdFromAccessToken.equals(memberIdFromRefreshToken)) {
+			log.warn("memberId does not match. accessToken: {}, refreshToken: {}",
+					memberIdFromAccessToken,
+					memberIdFromRefreshToken);
+			throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
+		}
+
+        JwtResponseDTO jwt = createJwt(memberService.getMember(memberIdFromRefreshToken));
         response.setHeader("Set-Cookie", CookieUtil.createCookie(AuthConst.REFRESH_TOKEN_HEADER_NAME, jwt.refreshToken()));
 
         return createHeader(jwt);

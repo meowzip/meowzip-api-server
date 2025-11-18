@@ -18,6 +18,6 @@ public class TokenController implements TokenSwagger {
 
     @PostMapping("/refresh")
     public ResponseEntity<Void> reissue(HttpServletRequest request, HttpServletResponse response) {
-        return new ResponseEntity<>(jwtService.reissue(request.getCookies(), response), HttpStatus.OK);
+        return new ResponseEntity<>(jwtService.reissue(request, response), HttpStatus.OK);
     }
 }
