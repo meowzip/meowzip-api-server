@@ -6,6 +6,7 @@ import com.meowzip.member.entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,4 +73,29 @@ public class JwtUtil {
             throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
         }
     }
+
+	public Claims extractClaimsFromExpiredAccessToken(String token) {
+		if (ObjectUtils.isEmpty(token)) {
+			throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_REQUIRED);
+		}
+
+		byte[] keyBytes = Decoders.BASE64.decode(accessTokenSecret);
+		Key key = Keys.hmacShaKeyFor(keyBytes);
+
+		try {
+			return Jwts.parserBuilder()
+					.setSigningKey(key)
+					.build()
+					.parseClaimsJws(token)
+					.getBody();
+		} catch (ExpiredJwtException e) {
+			// 만료된 토큰이어도 클레임 정보 반환
+			return e.getClaims();
+		} catch (SignatureException e) {
+			log.warn("token signature error.", e);
+			throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
+		} catch (Exception e) {
+			throw new ClientException.Unauthorized(EnumErrorCode.TOKEN_INVALID);
+		}
+	}
 }
