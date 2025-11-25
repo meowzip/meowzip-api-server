@@ -28,5 +28,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 //        memberService.logout(id);
 
          SecurityContextHolder.clearContext();
+         log.info("logout completed for user: {}", email);
     }
 }
