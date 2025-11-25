@@ -95,7 +95,7 @@ public class SecurityConfig {
                 .logout(logout -> {
                     logout
                             .addLogoutHandler(logoutHandler)
-                            .logoutUrl("/api/public/v1.0.0/members/logout")
+                            .logoutUrl("/api/auth/v1.0.0/members/logout")
                             .logoutSuccessHandler(logoutSuccessHandler)
                     ;
                 })

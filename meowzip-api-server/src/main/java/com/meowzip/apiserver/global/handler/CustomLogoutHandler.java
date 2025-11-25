@@ -1,6 +1,6 @@
 package com.meowzip.apiserver.global.handler;
 
-import com.meowzip.apiserver.member.service.MemberService;
+import com.meowzip.apiserver.member.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomLogoutHandler implements LogoutHandler {
 
-    private final MemberService memberService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -24,10 +24,10 @@ public class CustomLogoutHandler implements LogoutHandler {
             return;
         }
 
-        String email = authentication.getName();
-//        memberService.logout(id);
+        Long id = Long.valueOf(authentication.getName());
+        refreshTokenService.remove(id);
 
          SecurityContextHolder.clearContext();
-         log.info("logout completed for user: {}", email);
+         log.info("logout completed for user: {}", id);
     }
 }
