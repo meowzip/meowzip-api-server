@@ -107,7 +107,7 @@ logging:
 
 reset-password:
   validate-url: https://dev-server.meowzip.com/api/public/v1.0.0/members/reset-password/validate
-  reset-url: http://localhost:3000/reset-pwd
+  reset-url: https://dev.meowzip.com/reset-pwd
 
 # oauth2
 oauth2:
