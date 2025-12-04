@@ -66,7 +66,12 @@ public class JwtService {
 
     @Transactional
     public HttpHeaders reissue(HttpServletRequest request, HttpServletResponse response) {
-		String accessToken = request.getHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME).replace("Bearer ", "");
+        String accessToken = request.getHeader(AuthConst.ACCESS_TOKEN_HEADER_NAME);
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new ClientException.BadRequest(EnumErrorCode.TOKEN_REQUIRED);
+        }
+
+        accessToken = accessToken.replace("Bearer ", "");
 		Cookie[] cookies = request.getCookies();
 
         if (ObjectUtils.isEmpty(cookies)) {
